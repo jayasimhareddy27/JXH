@@ -14,6 +14,7 @@ const templates = [
 const ITEMS_PER_PAGE = 3;
 
 export const TemplateSelector = ({ selectedTemplate, onSelect }) => {
+
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -45,10 +46,14 @@ export const TemplateSelector = ({ selectedTemplate, onSelect }) => {
   const handleTemplateSelect = (templateId) => {
     onSelect(templateId);
     localStorage.setItem('resumeTemplate', templateId);
+    console.log(templateId);
+    console.log(selectedTemplate);
+    
   };
 
   const startIdx = (validCurrentPage - 1) * ITEMS_PER_PAGE;
   const currentTemplates = filteredTemplates.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+
 
   return (
     <div>
@@ -72,7 +77,7 @@ export const TemplateSelector = ({ selectedTemplate, onSelect }) => {
             key={template.id}
             onClick={() => handleTemplateSelect(template.id)}
             className={`card cursor-pointer p-3 transition ${
-              selectedTemplate === template.id ? 'border-blue-500 shadow-md' : ''
+              selectedTemplate == template.id ? 'border-2 border-red-500 shadow-md' : ''
             }`}
           >
             <img
@@ -80,7 +85,7 @@ export const TemplateSelector = ({ selectedTemplate, onSelect }) => {
               alt={template.name}
               className="w-full h-40 object-cover rounded"
             />
-            <p className="text-center mt-2 text-sm font-medium">{template.name}</p>
+            <p className={`text-center mt-2 text-sm font-medium }`}>{template.name}</p>
           </div>
         ))}
       </div>

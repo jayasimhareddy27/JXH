@@ -35,7 +35,7 @@ export default function Sidebar({ initialOpen = false }) {
 
   return (
     <aside
-      className={`sidebar ${isOpen ? 'open' : ''}`}
+      className={`sidebar  ${isOpen ? 'open' : ''}`}
       aria-label="Sidebar navigation"
     >
       <div
@@ -61,7 +61,7 @@ export default function Sidebar({ initialOpen = false }) {
           className={`company-short-name ${isOpen ? 'hidden' : 'flex flex-col items-center'}`}
           aria-hidden={isOpen}
         >
-          <span className="short-name-text font-extrabold tracking-widest sm:text-2xl text-5xl">
+          <span className="font-extrabold tracking-widest sm:text-2xl text-5xl">
             {Companyshortname}
           </span>
         </div>
