@@ -3,7 +3,7 @@ import { connectToDB } from '@lib/mongodb';
 import UserReferences from '@models/userreferences';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || "SuperSecretKey"; // Use env var in prod
+const JWT_SECRET = process.env.JWT_SECRET || "SuperSecretKey";
 
 async function authenticate(request) {
   const authHeader = request.headers.get('authorization');
@@ -26,20 +26,34 @@ export async function PUT(request) {
   }
   
   try {
-    const { primaryResumeId } = await request.json();
+    // 1. Destructure 'theme' from the request body as well
+    const { primaryResumeId, theme } = await request.json();
 
-    if (!primaryResumeId) {
-      return NextResponse.json({ error: 'primaryResumeId is required' }, { status: 400 });
+    // 2. Check if at least one property was provided
+    if (!primaryResumeId && !theme) {
+      return NextResponse.json({ error: 'primaryResumeId or theme is required' }, { status: 400 });
     }
+
     const userRefs = await UserReferences.findOne({ userId: userData.id });
     
+    // 3. Conditionally update the properties if they exist
+    if (primaryResumeId) {
+      userRefs.primaryResumeRef = primaryResumeId;
+    }
+    if (theme) {
+      userRefs.theme = theme;
+    }
     
-    userRefs.primaryResumeRef = primaryResumeId;
     await userRefs.save();
 
-    return NextResponse.json({ success: true, primaryResumeId });
+    // 4. Return the updated data in the response
+    return NextResponse.json({ 
+      success: true, 
+      primaryResumeId: userRefs.primaryResumeRef,
+      theme: userRefs.theme 
+    });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: 'Failed to update primary resume' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to update user references' }, { status: 500 });
   }
 }

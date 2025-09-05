@@ -1,91 +1,62 @@
+"use client";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { displayToast } from '@lib/redux/features/toastslice';
 
-const CreateResume = ({ isLoading, handleCreateResume, setToast }) => {
+const CreateResume = ({ isLoading, handleCreateResume }) => {
   const [resumeName, setResumeName] = useState("");
-  const [error, setError] = useState("");
+  const dispatch = useDispatch();
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
+
     if (!resumeName.trim()) {
-      setError("Resume name is required");
-      setToast({ message: "Please enter a resume name", type: "error" });
+      dispatch(displayToast({ message: "Resume name is required", type: "error" }));
       return;
     }
-    if (!window.confirm("Create a new resume with this name?")) return;
-    handleCreateResume(resumeName);
-    setResumeName("");
-    setError("");
+
+    // Optional: custom confirmation dialog logic here or skip it for UX reasons
+    const confirmed = window.confirm("Create a new resume with this name?");
+    if (!confirmed) return;
+
+    try {
+      await handleCreateResume(resumeName);
+      dispatch(displayToast({ message: `Resume "${resumeName}" created successfully!`, type: "success" }));
+      setResumeName("");
+    } catch (err) {
+      dispatch(displayToast({ message: err.message || "Failed to create resume", type: "error" }));
+    }
   };
 
   return (
-    <div className="shadow-modal rounded-xl p-6 m-2">
+    <div className="bg-[color:var(--color-background-secondary)] shadow-modal rounded-xl p-6 m-2">
       <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Column 1 */}
+        {/* Resume Name Field */}
         <div className="col-span-1">
           <label
             htmlFor="resumeName"
-            style={{ 
-              display: "block",
-              marginBottom: "0.5rem",
-              fontWeight: "500",
-              color: "var(--color-text-primary)"
-            }}
+            className="block mb-2 font-medium text-[color:var(--color-text-primary)]"
           >
             Resume Name
           </label>
+
           <input
             type="text"
             id="resumeName"
             value={resumeName}
-            onChange={(e) => {
-              setResumeName(e.target.value);
-              setError("");
-            }}
-            style={{
-              width: "100%",
-              padding: "0.75rem 1rem",
-              borderRadius: "0.5rem",
-              border: `1px solid ${error ? "var(--color-danger)" : "var(--color-border-primary)"}`,
-              outline: "none",
-              fontSize: "0.95rem",
-              backgroundColor: "var(--color-background-secondary)",
-              color: "var(--color-text-primary)",
-              boxShadow: error ? "0 0 0 2px var(--color-danger)" : "none",
-              transition: "border-color 0.25s ease, box-shadow 0.25s ease",
-            }}
+            onChange={(e) => setResumeName(e.target.value)}
             placeholder="e.g., Software Engineer Resume"
             disabled={isLoading}
+            className={`w-full p-3 rounded-lg outline-none text-sm text-[color:var(--color-text-primary)] bg-[color:var(--color-background-secondary)] transition duration-200 border border-[color:var(--color-border-primary)]`}
           />
-          {error && (
-            <p style={{ color: "var(--color-danger)", fontSize: "0.875rem", marginTop: "0.5rem" }}>
-              {error}
-            </p>
-          )}
         </div>
 
-        {/* Column 2 */}
-        <div className="col-span-1" style={{ display: "flex", alignItems: "flex-end" }}>
+        {/* Submit Button */}
+        <div className="col-span-1 flex items-end">
           <button
             type="submit"
             disabled={isLoading}
-            style={{
-              width: "100%",
-              padding: "0.75rem 1rem",
-              backgroundColor: "var(--color-button-primary-bg)",
-              color: "var(--color-text-on-primary)",
-              borderRadius: "0.5rem",
-              fontWeight: "600",
-              cursor: isLoading ? "not-allowed" : "pointer",
-              transition: "background-color 0.3s ease",
-              opacity: isLoading ? 0.5 : 1,
-              border: "none",
-            }}
-            onMouseEnter={(e) => {
-              if (!isLoading) e.currentTarget.style.backgroundColor = "var(--color-button-primary-hover-bg)";
-            }}
-            onMouseLeave={(e) => {
-              if (!isLoading) e.currentTarget.style.backgroundColor = "var(--color-button-primary-bg)";
-            }}
+            className={`w-full btn-primary ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             {isLoading ? "Creating..." : "Create Resume"}
           </button>

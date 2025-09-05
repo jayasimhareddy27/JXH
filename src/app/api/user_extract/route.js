@@ -4,16 +4,18 @@ import { fetchfromai } from '@components/ai/llmapi';
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { prompt,model,ApiKey } = body;
+    const { prompt, model, ApiKey, provider } = body; // <-- Get provider from body
     
-    if (!prompt) {
+    if (!prompt || !model || !ApiKey || !provider) {
       return NextResponse.json(
-        { error: 'Missing required parameters: prompt is mandatory.' },
+        { error: 'Missing required parameters: prompt, model, ApiKey, and provider are mandatory.' },
         { status: 400 }
       );
     }
 
-    const rawResponse = await fetchfromai(prompt,ApiKey,model);
+    // Pass all parameters to the next function
+    const rawResponse = await fetchfromai(prompt, ApiKey, model, provider);
+    
     const cleanedResponse = rawResponse.trim().replace(/^```json\s*/, '').replace(/^```/, '').replace(/```$/, '').trim();
     
     try {
@@ -35,7 +37,3 @@ export async function POST(req) {
     );
   }
 }
-
-
-
-

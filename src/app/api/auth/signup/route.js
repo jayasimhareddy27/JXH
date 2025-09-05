@@ -1,5 +1,6 @@
 import { connectToDB } from '@lib/mongodb';
 import User from '@models/login';
+import UserReferences from '@models/userreferences'; 
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
@@ -28,6 +29,10 @@ export async function POST(req) {
       password: hashedPassword,
       name,
       userdata: {},
+    });
+
+    await UserReferences.create({
+      userId: user._id,
     });
 
     const token = jwt.sign(

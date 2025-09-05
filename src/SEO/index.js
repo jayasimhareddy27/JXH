@@ -54,7 +54,6 @@ export const siteMetadata = {
   },
   icons: {
     icon: '/favicon.ico',
-    shortcut: '/favicon-16x16.png',
     apple: '/apple-touch-icon.png',
   },
   sitemap: 'https://jobxhunter.com/sitemap.xml',

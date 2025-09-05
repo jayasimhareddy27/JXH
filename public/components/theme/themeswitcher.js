@@ -1,15 +1,16 @@
-
 'use client';
 
-import { useTheme } from './themeprovider';
+import { useSelector, useDispatch } from 'react-redux';
+import { toggleAndSaveTheme } from '@lib/redux/features/themeslice';
 import { Sun, Moon } from 'lucide-react';
 
 export const ThemeSwitcher = () => {
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useSelector((state) => state.theme);
+  const dispatch = useDispatch();
 
   return (
     <button
-      onClick={toggleTheme}
+      onClick={() => dispatch(toggleAndSaveTheme())}
       className="btn btn-secondary"
       aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
     >

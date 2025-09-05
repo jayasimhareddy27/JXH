@@ -6,12 +6,11 @@ const formatPrompts = {
     key: 'personalInformation',
     title: 'Personal Information',
     arrayFieldKey: false,
-    fields: ['sectionTitle','fullName', 'firstName', 'lastName', 'email', 'phoneNumber'],
-    initial: { sectionTitle:'Personal Information',fullName: '', firstName: '', lastName: '', email: '', phoneNumber: '' },
+    fields: ['fullName', 'firstName', 'lastName', 'email', 'phoneNumber'],
+    initial: { fullName: '', firstName: '', lastName: '', email: '', phoneNumber: '' },
     prompt: `Extract the following personal information.
 Return as JSON, donot wrap the content in ''' or any other characters or donot add comments or explanation:
 {
-  "sectionTitle":"Personal Information",
   "fullName": "",
   "firstName": "",
   "lastName": "",
@@ -27,12 +26,11 @@ Resume text:`
     key: 'onlineProfiles',
     title: 'Online Profiles',
     arrayFieldKey: false,
-    fields: ['sectionTitle','linkedin', 'github', 'portfolio', 'personalWebsite', 'otherLinks', ],
-    initial: {sectionTitle:'Online Profiles', linkedin: '', github: '', portfolio: '', personalWebsite: '', otherLinks: '',  },
+    fields: ['linkedin', 'github', 'portfolio', 'personalWebsite', 'otherLinks', ],
+    initial: { linkedin: '', github: '', portfolio: '', personalWebsite: '', otherLinks: '',  },
     prompt: `Extract links.
 Return as JSON, donot wrap the content in ''' or any other characters or donot add comments or explanation:
 {
-  "sectionTitle":"Online Profiles",
   "linkedin": "",
   "github": "",
   "portfolio": "",
@@ -52,10 +50,10 @@ Resume text:`
     title: 'Education History',
     arrayFieldKey: true,
     fields: ['degree', 'major', 'university', 'location', 'startDate', 'endDate', 'gpa'],
-    initial: [{ sectionTitle:'Education History'},{degree:'', major:'', university:'', location:'', startDate:'', endDate:'',gpa:''}],
+    initial: [{degree:'', major:'', university:'', location:'', startDate:'', endDate:'',gpa:''}],
     prompt: `Extract education details.
-Return as JSON array, donot wrap the content in ''' or any other characters or donot add comments or explanation:
-[ { sectionTitle:'Education History'},
+Return as JSON array, donot wrap the content in ''' or any other characters or donot add comments or explanation or donot skip a field every field is important:
+[
   {
     "degree": "",
     "major": "",
@@ -76,11 +74,11 @@ Resume text:`
     title: 'Work Experience',
     arrayFieldKey: true,
     fields: ['companyName', 'jobTitle', 'responsibilities', 'location', 'startDate', 'endDate'],
-    initial: [ {sectionTitle:'Work Experience'}, {companyName:'', jobTitle:'', responsibilities:'', location:'', startDate:'', endDate:''}],
+    initial: [ {companyName:'', jobTitle:'', responsibilities:'', location:'', startDate:'', endDate:''}],
 
     prompt: `Extract work experience.
-Return as JSON array, donot wrap the content in ''' or any other characters or donot add comments or explanation:
-[ {"sectionTitle":'Work Experience'},
+Return as JSON array, donot wrap the content in ''' or any other characters or donot add comments or explanation or donot skip a field every field is important:
+[ 
   {
     "companyName": "",
     "jobTitle": "",
@@ -100,11 +98,12 @@ Resume text:`
     title: 'Projects',
     arrayFieldKey: true,
     fields: ['projectName', 'projectDescription', 'technologiesUsed', 'startDate', 'endDate', 'projectLink'],
-    initial: [ {sectionTitle:'Projects'},{projectName:'', projectDescription:'', technologiesUsed:'', startDate:'', endDate:'', projectLink:''}],
+    initial: [ {projectName:'', projectDescription:'', technologiesUsed:'', startDate:'', endDate:'', projectLink:''}],
 
     prompt: `Extract projects.
-Return as JSON array, donot wrap the content in ''' or any other characters or donot add comments or explanation:
-[ {"sectionTitle":'Projects'},
+Return as JSON array, donot wrap the content in ''' or any other characters or donot add comments or explanation or donot skip a field every field is important:
+[ 
+  
   {
     "projectName": "",
     "projectDescription": "",
@@ -124,12 +123,11 @@ Resume text:`
     id: 6,
     key: 'skillsSummary',
     title: 'Skills Summary',
-    fields: ['sectionTitle','technicalSkills', 'tools', 'softSkills', 'languagesSpoken', 'certificationsSkills' ],
-    initial: {  sectionTitle:'Skills Summary', technicalSkills: '', tools: '', softSkills: '', languagesSpoken: '', certificationsSkills: '' },
+    fields: ['technicalSkills', 'tools', 'softSkills', 'languagesSpoken', 'certificationsSkills' ],
+    initial: { technicalSkills: '', tools: '', softSkills: '', languagesSpoken: '', certificationsSkills: '' },
     prompt: `Extract skills.
 Return as JSON, donot wrap the content in ''' or any other characters or donot add comments or explanation:
-{ "sectionTitle":'Skills Summary',
-  "sectionTitle":"",
+{ 
   "technicalSkills": "",
   "tools": "",
   "softSkills": "",
@@ -148,10 +146,10 @@ Resume text:`
     title: 'Certifications',
     arrayFieldKey: true,
     fields: ['certificationName', 'issuer', 'credentialURL'],
-    initial: [ {sectionTitle:'Certifications'}, {certificationName:'', issuer:'', credentialURL: ''}],
+    initial: [ {certificationName:'', issuer:'', credentialURL: ''}],
     prompt: `Extract certifications.
-Return as JSON array, donot wrap the content in ''' or any other characters or donot add comments or explanation:
-[ {"sectionTitle":'Certifications'},
+Return as JSON array, donot wrap the content in ''' or any other characters or donot add comments or explanation or donot skip a field every field is important:
+[ 
   {
     "certificationName": "",
     "issuer": "",
@@ -169,12 +167,11 @@ Resume text:`
     key: 'careerSummary',
     title: 'Career Summary',
     arrayFieldKey: false,
-    fields: ['sectionTitle','summary', 'summaryGenerated', ],
-    initial: { sectionTitle:'Career Summary' , summary: '', summaryGenerated: '', },
+    fields: ['summary', 'summaryGenerated', ],
+    initial: { summary: '', summaryGenerated: '', },
     prompt: `Extract career summary.
 Return as JSON, donot wrap the content in ''' or any other characters or donot add comments or explanation:
 {
-  "sectionTitle":'Career Summary',
   "summary": "",
   "summaryGenerated": ""
 }
@@ -187,12 +184,11 @@ Resume text:`
     key: 'addressDetails',
     title: 'Address Details',
     arrayFieldKey: false,
-    fields: ['sectionTitle','street', 'city', 'state', 'zipCode', 'country', ],
-    initial: {  sectionTitle:'Address Details', street: '', city: '', state: '', zipCode: '', country: '' },
+    fields: ['street', 'city', 'state', 'zipCode', 'country', ],
+    initial: {   street: '', city: '', state: '', zipCode: '', country: '' },
     prompt: `Extract address.
 Return as JSON, donot wrap the content in ''' or any other characters or donot add comments or explanation:
 {
-  "sectionTitle":"Address Details",
   "street": "",
   "city": "",
   "state": "",
@@ -208,13 +204,12 @@ Resume text:`
     key: 'personalAttributes',
     title: 'Personal Attributes',
     arrayFieldKey: false,
-    fields: [ 'sectionTitle', 'gender',  'dateOfBirth',  'nationality',  'maritalStatus',  'languages',  'disabilityStatus',  'criminalRecord',  'veteranStatus',  'raceEthnicity',  'healthRestrictions',  'emergencyContactName',  'emergencyContactPhone'],
-    initial: { sectionTitle:'Personal Attributes',  gender: '',  dateOfBirth: '',  nationality: '',  maritalStatus: '',  languages: '',  disabilityStatus: '',  criminalRecord: '',  veteranStatus: '',  raceEthnicity: '',  healthRestrictions: '',  emergencyContactName: '',  emergencyContactPhone: ''
+    fields: [ 'gender',  'dateOfBirth',  'nationality',  'maritalStatus',  'languages',  'disabilityStatus',  'criminalRecord',  'veteranStatus',  'raceEthnicity',  'healthRestrictions',  'emergencyContactName',  'emergencyContactPhone'],
+    initial: {   gender: '',  dateOfBirth: '',  nationality: '',  maritalStatus: '',  languages: '',  disabilityStatus: '',  criminalRecord: '',  veteranStatus: '',  raceEthnicity: '',  healthRestrictions: '',  emergencyContactName: '',  emergencyContactPhone: ''
   },
   prompt: `Extract personal attributes.
   Return as JSON, donot wrap the content in ''' or any other characters or donot add comments or explanation:
   { 
-    "sectionTitle":"Personal Attributes",
     "gender": "",
     "dateOfBirth": "MM-DD-YYYY",
     "nationality": "",
@@ -236,14 +231,13 @@ Resume text:`
   key: 'workEligibility',
   title: 'Work Eligibility',
   arrayFieldKey: false,
-  fields: [ 'sectionTitle', 'workAuthorization',  'visaStatus',  'sponsorshipNeeded',  'relocationWillingness',  'rightToWorkInCountry',  'citizenshipStatus'
+  fields: [ 'workAuthorization',  'visaStatus',  'sponsorshipNeeded',  'relocationWillingness',  'rightToWorkInCountry',  'citizenshipStatus'
   ],
-  initial: {sectionTitle:'Work Eligibility',  workAuthorization: '',  visaStatus: '',  sponsorshipNeeded: '',  relocationWillingness: '',  rightToWorkInCountry: '',  citizenshipStatus: ''
+  initial: {  workAuthorization: '',  visaStatus: '',  sponsorshipNeeded: '',  relocationWillingness: '',  rightToWorkInCountry: '',  citizenshipStatus: ''
   },
   prompt: `Extract work eligibility information.
   Return as JSON, donot wrap the content in ''' or any other characters or donot add comments or explanation:
   {
-    "sectionTitle":"Work Eligibility",
     "workAuthorization": "",
     "visaStatus": "",
     "sponsorshipNeeded": "",
@@ -260,12 +254,11 @@ Resume text:`
     key: 'jobPreferences',
     title: 'Job Preferences',
     arrayFieldKey: false,
-    fields: ['sectionTitle',  'preferredJobTitle',  'preferredLocation',  'desiredSalary',  'employmentType',  'availability',  'willingToTravel',  'remoteWorkPreference'],
-    initial: { sectionTitle:'Job Preferences', preferredJobTitle: '',  preferredLocation: '',  desiredSalary: '',  employmentType: '',  availability: '',  willingToTravel: '',  remoteWorkPreference: ''},
+    fields: [  'preferredJobTitle',  'preferredLocation',  'desiredSalary',  'employmentType',  'availability',  'willingToTravel',  'remoteWorkPreference'],
+    initial: { preferredJobTitle: '',  preferredLocation: '',  desiredSalary: '',  employmentType: '',  availability: '',  willingToTravel: '',  remoteWorkPreference: ''},
     prompt: `Extract job preferences.
   Return as JSON, donot wrap the content in ''' or any other characters or donot add comments or explanation:
   {
-    "sectionTitle":"",
     "preferredJobTitle": "",
     "preferredLocation": "",
     "desiredSalary": "",
@@ -286,10 +279,10 @@ Resume text:`
   title: 'Referrals',
   arrayFieldKey: true,
   fields: ['referralName', 'referralContact', 'referralRelationship', 'referralNotes'],
-  initial:   [{sectionTitle:'Referrals'},{referralName: '',  referralContact: '',  referralRelationship: '',  referralNotes: ''}],
+  initial:   [{referralName: '',  referralContact: '',  referralRelationship: '',  referralNotes: ''}],
   prompt: `Extract referral information.
-  Return as JSON, donot wrap the content in ''' or any other characters or donot add comments or explanation:
-  [{"sectionTitle":'Referrals'},{
+Return as JSON array, donot wrap the content in ''' or any other characters or donot add comments or explanation or donot skip a field every field is important:
+  [{
     "referralName": "",
     "referralContact": "",
     "referralRelationship": "",
@@ -305,12 +298,11 @@ Resume text:`
   key: 'hobbies',
   title: 'Hobbies',
   arrayFieldKey: false,
-  fields: ['sectionTitle','hobbiesList'],
-  initial: {"sectionTitle":'Hobbies',"hobbiesList": ''},
+  fields: ['hobbiesList'],
+  initial: {"hobbiesList": ''},
   prompt: `Extract hobbies or interests.
   Return as JSON, donot wrap the content in ''' or any other characters or donot add comments or explanation:
   {
-    "sectionTitle":"Hobbies",
     "hobbiesList": ""
   }
   Use comma-separated string. Set null if missing.

@@ -1,6 +1,8 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux'; // <-- 1. Import Redux hooks
+import { clearCredentials } from '@lib/redux/features/authslice'; // <-- 2. Import the logout action
 import { HelpCircle, Home, LetterText, Pin, ZoomIn, Contact, LogIn, LogOut } from 'lucide-react';
 import Link from 'next/link';
 
@@ -13,11 +15,17 @@ const links = [
   { name: 'Contact', href: '/contact', Icon: HelpCircle },
 ];
 
-export default function NavLinks({ isOpen, user, token }) {
+// 3. Remove user and token from props
+export default function NavLinks({ isOpen }) {
   const pathname = usePathname();
+  const dispatch = useDispatch();
+  
+  // 4. Get the user directly from the Redux store
+  const { user } = useSelector((state) => state.auth);
 
   const handleLogout = () => {
-    localStorage.clear();
+    // 5. Dispatch the Redux action to log out
+    dispatch(clearCredentials());
     window.location.href = '/';
   };
 

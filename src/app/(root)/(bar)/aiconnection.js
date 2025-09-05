@@ -1,43 +1,35 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { setAgent, clearAgent } from '@lib/redux/features/aiagentslice';
+import { displayToast } from '@lib/redux/features/toastslice'; // <-- 1. Import the toast action
 import { Bot, RotateCcw, Settings, LogOut } from 'lucide-react';
 import { testGeminiApiKey, testHuggingFaceApiKey, testOllamaConnection } from '@components/ai/useaitestconnections';
 import Link from 'next/link';
+import { shuffle } from '@lib/utils';
 
 export default function AIConnectionFloating() {
-  const [aiAgent, setAiAgent] = useState(null);
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  
+  const dispatch = useDispatch();
+  const { agent: aiAgent } = useSelector((state) => state.aiAgent);
 
   useEffect(() => {
-    const storedAgent = localStorage.getItem('CurrentAiAgent');
-    if (storedAgent) {
-      try {
-        const parsed = JSON.parse(storedAgent);
-        setAiAgent(parsed.model || parsed.provider);
-      } catch {
-        setAiAgent(null);
+    if (!aiAgent) {
+      const storedAgent = localStorage.getItem('CurrentAiAgent');
+      if (storedAgent) {
+        try {
+          dispatch(setAgent(JSON.parse(storedAgent)));
+        } catch {}
       }
     }
-  }, []);
-
-  // Fisher-Yates shuffle
-  const shuffle = (array) => {
-    let currentIndex = array.length, randomIndex;
-
-    while (currentIndex !== 0) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-      [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
-    }
-    
-    return array;
-  };
-
+  }, [dispatch, aiAgent]);
+  
   const handleRandomConnect = async () => {
     setLoading(true);
-    setAiAgent(null);
+    dispatch(clearAgent());
 
     const providers = [testGeminiApiKey, testHuggingFaceApiKey, testOllamaConnection];
     const shuffledProviders = shuffle([...providers]);
@@ -49,20 +41,24 @@ export default function AIConnectionFloating() {
     }
 
     if (connectedAgent) {
-      alert(`CONNECTED TO ${connectedAgent.model}`);
-      localStorage.setItem('CurrentAiAgent', JSON.stringify(connectedAgent));
-      setAiAgent(connectedAgent.model || connectedAgent.provider);
+      // 2. Dispatch a success toast instead of an alert
+      dispatch(displayToast({ 
+        message: `Connected to ${connectedAgent.model}`, 
+        type: 'success' 
+      }));
+      dispatch(setAgent(connectedAgent));
     } else {
-      localStorage.removeItem('CurrentAiAgent');
-      setAiAgent(null);
+      // 3. Dispatch an error toast if no connection is made
+      dispatch(displayToast({
+        message: 'Could not connect to any AI provider.',
+        type: 'error'
+      }));
     }
-
     setLoading(false);
   };
 
   const handleDisconnect = () => {
-    localStorage.removeItem('CurrentAiAgent');
-    setAiAgent(null);
+    dispatch(clearAgent());
     setExpanded(false);
   };
 

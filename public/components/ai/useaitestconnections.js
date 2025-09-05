@@ -16,7 +16,6 @@ export async function testGeminiApiKey() {
 }
 
 export async function testHuggingFaceApiKey() {
-  console.log("CONNECTED TO GEMINI");
   for (const key of aiKeys.huggingFace) {
     try {
       const response = await api_HuggingFaceai('no explanation, integer only: 2+2=?', huggingFaceModels[0].value, key);
@@ -29,7 +28,6 @@ export async function testHuggingFaceApiKey() {
 }
 
 export async function testOllamaConnection() {
-  console.log("3");
   try {
     const response = await api_Ollama('integer only: 2+2=?', 'http://localhost:11434/api/generate', 'llama3.2');
     if (response) {

@@ -1,17 +1,14 @@
-import { geminiModels, huggingFaceModels } from "@/globalvar/companydetails";
-
-export async function fetchfromai(prompt, apiKey, selectedAgent) {
-  if (apiKey.startsWith("http")) {
-    return await api_Ollama(prompt, apiKey, selectedAgent);
-  } 
-  else if (geminiModels.some(model => selectedAgent.startsWith(model.value))) {
-    return await api_Gemini(prompt, selectedAgent, apiKey);
-  } 
-  else if (huggingFaceModels.some(model => selectedAgent.startsWith(model.value))) {
-    return await api_HuggingFaceai(prompt, selectedAgent, apiKey);
-  } 
-  else {
-    throw new Error(`Unsupported AI agent: ${selectedAgent}`);
+// This function now uses the 'provider' to decide which API to call.
+export async function fetchfromai(prompt, apiKey, model, provider) {
+  switch (provider) {
+    case 'Gemini':
+      return await api_Gemini(prompt, model, apiKey);
+    case 'HuggingFace':
+      return await api_HuggingFaceai(prompt, model, apiKey);
+    case 'Ollama':
+      return await api_Ollama(prompt, apiKey, model); // Ollama uses the ApiKey as the URL
+    default:
+      throw new Error(`Unsupported AI provider: ${provider}`);
   }
 }
 
@@ -24,7 +21,7 @@ async function api_HuggingFaceai(prompt, model, apiKey) {
     },
     body: JSON.stringify({
       model,
-      messages: [  {    role: 'user',    content: prompt,  },],
+      messages: [{ role: 'user', content: prompt }],
     }),
   });
 
@@ -37,16 +34,13 @@ async function api_HuggingFaceai(prompt, model, apiKey) {
   return data?.choices?.[0]?.message?.content || '';
 }
 
-
-
-
-// === Gemini ===
-async function api_Gemini(prompt,model,apiKey) {
+async function api_Gemini(prompt, model, apiKey) {
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
     {
-      method: 'POST',headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({  contents: [{ role: 'user', parts: [{ text: prompt }] }],}),
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: prompt }] }] }),
     }
   );
   if (!response.ok) {
@@ -54,19 +48,13 @@ async function api_Gemini(prompt,model,apiKey) {
     throw new Error(`Gemini API Error: ${response.status} - ${errorText}`);
   }
   const data = await response.json();
-  
   return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 }
 
-
-
-// === Local LLM (Ollama) ===
 async function api_Ollama(prompt, url, model) {
   const response = await fetch(url, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model,
       prompt,
@@ -80,9 +68,7 @@ async function api_Ollama(prompt, url, model) {
   }
 
   const data = await response.json();
-  console.log(data.response);
-  
   return data.response || '';
 }
 
-export {api_Gemini,api_HuggingFaceai,api_Ollama}
+export { api_Gemini, api_HuggingFaceai, api_Ollama };

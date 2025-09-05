@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
 import UploadButton from '@components/buttons/uploadbutton';
 import { TemplateSelector } from '@resumetemplates/templateselector';
 import { StatusMessage } from '@components/cards/index';
@@ -31,18 +32,27 @@ export default function UserExtractionsPage() {
   const [selectedTemplate, setSelectedTemplate] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [aiConfigured, setAiConfigured] = useState(false);
+  
+  const [hasMounted, setHasMounted] = useState(false);
+  
+  const { agent: aiAgent } = useSelector((state) => state.aiAgent);
+  
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  const aiConfigured = hasMounted && !!aiAgent;
+
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (!storedUser) window.location.href = "/login";
 
-    const ai = localStorage.getItem('CurrentAiAgent');
-    setAiConfigured(!!ai);
-
     const storedTemplate = localStorage.getItem('resumeTemplate');
+    const resumeRawText = localStorage.getItem('resumeRawText');
     if (storedTemplate) setSelectedTemplate(storedTemplate);
-  }, [router]);
+
+  }, []);
 
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template);
@@ -78,39 +88,33 @@ export default function UserExtractionsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[color:var(--color-bg-primary)] text-[color:var(--color-text-primary)] flex flex-col p-4">
-      <div className="flex-1 bg-gray-50 rounded-lg shadow-md p-8 relative">
-        <h2 className="text-4xl font-semibold mb-6 text-gray-800 text-center">
+    <main className="min-h-screen flex flex-col p-4">
+      <div className="shadow-modal flex-1 p-8 relative">
+        <h2 className="text-4xl font-semibold mb-6 text-center text-[color:var(--color-text-primary)]">
           Choose your default Resume Template
         </h2>
 
-        {/* Template Selector */}
-        <div className="h-[75vh] overflow-y-auto pr-2">
+        <div className="h-[75vh] overflow-y-auto ">
           <TemplateSelector
             selectedTemplate={selectedTemplate}
             onSelect={handleTemplateSelect}
           />
         </div>
-
-        {/* Responsive Buttons: vertical on small, horizontal on large */}
-        <div className="sticky bottom-0 w-full bg-white border-t border-gray-200 flex flex-col sm:flex-row justify-center gap-3 p-4 rounded-b-lg mt-4">
-          {/* Manual Entry Button */}
+        <div className="sticky bottom-0 w-full bg-[color:var(--color-background-secondary)] border-t border-[color:var(--color-border-primary)] flex flex-col sm:flex-row justify-center items-center gap-3 p-4 rounded-b-lg mt-4">
           <button
             onClick={handleManualStart}
             disabled={!selectedTemplate}
-            className={`w-full sm:w-auto px-5 py-2 rounded text-white font-semibold transition ${
-              selectedTemplate
-                ? 'bg-blue-600 hover:bg-blue-700 cursor-pointer'
-                : 'bg-gray-400 cursor-not-allowed'
-            }`}
+            className="p-3 form-button w-full sm:w-auto"
           >
             Enter Details Manually
           </button>
-            <div className='px-5 py-2 text-center '>OR</div>
-          {/* Upload Resume */}
+          
+          <div className='px-5 py-2 text-center text-[color:var(--color-text-secondary)] font-semibold'>OR</div>
+
           <div className="flex flex-col items-center w-full sm:w-auto">
-            {!aiConfigured && (
-              <p className="text-red-600 text-xs mb-1">
+            {/* This condition will now be consistent between server and first client render */}
+            {!aiConfigured && hasMounted && (
+              <p className="card-tag text-xs text-center mb-1">
                 ⚠️ Set up AI first before uploading
               </p>
             )}
@@ -129,7 +133,6 @@ export default function UserExtractionsPage() {
             />
           </div>
         </div>
-
         <StatusMessage message={statusMessage} />
       </div>
     </main>

@@ -15,20 +15,56 @@ async function authenticate(request) {
   try {
     return jwt.verify(token, JWT_SECRET);
   } catch {
-    return null;
+    return null
   }
 }
 
-export async function DELETE(request, { params }) {
-  await connectToDB();
-  const userData = await authenticate(request);
-  
-  if (!userData) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+// GET handler to fetch resume by ID
+export async function GET(request, { params }) {
   try {
-    const resumeId = params.id;
+    await connectToDB();
+    const userData = await authenticate(request);
+    
+    if (!userData) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    
+    const { id: resumeId } = await params;
+    
+    if (!resumeId) {
+      return NextResponse.json({ error: "Resume ID is required" }, { status: 400 });
+    }
+
+    const resume = await Resume.findOne({
+      _id: resumeId,
+      userId: userData.id,
+    });
+
+    if (!resume) {
+      return NextResponse.json({ error: "Resume not found" }, { status: 404 });
+    }
+
+    return NextResponse.json( resume );
+  } catch (error) {
+    console.error("Error fetching resume:", error);
+    return NextResponse.json({ error: "Failed to fetch resume" }, { status: 500 });
+  }
+}
+
+
+export async function DELETE(request, { params }) {
+  try {
+    await connectToDB();
+    const userData = await authenticate(request);
+
+    if (!userData) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const {id:resumeId} =await params;
+    if (!resumeId) {
+      return NextResponse.json({ error: "Resume ID is required" }, { status: 400 });
+    }
 
     const deletedResume = await Resume.findOneAndDelete({
       _id: resumeId,
@@ -38,8 +74,7 @@ export async function DELETE(request, { params }) {
     if (!deletedResume) {
       return NextResponse.json({ error: "Resume not found" }, { status: 404 });
     }
-    
-    // Update references
+
     const userRefs = await UserReferences.findOne({ userId: userData.id });
     if (userRefs) {
       userRefs.resumeRefs = userRefs.resumeRefs.filter(
@@ -47,7 +82,7 @@ export async function DELETE(request, { params }) {
       );
 
       if (userRefs.primaryResumeRef?.toString() === resumeId) {
-        userRefs.primaryResumeRef = null; // Reset primary if deleted
+        userRefs.primaryResumeRef = null;
       }
 
       await userRefs.save();
@@ -55,7 +90,44 @@ export async function DELETE(request, { params }) {
 
     return NextResponse.json({ success: true, deletedResume });
   } catch (error) {
-    console.error(" Error deleting resume:", error);
+    console.error("Error deleting resume:", error);
     return NextResponse.json({ error: "Failed to delete resume" }, { status: 500 });
+  }
+}
+
+
+export async function PATCH(request, { params }) {
+  try {
+    await connectToDB();
+    const userData = await authenticate(request);
+
+    if (!userData) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { id: resumeId } = await params;
+    
+    if (!resumeId) {
+      return NextResponse.json({ error: "Resume ID is required" }, { status: 400 });
+    }
+
+    const body = await request.json();
+    if (!body || Object.keys(body).length === 0) {
+      return NextResponse.json({ error: "No data provided to update" }, { status: 400 });
+    }
+    
+    const updatedResume = await Resume.findOneAndUpdate(
+      { _id: resumeId, userId: userData.id },
+      { $set: body },
+      { new: true }
+    );
+
+    if (!updatedResume) {
+      return NextResponse.json({ error: "Resume not found" }, { status: 404 });
+    }
+    return NextResponse.json(updatedResume);
+  } catch (error) {
+    console.error("Error updating resume:", error);
+    return NextResponse.json({ error: "Failed to update resume" }, { status: 500 });
   }
 }

@@ -1,5 +1,8 @@
 import { connectToDB } from '@lib/mongodb';
+
 import User from '@models/login';
+import UserReferences from '@models/userreferences';
+
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
@@ -34,9 +37,10 @@ export async function POST(req) {
       email: user.email,
       name: user.name,
     };
+    const references = await UserReferences.findOne({ userId: user._id });
 
     return Response.json(
-      { message: "Login successful", token, user: userResponse },
+      { message: "Login successful", token, user: userResponse,references },
       { status: 200 }
     );
   } catch (error) {

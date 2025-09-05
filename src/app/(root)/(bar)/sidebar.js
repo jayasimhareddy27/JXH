@@ -1,46 +1,24 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useState } from 'react';
+import { useSelector } from 'react-redux'; // <-- Import useSelector
 import { Menu, X } from 'lucide-react';
 import { Companyname, Companyshortname } from '@/globalvar/companydetails';
 import NavLinks from './navlinks';
 
 export default function Sidebar({ initialOpen = false }) {
   const [isOpen, setIsOpen] = useState(initialOpen);
-  const [aiAgent, setAiAgent] = useState(null);
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-
-  const loadAiAgent = useCallback(() => {
-    try {
-      const storedAgent = localStorage.getItem('CurrentAiAgent');
-      if (storedAgent) {
-        const parsed = JSON.parse(storedAgent);
-        setAiAgent(parsed.model);
-      } else {
-        setAiAgent(null);
-      }
-    } catch {
-      setAiAgent(null);
-    }
-  }, []);
-
-  useEffect(() => {
-    setUser(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null);
-    setToken(localStorage.getItem('token'));
-    loadAiAgent();
-  }, [loadAiAgent]);
+  
+  const { user, token } = useSelector((state) => state.auth);
 
   const toggleSidebar = () => setIsOpen(prev => !prev);
 
   return (
     <aside
-      className={`sidebar  ${isOpen ? 'open' : ''}`}
+      className={`sidebar ${isOpen ? 'open' : ''}`}
       aria-label="Sidebar navigation"
     >
-      <div
-        className={`header flex items-center gap-8`}
-      >
+      <div className={`header flex items-center gap-8`}>
         <button
           onClick={toggleSidebar}
           className="sidebar-toggle inline-flex items-center justify-center p-1.5 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
