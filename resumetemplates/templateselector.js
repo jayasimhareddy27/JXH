@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 
 const templates = [
-  { id: 'template01', name: 'Modern Blue', image: '/templates/template01/image.png' },
+  { id: 'template01', name: 'Default resume by JXH', image: '/templates/template01/image.png' },
   { id: 'template02', name: 'Classic Grey', image: '/templates/template02/image.png' },
   { id: 'template03', name: 'Creative Orange', image: '/templates/template03/image.png' },
   { id: 'template04', name: 'Professional Green', image: '/templates/template04/image.png' },

@@ -52,7 +52,6 @@ const FieldList = memo(({ phase, formDataMap, renderField, isLoading }) => {
       } else {
           updatedTitles.push({ key: phase.key, title: newTitle });
       }
-      console.log(updatedTitles);
       
       dispatch(updateResumePhase({ phaseKey: 'sectionTitles', data: updatedTitles }));
   };

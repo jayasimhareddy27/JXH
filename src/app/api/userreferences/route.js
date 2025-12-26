@@ -17,6 +17,24 @@ async function authenticate(request) {
   }
 }
 
+
+export async function GET(request) {
+    await connectToDB();
+    const userData = await authenticate(request);
+    if (!userData) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const references = await UserReferences.findOne({ userId: userData.id });
+    
+    return NextResponse.json({ 
+        success: true, 
+        references: references,
+        theme: references?.theme || 'light'
+    });
+}
+
+
 export async function PUT(request) {
   await connectToDB();
   const userData = await authenticate(request);

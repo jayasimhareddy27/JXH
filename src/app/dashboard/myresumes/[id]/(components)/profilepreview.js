@@ -1,10 +1,12 @@
 "use client";
 import React, { useRef, useEffect } from "react";
-import { useSelector } from "react-redux"; 
-import { extractionPhases } from "@components/prompts";
+import { shallowEqual, useSelector } from "react-redux"; 
 
-export default function ProfilePreview({ toggleAccordion, scrollToPreview }) {
-  const { formDataMap } = useSelector((state) => state.profile);
+
+export default function ProfilePreview({extractionPhases, toggleAccordion, scrollToPreview }) {
+   const { token, aiAgent: { agent, provider, apiKey }, profile: { formDataMap, loading }} = useSelector(
+    (state) => ({  token: state.auth.token,  aiAgent: state.aiAgent,  profile: state.resumes}),shallowEqual);
+  
   const {sectionTitles} = formDataMap || {};
   const previewRefs = useRef({});
 

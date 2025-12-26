@@ -13,9 +13,11 @@ import AIAgentHandler from '../../public/handlers/aisettings/aihandler';
 
 import { ThemeSwitcher } from '@components/theme/themeswitcher'; // Corrected import path
 import { siteMetadata, jsonLd, siteviewport } from '@/SEO';
+import StoreLogger from './StoreLogger.js';
 
 const inter = Inter({ subsets: ['latin'] });
 
+//<StoreLogger />
 export const metadata = siteMetadata;
 export const viewport = siteviewport;
 

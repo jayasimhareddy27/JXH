@@ -29,7 +29,7 @@ const CreateResume = ({ isLoading, handleCreateResume }) => {
   };
 
   return (
-    <div className="bg-[color:var(--color-background-secondary)] shadow-modal rounded-xl p-6 m-2">
+    <div className="">
       <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Resume Name Field */}
         <div className="col-span-1">

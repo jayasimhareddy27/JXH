@@ -7,6 +7,7 @@ import { loginUser, signupUser } from '@lib/redux/features/authslice';
 import { signIn } from 'next-auth/react';
 import { Companynameletters } from '@/globalvar/companydetails';
 
+
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [form, setForm] = useState({ name: '', email: '', password: '' });
@@ -27,19 +28,22 @@ export default function AuthPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    let resultAction; // This will store the 'action'
+
     if (isLogin) {
       dispatch(loginUser({ email: form.email, password: form.password }));
     } else {
       dispatch(signupUser(form));
     }
+
   };
 
-  // Prevent the form from flashing on the screen if the user is already logged in
-  if (user) {
-    return null; 
-  }
+    if (user) {
+      return null; 
+    }
 
   return (
     <div className="min-h-screen grid grid-cols-12 bg-gradient-to-br from-[var(--color-illustration-secondary)] via-[var(--color-illustration-tertiary)] to-[var(--color-illustration-tertiary)] relative overflow-hidden">

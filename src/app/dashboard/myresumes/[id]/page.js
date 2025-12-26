@@ -7,16 +7,16 @@ import { fetchResumeById, saveResumeById, fetchAIdata_resume } from "@lib/redux/
 import { resumeextractionPhases } from "@components/prompts";
 import renderField from "./(components)/renderfields";
 import ProfileForm from "./(components)/profileform";
+import ProfilePreview from "./(components)/profilepreview";
 
 export default function NewResume() {
   const dispatch = useDispatch();
   const params = useParams();
   const resumeId = params?.id;
 
-  const { formDataMap = {}, loading } = useSelector(  (state) => state.resumes,  shallowEqual);
-
-  const { token, aiAgent: { agent, provider, apiKey },} = useSelector( (state) => ({ token: state.auth.token, aiAgent: state.aiAgent,  }),  shallowEqual);
-
+  const { token, aiAgent: { agent, provider, apiKey }, profile: { formDataMap, loading }} = useSelector(
+    (state) => ({  token: state.auth.token,  aiAgent: state.aiAgent,  profile: state.resumes}),shallowEqual);
+  
   const [activePhaseKey, setActivePhaseKey] = useState(null);
   const [lastActionOrigin, setLastActionOrigin] = useState(null);
 
@@ -24,9 +24,12 @@ export default function NewResume() {
 
   useEffect(() => {
     if (!token || !resumeId) return;
+    console.log("FETCHING RESUME BY ID");
+    
     dispatch(fetchResumeById(resumeId));
   }, [token, resumeId, dispatch]);
 
+  
   const handleFetchFromAI = useCallback(
     async (phase) => {
       const text = localStorage.getItem("resumeRawText");
@@ -64,6 +67,7 @@ export default function NewResume() {
     []
   );
 
+  
   return (
     <main className="bg-[color:var(--color-background-primary)] min-h-screen">
       <div className="max-w-7xl mx-auto">
@@ -75,6 +79,7 @@ export default function NewResume() {
           <ProfileForm phases={resumeextractionPhases} expandedPhase={activePhaseKey} isLoading={isLoading} formDataMap={formDataMap}
             toggleAccordion={toggleAccordion} handleFetchFromAI={handleFetchFromAI} renderField={renderField} handleSave={handleSave}
             scrollToPhase={lastActionOrigin === "preview" ? activePhaseKey : null}/>
+        <ProfilePreview extractionPhases={resumeextractionPhases} toggleAccordion={toggleAccordion} scrollToPreview={lastActionOrigin === "preview" ? activePhaseKey : null}/>
         </div>
       </div>
     </main>

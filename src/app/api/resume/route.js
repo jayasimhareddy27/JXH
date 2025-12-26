@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { connectToDB } from '@lib/mongodb';
 import UserReferences from "@models/userreferences";
 import Resume from "@models/resume";
-import FullUserProfile from '@models/userprofile';
+import { formatPrompts } from '@components/prompts/userdetailextraction';
 
 const JWT_SECRET = process.env.JWT_SECRET || "SuperSecretKey";
 
@@ -45,7 +45,6 @@ export async function GET(request) {
         primaryResumeId: null,
       });
     }
-
     return NextResponse.json({
       success: true,
       count: userRefs.resumeRefs.length,
@@ -70,59 +69,51 @@ export async function POST(req) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name } = await req.json();
+    const { name,resumetextAireference } = await req.json();
     if (!name || name.trim() === "") {
       return NextResponse.json({ error: "Resume name is required" }, { status: 400 });
     }
-    const profile = await FullUserProfile.findOne({ userId: userData.id });
-    
-    const resumeData = {
+    const userRef = await UserReferences.findOne({ userId: userData.id }) 
+
+    const initialResume = await Resume.create({
       userId: userData.id,
-      name: name.trim(), // ✅ user-supplied, not hardcoded
-      personalInformation: profile?.personalInformation? {
-        fullName: `${profile.personalInformation.firstName || ''} ${profile.personalInformation.lastName || ''}`.trim(),
-        email: profile.personalInformation.email || '',
-        phoneNumber: profile.personalInformation.phoneNumber || ''}
-        : { fullName: '', email: '', phoneNumber: '' },
-      onlineProfiles: profile?.onlineProfiles ? {
-        linkedin: profile.onlineProfiles.linkedin || '',
-        github: profile.onlineProfiles.github || '',
-        portfolio: profile.onlineProfiles.portfolio || '',
-      } : {linkedin:'', github:'', portfolio:''},
-      educationHistory: profile?.educationHistory || [],
-      workExperience: profile?.workExperience || [],
-      projects: profile?.projects || [],
-      certifications: profile?.certifications || [],
-      skillsSummary: profile?.skillsSummary || {},
-      careerSummary: profile?.careerSummary || {},
-      sectionTitles: profile?.sectionTitles?.slice(0, 8) || [], // ✅ only first 8
-    };
+      name: name, 
 
-    
+      personalInformation: { ...formatPrompts.personalInformation.initial,name: userData.name, email: userData.email },
+      onlineProfiles: formatPrompts.onlineProfiles.initial,
 
-    // 2. Create Resume
-    const newResume = await Resume.create(resumeData);
+      educationHistory: formatPrompts.educationHistory.initial,
+      workExperience: formatPrompts.workExperience.initial,
 
-    // 3. Attach to UserReferences
-    let userRefs = await UserReferences.findOne({ userId: userData.id });
+      projects: formatPrompts.projects.initial,
 
-    if (!userRefs) {
-      userRefs = await UserReferences.create({
-        userId: userData.id,
-        resumeRefs: [newResume._id],
-        primaryResumeRef: newResume._id, // First resume becomes primary
-      });
-    } else {
-      userRefs.resumeRefs.push(newResume._id);
+      certifications: formatPrompts.certifications.initial,
+      
+      skillsSummary: formatPrompts.skillsSummary.initial,
+      careerSummary: formatPrompts.careerSummary.initial,
+      
+      addressDetails: formatPrompts.addressDetails.initial,
+      
+      resumetextAireference: "",
+    });
 
-      if (!userRefs.primaryResumeRef) {
-        userRefs.primaryResumeRef = newResume._id;
-      }
 
+    if(resumetextAireference){
+      initialResume.resumetextAireference = resumetextAireference;
+    }
+
+    // Create new Resume document with cloned data
+    await initialResume.save();
+
+    // Update UserReferences by adding new resume ref
+    const userRefs = await UserReferences.findOne({ userId: userData.id });
+    if (userRefs) {
+      userRefs.resumeRefs.push(initialResume._id);
       await userRefs.save();
     }
 
-    return NextResponse.json({ _id: newResume._id }, { status: 201 });
+    return NextResponse.json(initialResume);
+
   } catch (error) {
     console.error("Error creating resume:", error);
     return NextResponse.json(

@@ -34,12 +34,12 @@ export async function GET(request, { params }) {
     if (!resumeId) {
       return NextResponse.json({ error: "Resume ID is required" }, { status: 400 });
     }
-
+    
     const resume = await Resume.findOne({
       _id: resumeId,
       userId: userData.id,
     });
-
+    
     if (!resume) {
       return NextResponse.json({ error: "Resume not found" }, { status: 404 });
     }

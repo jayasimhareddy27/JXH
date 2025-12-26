@@ -39,7 +39,6 @@ const ProfileForm = memo(({phases,expandedPhase,isLoading,formDataMap = {},toggl
             toggleAccordion={toggleAccordion}   handleFetchFromAI={handleFetchFromAI}  renderField={renderField} phaseindex={index}/>
         </div>
       ))}
-
       <button  disabled={isLoading}  onClick={handleSave}  type="button" className={btnClasses}>  {isLoading ? "Saving..." : "Save All Changes"}</button>
     </div>
   );

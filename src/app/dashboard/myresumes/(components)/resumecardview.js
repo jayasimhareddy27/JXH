@@ -67,6 +67,7 @@ const ResumeCardView = ({  resumes,  isLoading,  currentPage,  resumesPerPage,  
       },
     },
   ];
+  
 
   return (
     <div className="w-full rounded-xl shadow-lg p-3 sm:p-4  bg-[color:var(--color-card-bg)]  text-[color:var(--color-text-primary)]">
@@ -114,7 +115,7 @@ const ResumeCardView = ({  resumes,  isLoading,  currentPage,  resumesPerPage,  
                 <div className="flex items-center gap-1 self-end sm:self-center flex-shrink-0">
                   {getActionButtons(resume, isPrimary).map(
                     ({ title, icon, onClick, disabled, danger }, idx) => (
-                      <IconButton key={`${resume._id}-${title}`} title={title}  icon={icon}  onClick={onClick}  disabled={disabled}  danger={danger}/>
+                      <IconButton key={`${resume._id}-action-${idx}`} title={title}  icon={icon}  onClick={onClick}  disabled={disabled}  danger={danger}/>
                     )
                   )}
                 </div>
