@@ -45,11 +45,11 @@ export async function PUT(request) {
   
   try {
     // 1. Destructure 'theme' from the request body as well
-    const { primaryResumeId, theme } = await request.json();
+    const { primaryResumeId, theme, aiResumeRef } = await request.json();
 
     // 2. Check if at least one property was provided
-    if (!primaryResumeId && !theme) {
-      return NextResponse.json({ error: 'primaryResumeId or theme is required' }, { status: 400 });
+    if (!primaryResumeId && !theme && !aiResumeRef) {
+      return NextResponse.json({ error: 'primaryResumeId, theme, or aiResumeRef is required' }, { status: 400 });
     }
 
     const userRefs = await UserReferences.findOne({ userId: userData.id });
@@ -57,6 +57,9 @@ export async function PUT(request) {
     // 3. Conditionally update the properties if they exist
     if (primaryResumeId) {
       userRefs.primaryResumeRef = primaryResumeId;
+    }
+    if (aiResumeRef) {
+      userRefs.aiResumeRef = aiResumeRef;
     }
     if (theme) {
       userRefs.theme = theme;

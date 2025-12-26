@@ -11,8 +11,6 @@ import Pagination from "../(components)/pagination";
 
 import {  CopyResumeModal,  handleDeleteFactory,  handleCopyFactory,  handleCopySubmitFactory,  handleMakePrimaryFactory,  handleCreateResumeFactory,  prepareResumes,} from "../(components)/index";
 import AIConnectionCard from "../(components)/aiconnectioncard";
-import PinnedResume from "../(components)/pinnedresumes";
-import { Pi } from "lucide-react";
 
 export default function ResumesPage() {
   const router = useRouter();
@@ -77,28 +75,23 @@ export default function ResumesPage() {
         {/* Create + Search */}
         <div className="grid grid-cols-1 md:grid-cols-12 items-center mb-6 gap-6">
           {/* Left: Create Button (4/12 of the width) */}
-          <div className="md:col-span-4 card w-full h-full flex flex-col justify-center p-6 border border-[color:var(--color-border-primary)] shadow-lg">
+          <div className="md:col-span-4 card w-full h-full flex flex-col justify-center p-6">
             <CreateResume   isLoading={loading === "loading"}   handleCreateResume={handleCreateResume}/>
           </div>
 
           {/* Right: AI Card (8/12 of the width) */}
-          <div className="md:col-span-8">
-              <PinnedResume resume={allResumes.find(r => r._id === primaryResumeId)}/>
+          <div className="md:col-span-8 card w-full h-full flex flex-col justify-center p-6">
+              <AIConnectionCard />
           </div>
         </div>
 
-          <div className="grid grid-cols-12 md:grid-cols-12 items-center mb-4 gap-4">
-            <div className="md:col-span-5">
+          <div className="items-center mb-4 gap-4">
               <SearchBar setCurrentPage={setCurrentPage}
                 setSearchQuery={(q) => {
                   setSearchQuery(q);
                   setCurrentPage(1);
                 }}
               />
-            </div>
-            <div className="md:col-span-7">
-              <AIConnectionCard />
-            </div>
           </div>
 
         {/* Pagination + filters row */}

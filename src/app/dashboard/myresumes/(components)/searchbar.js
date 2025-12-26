@@ -11,7 +11,7 @@ export default function SearchBar({ setSearchQuery, setCurrentPage }) {
   };
 
   return (
-    <div className="w-full rounded-2xl shadow-modal p-3 bg-[color:var(--color-background-secondary)]">
+    <div className="w-full rounded-2xl shadow-modal p-5 bg-[color:var(--color-background-secondary)]">
       <h2 className="text-2xl font-semibold text-[color:var(--color-text-primary)] mb-6 text-center">
         🔎 Search your resume with name
       </h2>
