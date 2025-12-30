@@ -1,0 +1,71 @@
+Ai Settings
+  fetch ai issue should be fixed sometimes it returns wierd object 
+  simplify ai settings further more
+  add web ai
+
+profile page:
+  cover letter not yet started
+  storage not yet finished
+  profile main content page for best ui and summarisation
+
+
+create resume page:
+  pdf page layout
+  different templates
+  layouts for templates
+  edit colors, text.....
+  bullet points in profile are not shown as bullets in pdf show be carefull
+  html and text passing
+  give live ats score
+
+create cover letter page:
+  pdf page layout
+  different templates
+  layouts for templates
+  edit colors, text.....
+  bullet points in profile are not shown as bullets in pdf show be carefull
+  html and text passing
+  give live ats score
+
+
+
+job tracker page:
+  enable input of job description, company name,......
+  show clear view of jobs applied, dates, resumes attached, ats score, cover letter,.....
+
+job finder page:
+  give perfect filter for jobs finding
+
+
+
+
+reduce input prompts and output structure to ai for optimization
+SEO
+Storage extention
+
+
+
+
+APP Extention for web::
+
+3 tabs:
+  tab 1: Show user ats score with default resume, show his professional and personal details for easy copy paste section
+  tab 2: create new resume using the job description extracted from the page, 
+    here we will use the user profile such as fav template, information and ask dynamic fields such as professional summary, skills for this job... 
+  tab 3: create new cover letter using the job description extracted from the page,
+    here we will use the user profile such as fav template, information and ask for main content text 
+  give an option to view pdfs from the same page without moving tabs
+
+Ai settings:
+  Easy ai setting compared to app, this should be advanced
+  
+
+automation: 
+  extract the page content
+  parse into sections for better output
+  use personal and professional data to automate :: text input fields, drop down, radio buttons, approximating the better option if not present
+  alert user applied
+  send the job description to application along with new resume and cover letter for job tracking 
+
+
+connect mail to the website to update the job status automatically

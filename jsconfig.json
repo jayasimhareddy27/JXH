@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"],
+      "@lib/*": ["./lib/*"],
+      "@public/*": ["./public/*"],
+      "@models/*": ["./models/*"],
+      "@components/*": ["./public/components/*"],
+      "@resumetemplates/*": ["./resumetemplates/*"]
+    }
+  }
+}
