@@ -10,6 +10,10 @@ import renderField from "./(components)/renderfields";
 import ProfileForm from "./(components)/profileform";
 import ProfilePreview from "./(components)/profilepreview";
 
+import { Edit } from "lucide-react";
+import Link from "next/link";
+import { templates } from "@resumetemplates/templatelist";
+
 export default function NewResume() {
   const dispatch = useDispatch();
   const params = useParams();
@@ -27,13 +31,14 @@ export default function NewResume() {
 
   const [activePhaseKey, setActivePhaseKey] = useState(null);
   const [lastActionOrigin, setLastActionOrigin] = useState(null);
+  const [previewMode, setPreviewMode] = useState("resume"); 
 
   const isLoading = loading === "loading";
 
   // --- FETCH resume AND references on mount ---
   useEffect(() => {
     if (!token || !resumeId) return;
-
+    
     // fetch the main resume
     dispatch(fetchResumeById(resumeId));
 
@@ -41,6 +46,9 @@ export default function NewResume() {
     dispatch(returnuseReference(token));
   }, [token, resumeId, dispatch]);
 
+    const activeTemplateObj = templates.find(t => t.id === formDataMap?.templateId) || templates[0];
+    const SelectedTemplate = activeTemplateObj.page;
+    
   // --- FETCH AI data for a phase ---
   const handleFetchFromAI = useCallback(
     async (phase) => {
@@ -55,7 +63,6 @@ export default function NewResume() {
       
       const json = await res.json();
       const text = json?.resumetextAireference;
-      console.log(text);
 
       if (!text) {
         return alert("No resume text found in AI resume.");
@@ -65,7 +72,6 @@ export default function NewResume() {
         await dispatch(fetchAIdata_resume({
           phase,
           resumeText: text,
-          formDataMap,
           aiAgentConfig: { provider, model: agent, ApiKey: apiKey }
         })).unwrap();
 
@@ -110,22 +116,45 @@ export default function NewResume() {
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-7 gap-2">
-          <ProfileForm 
-            phases={extractionPhases} 
-            expandedPhase={activePhaseKey} 
-            isLoading={isLoading} 
-            formDataMap={formDataMap}
-            toggleAccordion={toggleAccordion} 
-            handleFetchFromAI={handleFetchFromAI} 
-            renderField={renderField} 
-            handleSave={handleSave}
-            scrollToPhase={lastActionOrigin === "preview" ? activePhaseKey : null}
-          />
-          <ProfilePreview 
-            extractionPhases={extractionPhases} 
-            toggleAccordion={toggleAccordion} 
-            scrollToPreview={lastActionOrigin === "preview" ? activePhaseKey : null}
-          />
+        <div className="col-span-5">
+          <div className="card sticky top-0 z-10 flex items-center justify-between p-3 border-b">
+            <h2 className="text-lg font-semibold">  {previewMode === "profile" ? "Profile Preview" : "Resume Preview"}</h2>
+
+            <div className="flex gap-2">
+              <button onClick={() => setPreviewMode("profile")} className={  previewMode === "profile"    ? "btn-primary"    : "btn-secondary"}>
+                Details
+              </button>
+
+              <button onClick={() => setPreviewMode("resume")} className={previewMode === "resume" ? "btn-primary" : "btn-secondary"}>
+                Resume
+              </button>
+            </div>
+          </div>
+
+          {/* Preview Body */}
+          <div className="p-4">
+            {previewMode === "profile" ? (
+              <ProfilePreview extractionPhases={extractionPhases} toggleAccordion={toggleAccordion} 
+              scrollToPreview={lastActionOrigin === "preview" ? activePhaseKey : null}/>
+            ) : (
+              <div className="">
+                <Link href={`/editor/cl/${resumeId}`} className="float-right">
+                    <Edit />
+                </Link>
+                <div>
+                  {formDataMap && (<SelectedTemplate/>)}</div>
+              </div>
+            )}
+          </div>
+        </div>
+
+          <div className="col-span-2">
+            <ProfileForm phases={extractionPhases} expandedPhase={activePhaseKey} isLoading={isLoading} 
+              formDataMap={formDataMap} toggleAccordion={toggleAccordion} handleFetchFromAI={handleFetchFromAI} 
+              renderField={renderField} handleSave={handleSave}
+              scrollToPhase={lastActionOrigin === "preview" ? activePhaseKey : null}/>
+              
+          </div>
         </div>
       </div>
     </main>

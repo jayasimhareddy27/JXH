@@ -30,7 +30,7 @@ export async function GET(request, { params }) {
     }
     
     const { id: resumeId } = await params;
-    
+        
     if (!resumeId) {
       return NextResponse.json({ error: "Resume ID is required" }, { status: 400 });
     }

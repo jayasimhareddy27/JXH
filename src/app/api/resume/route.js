@@ -35,7 +35,7 @@ export async function GET(request) {
   const userRefs = await UserReferences.findOne({ userId: userData.id })
   .populate('resumeRefs')
   .populate('primaryResumeRef');
-
+    
  
     if (!userRefs) {
       return NextResponse.json({

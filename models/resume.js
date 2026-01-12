@@ -10,6 +10,18 @@ const resumeSchema = new mongoose.Schema({
   userId: { type: String, required: true },
   name: { type: String, required: true, default: 'Default Resume by JXH' },
   
+  designConfig: { 
+    type: mongoose.Schema.Types.Mixed, 
+    default: {
+      layout: 'primary',
+      containers: {}
+    } 
+  },
+  templateId: {
+    type: String,
+    default: 'template01'   
+  },
+
   personalInformation: { type: mongoose.Schema.Types.Mixed, default: {} },
   onlineProfiles: { type: mongoose.Schema.Types.Mixed, default: {} },
 

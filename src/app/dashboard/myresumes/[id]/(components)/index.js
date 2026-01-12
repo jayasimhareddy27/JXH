@@ -17,7 +17,6 @@ export async function fetchPhaseDatainJson(id,key,resumeRawText, AiAgent, isArra
   const { provider, model, ApiKey } = AiAgent;
   
   const promptTemplate = promptMap[id];
-  console.log(promptTemplate);
   
   if (!promptTemplate) {
     throw new Error(`No prompt template found for key ${key}`);

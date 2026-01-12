@@ -88,7 +88,7 @@ Return as JSON array, donot wrap the content in ''' or any other characters or d
     "endDate": "MM-DD-YYYY"
   }
 ]
-Preserve newlines in responsibilities. Use MM-DD-YYYY. Set null if missing.
+Use MM-DD-YYYY. Set null if missing.
 
 Resume text:`
   },
@@ -113,7 +113,7 @@ Return as JSON array, donot wrap the content in ''' or any other characters or d
     "projectLink": ""
   }
 ]
-"technologiesUsed" is comma-separated. Set null if missing.
+Make sure you can give as much as projectDescription as possible using the information and "technologiesUsed" is comma-separated. Set null if missing.
 
 Resume text:`
   },
@@ -175,7 +175,7 @@ Return as JSON, donot wrap the content in ''' or any other characters or donot a
   "summary": "",
   "summaryGenerated": ""
 }
-Set summaryGenerated to null if unavailable.
+If Summary already exists then always make sure to set summary to existing summary and donot miss any information. Set summaryGenerated to null if unavailable.
 
 Resume text:`
   },

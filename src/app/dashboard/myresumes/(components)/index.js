@@ -47,6 +47,7 @@ export async function fetchPhaseDatainJson(id,key,resumeRawText, AiAgent, isArra
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ prompt, provider, model, ApiKey }),
   });
+  console.log(response);
   
   if (!response.ok) {
     throw new Error("Failed to fetch phase data");

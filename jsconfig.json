@@ -4,6 +4,7 @@
       "@/*": ["./src/*"],
       "@lib/*": ["./lib/*"],
       "@public/*": ["./public/*"],
+      "@styles/*": ["./src/styles/*"],
       "@models/*": ["./models/*"],
       "@components/*": ["./public/components/*"],
       "@resumetemplates/*": ["./resumetemplates/*"]

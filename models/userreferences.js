@@ -21,7 +21,7 @@ const userreferencesSchema = new mongoose.Schema({
 
   /* Preferences */
   theme: {  type: String,  default: 'light',  enum: ['light', 'dark']},
-  favResumeTemplateId: { type: String, default: 'Default Resume' },
+  favResumeTemplateId: { type: String, default: 'template01' },
   favCoverLetterId: { type: String, default: 'Default Cover letter' },
 
   /* Cloud Storage */

@@ -10,9 +10,7 @@ profile page:
 
 
 create resume page:
-  pdf page layout
   different templates
-  layouts for templates
   edit colors, text.....
   bullet points in profile are not shown as bullets in pdf show be carefull
   html and text passing
@@ -69,3 +67,24 @@ automation:
 
 
 connect mail to the website to update the job status automatically
+
+
+
+font type,
+link Tracking
+naming of layouts and rename Page Structure to ATS Templates
+download and rename
+Cover letter
+
+ATS Score
+Suggest for better ATS score
+
+Better prompting
+
+Job Tracking
+Extention to fill your application, h1b, primary resume ats score,....
+phone comp
+
+
+
+

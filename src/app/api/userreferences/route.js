@@ -45,11 +45,11 @@ export async function PUT(request) {
   
   try {
     // 1. Destructure 'theme' from the request body as well
-    const { primaryResumeId, theme, aiResumeRef,myProfileRef } = await request.json();
+    const { primaryResumeId, theme, aiResumeRef,myProfileRef,favResumeTemplateId } = await request.json();
 
     // 2. Check if at least one property was provided
-    if (!primaryResumeId && !theme && !aiResumeRef && !myProfileRef) {
-      return NextResponse.json({ error: 'primaryResumeId, theme, aiResumeRef, or myProfileRef is required' }, { status: 400 });
+    if (!primaryResumeId && !theme && !aiResumeRef && !myProfileRef && !favResumeTemplateId) {
+      return NextResponse.json({ error: 'primaryResumeId, theme, aiResumeRef, myProfileRef, or favResumeTemplateId is required' }, { status: 400 });
     }
 
     const userRefs = await UserReferences.findOne({ userId: userData.id });
@@ -67,6 +67,9 @@ export async function PUT(request) {
     if (myProfileRef) {
       userRefs.myProfileRef = myProfileRef;
     }
+    if (favResumeTemplateId) {
+      userRefs.favResumeTemplateId = favResumeTemplateId;
+    }
     
     await userRefs.save();
 
@@ -74,7 +77,10 @@ export async function PUT(request) {
     return NextResponse.json({ 
       success: true, 
       primaryResumeId: userRefs.primaryResumeRef,
-      theme: userRefs.theme 
+      aiResumeRef: userRefs.aiResumeRef,
+      theme: userRefs.theme,
+      myProfileRef: userRefs.myProfileRef,
+      favResumeTemplateId: userRefs.favResumeTemplateId
     });
   } catch (error) {
     console.error(error);

@@ -49,6 +49,7 @@ export async function POST(req) {
       skillsSummary: formatPrompts.skillsSummary.initial,
       careerSummary: formatPrompts.careerSummary.initial,
       
+      templateId: 'template01',
       resumetextAireference: "",
     });
 
