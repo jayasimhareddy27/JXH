@@ -14,7 +14,8 @@ const resumeSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.Mixed, 
     default: {
       layout: 'primary',
-      containers: {}
+      containers: {},
+      selectedContainer: null, 
     } 
   },
   templateId: {

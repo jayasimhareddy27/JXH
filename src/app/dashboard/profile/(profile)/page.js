@@ -6,7 +6,7 @@ import { returnuseReference } from "@lib/redux/features/resumes/resumecrud/thunk
 import Link from 'next/link';
 import { ChevronRight, Edit,BarChart3, Star, Eye, Bot, HardDrive, User, FileText, Upload, Briefcase } from 'lucide-react';
 import { useRouter } from "next/navigation";
-import { getTemplateNameById } from '@resumetemplates/templatelist';
+import { getTemplateById } from '@resumetemplates/templatelist';
 
 function useHydrated() {
   const [hydrated, setHydrated] = useState(false);
@@ -57,8 +57,8 @@ export default function ProfilePage() {
 
   
   
-
-  const favoriteTemplate = hydrated ? (getTemplateNameById(favResumeTemplateId) || "None Selected") : "...";
+  
+  const favoriteTemplate = hydrated ? (getTemplateById(favResumeTemplateId)?.name || "None Selected") : "...";
 
   // Simplified Sidebar Settings
   const sidebarSettings = [

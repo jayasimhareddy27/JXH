@@ -1,30 +1,27 @@
+naming of layouts and rename Page Structure to ATS Templates
+rename
+Cover letter
+
+ATS Score
+Suggest for better ATS score
+
+Better prompting
+
+Job Tracking
+Extention to fill your application, h1b, primary resume ats score,....
+phone comp
+
+
+
+
+
 Ai Settings
   fetch ai issue should be fixed sometimes it returns wierd object 
   simplify ai settings further more
   add web ai
 
 profile page:
-  cover letter not yet started
   storage not yet finished
-  profile main content page for best ui and summarisation
-
-
-create resume page:
-  different templates
-  edit colors, text.....
-  bullet points in profile are not shown as bullets in pdf show be carefull
-  html and text passing
-  give live ats score
-
-create cover letter page:
-  pdf page layout
-  different templates
-  layouts for templates
-  edit colors, text.....
-  bullet points in profile are not shown as bullets in pdf show be carefull
-  html and text passing
-  give live ats score
-
 
 
 job tracker page:
@@ -33,8 +30,6 @@ job tracker page:
 
 job finder page:
   give perfect filter for jobs finding
-
-
 
 
 reduce input prompts and output structure to ai for optimization
@@ -70,21 +65,8 @@ connect mail to the website to update the job status automatically
 
 
 
-font type,
-link Tracking
-naming of layouts and rename Page Structure to ATS Templates
-download and rename
-Cover letter
 
-ATS Score
-Suggest for better ATS score
-
-Better prompting
-
-Job Tracking
-Extention to fill your application, h1b, primary resume ats score,....
-phone comp
-
-
-
-
+DESIGN
+DETAILS
+LAYOUT AND VISIBILITY
+ATS

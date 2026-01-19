@@ -1,155 +1,202 @@
-'use client';
-import React from 'react';
+"use client";
 
-export default function Template02({ resume, designConfig }) {
-  // Safe data extraction based on your MongoDB structure
-  const personalInfo = resume?.personalInformation || {};
-  const careerSummary = resume?.careerSummary?.summary || '';
-  const experience = resume?.workExperience || [];
-  const education = resume?.educationHistory || [];
-  const projects = resume?.projects || [];
-  const skills = resume?.skillsSummary || {};
-  const certifications = resume?.certifications || [];
+import { shallowEqual, useSelector } from "react-redux";
+import { RESUME_IDS02 as IDS } from "./index";
+import { useTemplateEditor } from "@resumetemplates/templates/usetemplateeditor";
+import { layoutGrid02 } from "./index";
+
+export default function Template02({ selectedContainer, setSelectedContainer }) {
+  const { formDataMap } = useSelector((state) => state.resumeEditor, shallowEqual);
+  const { register } = useTemplateEditor(
+    formDataMap?.designConfig,
+    selectedContainer,
+    setSelectedContainer
+  );
+
+  if (!formDataMap) return null;
+
+  const {
+    personalInformation: pi = {},
+    workExperience: work = [],
+    onlineProfiles: op={},
+    addressDetails: addrs={},
+    sectionTitles: st=[],
+    educationHistory: edu = [],
+    projects: proj = [],
+    certifications: certs = [],
+    skillsSummary: skills = {},
+    careerSummary: summary = {},
+    designConfig = {},
+  } = formDataMap;
+
+     
   
-  // Custom theme color from designConfig
-  const themeColor = designConfig?.primaryColor || 'var(--color-button-primary-bg)';
+  
+
+  const layout = designConfig?.layout || "primary";
+  const layoutGrid01Class = layoutGrid01[layout] || "grid grid-cols-1";
+
+  const getStyle = (id, defaultColor = "#1a1a1a") => {
+    const registered = register(id);
+    return {
+      color: defaultColor,
+      ...registered.style,
+    };
+  };
 
   return (
-    <div 
-      className="mx-auto bg-[var(--color-background-secondary)] text-[var(--color-text-primary)] shadow-lg flex overflow-hidden"
-      style={{ 
-        width: '800px', 
-        minHeight: '1120px',
-        fontFamily: 'var(--font-family, sans-serif)'
-      }}
+    <div
+      {...register(IDS.PAGE)}
+      className={`w-[794px] min-h-[1123px] p-4 bg-amber-950 font-sans overflow-hidden ${register(IDS.PAGE).className}`}
+      style={{ backgroundColor: "#ffffff", ...getStyle(IDS.PAGE, "#000000") }}
     >
-      {/* --- LEFT SIDEBAR --- */}
-      <aside 
-        className="w-[280px] p-8 text-white flex flex-col gap-8"
-        style={{ backgroundColor: 'var(--color-text-primary)' }} // Dark contrast background
-      >
-        {/* Contact Section */}
-        <section>
-          <h2 className="text-[11px] font-black uppercase tracking-widest mb-4 opacity-60" style={{ color: themeColor }}>
-            Contact
-          </h2>
-          <div className="space-y-3 text-[11px] opacity-90">
-            <p className="flex items-center gap-2">✉ {personalInfo.email}</p>
-            <p className="flex items-center gap-2">📞 {personalInfo.phoneNumber}</p>
-            <div className="flex flex-col gap-2 pt-2" style={{ color: themeColor }}>
-               {resume?.onlineProfiles?.linkedin && <span className="font-bold">LINKEDIN</span>}
-               {resume?.onlineProfiles?.github && <span className="font-bold">GITHUB</span>}
+      {/* HEADER */}
+      <header {...register(IDS.HEADER)} className={`p-3 ${register(IDS.HEADER).className}`} style={getStyle(IDS.HEADER)}>
+        <span
+          {...register(IDS.FULL_NAME)}
+          className={`text-4xl font-bold inline-block leading-none ${register(IDS.FULL_NAME).className}`}
+          style={getStyle(IDS.FULL_NAME, "#000000")}
+        >
+          {pi.fullName || "Your Name"}
+        </span>
+        <div
+          {...register(IDS.CONTACT)}
+          className={`text-sm flex flex-wrap gap-2 mt-1 ${register(IDS.CONTACT).className}`}
+          style={getStyle(IDS.CONTACT, "#4b5563")}
+        >
+          {pi.email && <span {...register(IDS.EMAIL)}>{pi.email}</span>}
+          {pi.phoneNumber && <span {...register(IDS.PHONE_NUMBER)}>{pi.phoneNumber}</span>}
+          {pi.address && <span {...register(IDS.ADDRESS)}>{pi.address}</span>}
+          {pi.dateOfBirth && <span {...register(IDS.DATE_OF_BIRTH)}>DOB: {pi.dateOfBirth}</span>}
+          {pi.gender && <span {...register(IDS.GENDER)}>Gender: {pi.gender}</span>}
+          {pi.nationality && <span {...register(IDS.NATIONALITY)}>Nationality: {pi.nationality}</span>}
+        </div>
+      </header>
+
+      {/* CAREER SUMMARY */}
+      {summary.summary && (
+        <p
+          {...register(IDS.CAREER_SUMMARY)}
+          className={`text-[13px] p-2 leading-snug ${register(IDS.CAREER_SUMMARY).className}`}
+          style={getStyle(IDS.CAREER_SUMMARY, "#374151")}
+        >
+          {summary.summary}
+        </p>
+      )}
+
+      <div className={layoutGrid01Class}>
+        {/* SIDEBAR */}
+        {layout === "tertiary" && (
+          <aside
+            {...register(IDS.SIDEBAR_LEFT)}
+            className={`col-span-1 pr-6 border-r border-gray-200 p-2 ${register(IDS.SIDEBAR_LEFT).className}`}
+            style={getStyle(IDS.SIDEBAR_LEFT)}
+          >
+            <h3 className="text-xs font-bold uppercase mb-2" style={getStyle("SKILLS_H3", "#000000")}>
+              Skills
+            </h3>
+            <div className="text-[12px] whitespace-pre-line" style={getStyle("SKILLS_TEXT", "#374151")}>
+              {skills.technicalSkills}
             </div>
-          </div>
-        </section>
-
-        {/* Education Section */}
-        <section>
-          <h2 className="text-[11px] font-black uppercase tracking-widest mb-4 opacity-60" style={{ color: themeColor }}>
-            Education
-          </h2>
-          <div className="space-y-4">
-            {education.map((edu, i) => (
-              <div key={i} className="text-[11px]">
-                <p className="font-bold">{edu.university}</p>
-                <p className="opacity-70">{edu.degree} in {edu.major}</p>
-                <p style={{ color: themeColor }}>GPA: {edu.gpa}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Skills Section */}
-        <section>
-          <h2 className="text-[11px] font-black uppercase tracking-widest mb-4 opacity-60" style={{ color: themeColor }}>
-            Expertise
-          </h2>
-          <div className="flex flex-wrap gap-2">
-            {skills.technicalSkills?.split(',').map((skill, i) => (
-              <span key={i} className="text-[9px] bg-white/10 px-2 py-1 rounded border border-white/10">
-                {skill.trim()}
-              </span>
-            ))}
-          </div>
-        </section>
-      </aside>
-
-      {/* --- RIGHT MAIN CONTENT --- */}
-      <main className="flex-1 p-12 flex flex-col gap-8">
-        {/* Header */}
-        <header>
-          <h1 className="text-4xl font-black uppercase tracking-tighter leading-none mb-2">
-            {personalInfo.firstName} <br/>
-            <span style={{ color: themeColor }}>{personalInfo.lastName}</span>
-          </h1>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-text-secondary)]">
-            Full Stack Developer & Data Scientist
-          </p>
-        </header>
-
-        {/* Summary */}
-        {careerSummary && (
-          <section>
-            <h2 className="text-[12px] font-black uppercase tracking-widest mb-3 flex items-center gap-4">
-              Profile <span className="h-px bg-[var(--color-border-primary)] flex-1"></span>
-            </h2>
-            <p className="text-[13px] leading-relaxed text-[var(--color-text-secondary)] italic">
-              {careerSummary}
-            </p>
-          </section>
+          </aside>
         )}
 
-        {/* Experience */}
-        <section>
-          <h2 className="text-[12px] font-black uppercase tracking-widest mb-4 flex items-center gap-4">
-            Experience <span className="h-px bg-[var(--color-border-primary)] flex-1"></span>
-          </h2>
-          <div className="space-y-6">
-            {experience.map((job, i) => (
-              <div key={i} className="relative pl-6 border-l border-[var(--color-border-primary)]">
-                {/* Timeline Dot */}
-                <div 
-                  className="absolute w-2 h-2 rounded-full -left-[4.5px] top-1.5 shadow-sm"
-                  style={{ backgroundColor: themeColor }}
-                ></div>
-                
-                <div className="flex justify-between items-start mb-1">
-                  <h3 className="text-sm font-bold">{job.jobTitle}</h3>
-                  <span className="text-[10px] font-bold text-[var(--color-text-placeholder)] uppercase">
-                    {job.startDate} — {job.endDate}
-                  </span>
+        {/* MAIN */}
+        <main className="col-span-2">
+          {/* EXPERIENCE */}
+          <section {...register(IDS.EXPERIENCE)} className={`p-2 ${register(IDS.EXPERIENCE).className}`} style={getStyle(IDS.EXPERIENCE)}>
+            <h3 className="text-sm font-bold uppercase mb-2 border-b border-gray-300 pb-1" style={getStyle("EXP_H3", "#000000")}>
+              Experience
+            </h3>
+            <div className="space-y-3">
+              {work.map((j, i) => (
+                <div key={i} {...register(IDS.JOB_ITEM(i))} className={register(IDS.JOB_ITEM(i)).className} style={getStyle(IDS.JOB_ITEM(i))}>
+                  <div className="flex justify-between leading-tight">
+                    <span {...register(IDS.JOB_TITLE(i))} className={`font-bold text-[14px] ${register(IDS.JOB_TITLE(i)).className}`} style={getStyle(IDS.JOB_TITLE(i), "#000000")}>
+                      {j.jobTitle || "Job Title"}
+                    </span>
+                    <span {...register(IDS.JOB_DATES(i))} className={`text-xs ${register(IDS.JOB_DATES(i)).className}`} style={getStyle(IDS.JOB_DATES(i), "#6b7280")}>
+                      {j.startDate || "Start"} - {j.endDate || "Present"}
+                    </span>
+                  </div>
+                  <div {...register(IDS.JOB_COMPANY(i))} className={`text-[13px] font-medium mt-0.5 ${register(IDS.JOB_COMPANY(i)).className}`} style={getStyle(IDS.JOB_COMPANY(i), "#1d4ed8")}>
+                    {j.companyName || "Company Name"} {j.location && `, ${j.location}`}
+                  </div>
+                  <p {...register(IDS.JOB_DESC(i))} className={`text-[12px] leading-relaxed mt-1 ${register(IDS.JOB_DESC(i)).className}`} style={getStyle(IDS.JOB_DESC(i), "#374151")}>
+                    {j.responsibilities || "Responsibilities"}
+                  </p>
                 </div>
-                <div className="text-[11px] font-bold uppercase mb-2" style={{ color: themeColor }}>
-                  {job.companyName}
-                </div>
-                <p className="text-[12px] leading-normal text-[var(--color-text-secondary)] whitespace-pre-line">
-                  {job.responsibilities}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
 
-        {/* Projects */}
-        <section>
-          <h2 className="text-[12px] font-black uppercase tracking-widest mb-4 flex items-center gap-4">
-            Projects <span className="h-px bg-[var(--color-border-primary)] flex-1"></span>
-          </h2>
-          <div className="grid grid-cols-1 gap-3">
-            {projects.map((proj, i) => (
-              <div key={i} className="p-4 rounded-lg bg-[var(--color-background-tertiary)] border border-[var(--color-border-secondary)]">
-                <div className="flex justify-between items-center mb-1">
-                  <h3 className="text-[13px] font-bold">{proj.projectName}</h3>
-                  <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-white/50" style={{ color: themeColor }}>
-                    {proj.technologiesUsed}
-                  </span>
+          {/* PROJECTS */}
+          <section {...register(IDS.PROJECTS)} className={`p-2 ${register(IDS.PROJECTS).className}`} style={getStyle(IDS.PROJECTS)}>
+            <h3 className="text-sm font-bold uppercase mb-2 border-b border-gray-300 pb-1" style={getStyle("PROJ_H3", "#000000")}>
+              Projects
+            </h3>
+            <div className="space-y-3">
+              {proj.map((p, i) => (
+                <div key={i} {...register(IDS.PROJECT_ITEM(i))} className={register(IDS.PROJECT_ITEM(i)).className} style={getStyle(IDS.PROJECT_ITEM(i))}>
+                  <div className="flex justify-between leading-tight">
+                    <span {...register(IDS.PROJECT_NAME(i))} className={`font-bold text-[14px] ${register(IDS.PROJECT_NAME(i)).className}`} style={getStyle(IDS.PROJECT_NAME(i), "#000000")}>
+                      {p.projectName || "Project Name"}
+                    </span>
+                    <span {...register(IDS.PROJECT_START(i))}>{p.startDate}</span> - <span {...register(IDS.PROJECT_END(i))}>{p.endDate}</span>
+                  </div>
+                  <div {...register(IDS.PROJECT_TECH(i))} className={`text-xs italic mt-0.5 ${register(IDS.PROJECT_TECH(i)).className}`} style={getStyle(IDS.PROJECT_TECH(i), "#2563eb")}>
+                    {p.technologiesUsed}
+                  </div>
+                  <p {...register(IDS.PROJECT_DESC(i))} className={`text-[12px] mt-1 ${register(IDS.PROJECT_DESC(i)).className}`} style={getStyle(IDS.PROJECT_DESC(i), "#374151")}>
+                    {p.projectDescription}
+                  </p>
                 </div>
-                <p className="text-[11px] text-[var(--color-text-secondary)] italic">{proj.projectDescription}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      </main>
+              ))}
+            </div>
+          </section>
+
+          {/* EDUCATION */}
+          <section {...register(IDS.EDUCATION)} className={`p-2 ${register(IDS.EDUCATION).className}`} style={getStyle(IDS.EDUCATION)}>
+            <h3 className="text-sm font-bold uppercase border-b border-gray-300 pb-1" style={getStyle("EDU_H3", "#000000")}>
+              Education
+            </h3>
+            <div className="space-y-3">
+              {edu.map((e, i) => (
+                <div key={i} {...register(IDS.EDU_ITEM(i))} className={register(IDS.EDU_ITEM(i)).className} style={getStyle(IDS.EDU_ITEM(i))}>
+                  <div className="flex justify-between leading-tight">
+                    <span {...register(IDS.EDU_DEGREE(i))} className={`font-bold text-[14px] ${register(IDS.EDU_DEGREE(i)).className}`} style={getStyle(IDS.EDU_DEGREE(i), "#000000")}>
+                      {e.degree} in {e.major}
+                    </span>
+                    <span {...register(IDS.EDU_START(i))}>{e.startDate}</span> - <span {...register(IDS.EDU_END(i))}>{e.endDate}</span>
+                  </div>
+                  <div className="flex justify-between text-xs mt-1">
+                    <span {...register(IDS.EDU_SCHOOL(i))} className={register(IDS.EDU_SCHOOL(i)).className} style={getStyle(IDS.EDU_SCHOOL(i), "#4b5563")}>
+                      {e.university} {e.location && `, ${e.location}`}
+                    </span>
+                    <span {...register(IDS.EDU_GPA(i))} className={`font-medium ${register(IDS.EDU_GPA(i)).className}`} style={getStyle(IDS.EDU_GPA(i), "#4b5563")}>
+                      GPA: {e.gpa}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* CERTIFICATIONS */}
+          <section {...register(IDS.CERTIFICATIONS)} className={`p-2 ${register(IDS.CERTIFICATIONS).className}`} style={getStyle(IDS.CERTIFICATIONS)}>
+            <h3 className="text-sm font-bold uppercase mb-2 border-b border-gray-300 pb-1" style={getStyle("CERT_H3", "#000000")}>
+              Certifications
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {certs.map((c, i) => (
+                <span key={i} {...register(IDS.CERT_ITEM(i))} className={`text-[11px] px-2 py-1 border border-gray-200 rounded ${register(IDS.CERT_ITEM(i)).className}`} style={{ backgroundColor: "#f9fafb", ...getStyle(IDS.CERT_ITEM(i), "#1f2937") }}>
+                  {c.certificationName}
+                </span>
+              ))}
+            </div>
+          </section>
+        </main>
+      </div>
     </div>
   );
 }

@@ -142,7 +142,7 @@ export default function NewResume() {
                     <Edit />
                 </Link>
                 <div>
-                  {formDataMap && (<SelectedTemplate/>)}</div>
+                  </div>
               </div>
             )}
           </div>
@@ -160,3 +160,5 @@ export default function NewResume() {
     </main>
   );
 }
+
+//{formDataMap && (<SelectedTemplate/>)}
