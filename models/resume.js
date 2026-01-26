@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { formatPrompts } from '@public/staticfiles/prompts/userdetailextraction';
+import { formatPrompts } from '@public/staticfiles/prompts/resumeextraction/userdetailextraction';
 
 const defaultSectionTitles = Object.values(formatPrompts).map(phase => ({
     key: phase.key,

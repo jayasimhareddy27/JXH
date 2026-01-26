@@ -5,71 +5,90 @@ export const layoutGrid02 = {
     primary: "grid grid-cols-1 gap-8",
     secondary: "grid grid-cols-3 gap-8",
     tertiary: "grid grid-cols-3 gap-8",
-    quaternary: "grid grid-cols-3 gap-8"
   };
 
 
 
 export const RESUME_IDS02 = {
-  // Page & Layout
+  // --- Page & Layout ---
   PAGE: "page",
   HEADER: "header",
   FOOTER: "footer",
   
-  // Personal Information
+  // --- Personal Information ---
+  PERSONAL_INFO: "personalInformation",
+  PERSONAL_INFO_TITLE: "personalInformation_title",
   FULL_NAME: "fullName",
   FIRST_NAME: "firstName",
   LAST_NAME: "lastName",
   EMAIL: "email",
   PHONE_NUMBER: "phoneNumber",
   ADDRESS: "address",
-  DATE_OF_BIRTH: "dateOfBirth",
-  GENDER: "gender",
-  NATIONALITY: "nationality",
 
-  // Online Profiles
+  // --- Online Profiles ---
+  ONLINE_PROFILES: "onlineProfiles",
+  ONLINE_PROFILES_TITLE: "onlineProfiles_title",
   LINKEDIN: "linkedin",
   GITHUB: "github",
   PORTFOLIO: "portfolio",
   PERSONAL_WEBSITE: "personalWebsite",
   OTHER_LINKS: "otherLinks",
 
-  // Skills & Summary
+  // --- Skills & Summary ---
+  SKILLS_SUMMARY: "skillsSummary",
+  SKILLS_SUMMARY_TITLE: "skillsSummary_title",
   TECHNICAL_SKILLS: "technicalSkills",
   TOOLS: "tools",
   SOFT_SKILLS: "softSkills",
   LANGUAGES_SPOKEN: "languagesSpoken",
   CERTIFICATION_SKILLS: "certificationSkills",
+  
   CAREER_SUMMARY: "careerSummary",
+  CAREER_SUMMARY_TITLE: "careerSummary_title",
 
-  // Outer Section Wrappers
-  EXPERIENCE: "experience",
+  // --- Outer Section Wrappers ---
+  EXPERIENCE: "workExperience",
+  EXPERIENCE_TITLE: "workExperience_title",
+  
   PROJECTS: "projects",
-  EDUCATION: "education",
+  PROJECTS_TITLE: "projects_title",
+  
+  EDUCATION: "educationHistory",
+  EDUCATION_TITLE: "educationHistory_title",
+  
   CERTIFICATIONS: "certifications",
+  CERTIFICATIONS_TITLE: "certifications_title",
+  
   SIDEBAR_LEFT: "sidebarLeft",
   SIDEBAR_RIGHT: "sidebarRight",
 
-  // Work Experience (dynamic)
+  // --- Work Experience (Dynamic) ---
   JOB_ITEM: (i) => `job_${i}`,
   JOB_TITLE: (i) => `jobTitle_${i}`,
   JOB_COMPANY: (i) => `jobCompany_${i}`,
   JOB_START: (i) => `jobStart_${i}`,
   JOB_END: (i) => `jobEnd_${i}`,
-  JOB_DATES: (i) => `jobDates_${i}`, // combined display string
+  JOB_DATES: (i) => `jobDates_${i}`,
   JOB_LOCATION: (i) => `jobLocation_${i}`,
   JOB_DESC: (i) => `jobDesc_${i}`,
+  /** * NEW: Granular ID for individual bullet points. 
+   * Allows clicking and editing a single line in the experience list.
+   */
+  JOB_DESC_POINT: (jobIdx, pointIdx) => `jobDesc_${jobIdx}_p${pointIdx}`,
 
-  // Projects (dynamic)
+  // --- Projects (Dynamic) ---
   PROJECT_ITEM: (i) => `project_${i}`,
   PROJECT_NAME: (i) => `projectName_${i}`,
   PROJECT_TECH: (i) => `projectTech_${i}`,
   PROJECT_DESC: (i) => `projectDesc_${i}`,
+  /** * NEW: Granular ID for individual project bullet points. 
+   */
+  PROJECT_DESC_POINT: (projIdx, pointIdx) => `projectDesc_${projIdx}_p${pointIdx}`,
   PROJECT_LINK: (i) => `projectLink_${i}`,
   PROJECT_START: (i) => `projectStart_${i}`,
   PROJECT_END: (i) => `projectEnd_${i}`,
 
-  // Education (dynamic)
+  // --- Education (Dynamic) ---
   EDU_ITEM: (i) => `edu_${i}`,
   EDU_DEGREE: (i) => `eduDegree_${i}`,
   EDU_MAJOR: (i) => `eduMajor_${i}`,
@@ -79,14 +98,14 @@ export const RESUME_IDS02 = {
   EDU_END: (i) => `eduEnd_${i}`,
   EDU_LOCATION: (i) => `eduLocation_${i}`,
 
-  // Certifications (dynamic)
+  // --- Certifications (Dynamic) ---
   CERT_ITEM: (i) => `cert_${i}`,
   CERT_NAME: (i) => `certName_${i}`,
   CERT_ISSUER: (i) => `certIssuer_${i}`,
   CERT_LINK: (i) => `certLink_${i}`,
   CERT_DATE: (i) => `certDate_${i}`,
 
-  // Generic / fallback for any custom dynamic section
+  // --- Generic / Fallback ---
   CUSTOM_FIELD: (sectionKey, i, field) => `${sectionKey}_${i}_${field}`,
 };
 

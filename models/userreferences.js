@@ -16,7 +16,7 @@ const userreferencesSchema = new mongoose.Schema({
   userDataRef: { type: mongoose.Schema.Types.ObjectId, ref: 'UserData' },
 
   /* Job & Cover Letters */
-  jobTrackingRefs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'JobTracking' }],
+  jobTrackingRefs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }],
   coverLetterRefs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'CoverLetter' }],
 
   /* Preferences */

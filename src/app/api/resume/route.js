@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { connectToDB } from '@lib/mongodb';
 import UserReferences from "@models/userreferences";
 import Resume from "@models/resume";
-import { formatPrompts } from '@public/staticfiles/prompts/userdetailextraction';
+import { formatPrompts } from '@public/staticfiles/prompts/resumeextraction/userdetailextraction';
 
 const JWT_SECRET = process.env.JWT_SECRET || "SuperSecretKey";
 

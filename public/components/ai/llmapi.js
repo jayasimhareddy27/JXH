@@ -35,6 +35,7 @@ async function api_HuggingFaceai(prompt, model, apiKey) {
 }
 
 async function api_Gemini(prompt, model, apiKey) {
+  
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
     {

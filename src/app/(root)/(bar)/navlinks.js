@@ -3,15 +3,17 @@
 import { usePathname } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux'; // <-- 1. Import Redux hooks
 import { clearCredentials } from '@lib/redux/features/auth/slice'; // <-- 2. Import the logout action
-import { HelpCircle, Home, LetterText, Pin, ZoomIn, Contact, LogIn, LogOut } from 'lucide-react';
+import { HelpCircle, Home, LetterText, Pin, ZoomIn,PlusCircle, Contact, LogIn, LogOut } from 'lucide-react';
 import Link from 'next/link';
 
 const links = [
   { name: 'Home', href: '/', Icon: Home },
   { name: 'My Resume', href: '/dashboard/myresumes', Icon: LetterText },
   { name: 'Profile', href: '/dashboard/profile', Icon: Contact },
-  { name: 'Job Tracker', href: '/dashboard/jobtracker', Icon: Pin },
-  { name: 'Job Finder', href: '/dashboard/jobfinder', Icon: ZoomIn },
+// --- Updated Job Ecosystem Routes ---
+  { name: 'Job Board', href: '/dashboard/jobs', Icon: ZoomIn },            // Listing/Discovery
+  { name: 'Job Tracker', href: '/dashboard/jobs/tracker', Icon: Pin },    // Stats & Applied List
+  { name: 'Add New Job', href: '/dashboard/jobs/new', Icon: PlusCircle },  // Manual Entry
   { name: 'Contact', href: '/contact', Icon: HelpCircle },
 ];
 
@@ -40,7 +42,7 @@ export default function NavLinks({ isOpen }) {
     >
       <ul className="nav-list flex flex-col">
         {links.map(({ href, name, Icon }) => {
-          const isActive = pathname === href || (href !== '/' && pathname?.startsWith(href));
+          const isActive = pathname === href ;
           return (
             <li key={name} className="nav-item my-2">
               <Link

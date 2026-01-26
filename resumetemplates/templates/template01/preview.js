@@ -6,10 +6,8 @@ export default function Template01Preview() {
   const resume = sampleResume;
 
   return (
-    <div className="w-full h-full bg-slate-50 flex justify-center items-start overflow-hidden border border-slate-200 rounded-xl relative">
       
-      {/* Scaled Resume Sheet */}
-      <div className="w-[800px] bg-white p-12 shadow-2xl scale-[0.32] origin-top pointer-events-none mt-4 font-sans text-slate-900 border border-gray-100 text-left">
+      <div className="w-[600px] bg-white p-8 shadow-2xl scale-[0.25] origin-top pointer-events-none font-sans text-slate-900 border border-gray-100 text-left">
         
         {/* Header Section */}
         <header className="mb-6 border-b-2 border-slate-800 pb-4">
@@ -106,7 +104,5 @@ export default function Template01Preview() {
         </div>
       </div>
 
-      <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_40px_rgba(0,0,0,0.04)]" />
-    </div>
   );
 }

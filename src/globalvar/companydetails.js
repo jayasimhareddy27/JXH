@@ -31,6 +31,7 @@ const Companyterms = "https://jobxhunter.com/terms";
 const Companyprivacy = "https://jobxhunter.com/privacy";
 const Companyshortname = "JxH";
 const Companynameletters = ["J", "x", "H"];
+const Companyadminid = "697638430080fc1241634262"
 
 export {
   Companyname,
@@ -49,6 +50,8 @@ export {
   MONGODB_URI,
 
   geminiModels,
-  huggingFaceModels
+  huggingFaceModels,
+  
+  Companyadminid
 
 }

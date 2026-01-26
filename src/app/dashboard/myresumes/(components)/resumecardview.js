@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { Edit, Eye, Download, Star, Trash, Copy, Bot, User } from "lucide-react"; 
-import Loading from "./loading";
+import Loading from "./../(myresumes)/loading";
 
 const ResumeCardView = ({ 
   resumes, 
@@ -39,7 +39,7 @@ const ResumeCardView = ({
       icon: <Edit size={14} />,
       onClick: (e) => {
         e.stopPropagation();
-        router.push(`/dashboard/myresumes/${resume._id}`);
+        router.push(`/editor/cv/${resume._id}`);
       },
     },
     {
@@ -47,7 +47,7 @@ const ResumeCardView = ({
       icon: <Eye size={14} />,
       onClick: (e) => {
         e.stopPropagation();
-        window.open(`/dashboard/myresumes/${resume._id}`, "_blank");
+        window.open(`/editor/cv/${resume._id}`, "_blank");
       },
     },
     {

@@ -137,7 +137,7 @@ export default function ProfilePage() {
                 badge="Design"
               />
               <InfoCard 
-                href={`/dashboard/myresumes/${Profile?.myProfileRef}`} 
+                href={`/editor/cv/${Profile?.myProfileRef}`} 
                 icon={Eye} 
                 title="Professional Info" 
                 description="Work history and skills for AI automation"

@@ -3,13 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { templates } from '@resumetemplates/templatelist';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  markPrimaryResumeTemplate,
-  returnuseReference,
-} from '@lib/redux/features/resumes/resumecrud/thunks';
-import { fetchResumeById } from '@lib/redux/features/resumes/resumeeditor/thunks';
+import { updateResumePhase } from '@lib/redux/features/resumes/resumeeditor/slice';
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 8;
 
 export default function TemplateSelectionPage() {
   const dispatch = useDispatch();
@@ -17,34 +13,7 @@ export default function TemplateSelectionPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const favResumeTemplateId = useSelector(
-    (state) => state.resumecrud.favResumeTemplateId
-  );
-  const myProfileRef = useSelector(
-    (state) => state.resumecrud.myProfileRef
-  );
-  const resume = useSelector(
-    (state) => state.resumeEditor.formDataMap
-  );
-
-  useEffect(() => {
-    if (!myProfileRef) {
-      const token = localStorage.getItem('token');
-      if (token) dispatch(returnuseReference(token));
-    }
-
-    if (myProfileRef) {
-      dispatch(fetchResumeById(myProfileRef));
-    }
-
-    const storedTemplate = localStorage.getItem('favresumeTemplate');
-    if (storedTemplate && storedTemplate !== favResumeTemplateId) {
-      dispatch(markPrimaryResumeTemplate(storedTemplate));
-    }
-
-    const storedPage = localStorage.getItem('templatePage');
-    if (storedPage) setCurrentPage(Number(storedPage));
-  }, [dispatch, myProfileRef, favResumeTemplateId]);
+  const resume = useSelector(  (state) => state.resumeEditor.formDataMap);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -54,10 +23,7 @@ export default function TemplateSelectionPage() {
     t.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredTemplates.length / ITEMS_PER_PAGE)
-  );
+  const totalPages = Math.max(1,Math.ceil(filteredTemplates.length / ITEMS_PER_PAGE));
 
   const validCurrentPage = Math.min(currentPage, totalPages);
   const startIdx = (validCurrentPage - 1) * ITEMS_PER_PAGE;
@@ -67,8 +33,8 @@ export default function TemplateSelectionPage() {
   );
 
   const handleTemplateSelect = (id) => {
-    localStorage.setItem('favresumeTemplate', id);
-    dispatch(markPrimaryResumeTemplate(id));
+    dispatch(updateResumePhase({ phaseKey: 'templateId', data: id }));
+
   };
 
   const handlePageChange = (page) => {
@@ -77,11 +43,7 @@ export default function TemplateSelectionPage() {
   };
 
   return (
-    <main className="min-h-screen p-6">
-      <h2 className="mb-6 text-center text-4xl font-semibold">
-        Choose Your Resume Template
-      </h2>
-
+    <main className="min-h-screen">
       {/* Search */}
       <div className="sticky top-0 z-10 mb-6 flex justify-center">
         <input
@@ -94,19 +56,19 @@ export default function TemplateSelectionPage() {
       </div>
 
       {/* Template Grid */}
-      <div className="grid grid-cols-1 gap-10 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-4">
         {currentTemplates.map(({ id, name, Component }) => (
           <div
             key={id}
             onClick={() => handleTemplateSelect(id)}
             className={`cursor-pointer rounded-xl p-3 transition ${
-              favResumeTemplateId === id
+              resume?.templateId === id
                 ? 'border-2 border-red-500 shadow-md'
                 : 'border'
             }`}
           >
             {/* Preview */}
-            <div className="flex h-[220px] justify-center overflow-hidden rounded-lg">
+            <div className="flex h-[220px] justify-center overflow-hidden rounded-lg ">
               <div className="pointer-events-none origin-top">
                 <Component resume={resume} />
               </div>
