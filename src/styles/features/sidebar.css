@@ -8,7 +8,7 @@
   transition: width 0.3s ease-in-out;
   display: flex;
   flex-direction: column;
-  width: 72px;
+  width: 5%;
 }
 
 .sidebar.open {

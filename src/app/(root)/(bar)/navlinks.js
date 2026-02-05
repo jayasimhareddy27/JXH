@@ -3,18 +3,27 @@
 import { usePathname } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux'; // <-- 1. Import Redux hooks
 import { clearCredentials } from '@lib/redux/features/auth/slice'; // <-- 2. Import the logout action
-import { HelpCircle, Home, LetterText, Pin, ZoomIn,PlusCircle, Contact, LogIn, LogOut } from 'lucide-react';
 import Link from 'next/link';
-
+import {  Home,  LogIn, LogOut } from 'lucide-react';
+import { 
+  UserCircle, 
+  FileBadge,      // Better for My Resumes (Your achievements)
+  FileSignature,        // Better for My Cover Letters (The message/pitch)
+  BarChart3,   // Better for Job Tracker (Analytics/Status)
+  Search,   // Better for Job Board (Professional opportunities)
+} from 'lucide-react';
 const links = [
+  // --- CORE ---
   { name: 'Home', href: '/', Icon: Home },
-  { name: 'My Resume', href: '/dashboard/myresumes', Icon: LetterText },
-  { name: 'Profile', href: '/dashboard/profile', Icon: Contact },
-// --- Updated Job Ecosystem Routes ---
-  { name: 'Job Board', href: '/dashboard/jobs', Icon: ZoomIn },            // Listing/Discovery
-  { name: 'Job Tracker', href: '/dashboard/jobs/tracker', Icon: Pin },    // Stats & Applied List
-  { name: 'Add New Job', href: '/dashboard/jobs/new', Icon: PlusCircle },  // Manual Entry
-  { name: 'Contact', href: '/contact', Icon: HelpCircle },
+  { name: 'Profile', href: '/dashboard/profile', Icon: UserCircle },
+  
+  // --- ASSETS ---
+  { name: 'My Resumes', href: '/dashboard/myresumes', Icon: FileBadge }, 
+  { name: 'My Cover Letters', href: '/dashboard/mycoverletters', Icon: FileSignature },
+
+  // --- ECOSYSTEM ---
+  { name: 'Job Tracker', href: '/dashboard/jobs/tracker', Icon: BarChart3 }, 
+  { name: 'Job Board', href: '/dashboard/jobs', Icon: Search },            
 ];
 
 // 3. Remove user and token from props

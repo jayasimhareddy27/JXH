@@ -22,13 +22,18 @@ async function authenticate(request) {
 export async function GET(request, { params }) {
   try {
     await connectToDB();
-    const { id } = params;
     const userData = await authenticate(request);
 
+    if (!userData) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    
+    const {id}  = await params;
+    if (!id) {
+      return NextResponse.json({ error: "Job ID is required" }, { status: 400 });
+    }
     // Fetch the job and populate linked documents
     const job = await Job.findById(id)
-      .populate('resumeId', 'name')
-      .populate('coverLetterId', 'displayName');
 
     if (!job) {
       return NextResponse.json({ error: "Job not found" }, { status: 404 });

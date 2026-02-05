@@ -1,15 +1,14 @@
-import Template02Preview from './preview';
-import Template02 from './page';
+import Template01Preview from './preview';
+import Template01 from './page';
 
-export const layoutGrid02 = {
-    primary: "grid grid-cols-1 gap-8",
-    secondary: "grid grid-cols-3 gap-8",
-    tertiary: "grid grid-cols-3 gap-8",
-  };
+// Your updated grid configuration
+export const layoutGrid01 = {
+  primary: "grid grid-cols-1 gap-6",               // Modern Standard
+  secondary: "grid grid-cols-3 gap-8",             // Classic Sidebar
+  tertiary: "grid grid-cols-4 gap-6",              // Compact Modern
+};
 
-
-
-export const RESUME_IDS02 = {
+export const COVERLETTER_IDS01 = {
   // --- Page & Layout ---
   PAGE: "page",
   HEADER: "header",
@@ -110,4 +109,4 @@ export const RESUME_IDS02 = {
 };
 
 
-export {Template02,Template02Preview}
+export {Template01,Template01Preview}

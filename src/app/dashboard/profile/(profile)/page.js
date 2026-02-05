@@ -123,14 +123,14 @@ export default function ProfilePage() {
             <h2 className="text-xl font-bold text-[color:var(--color-text-primary)] px-1">Personalization & Style</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InfoCard 
-                href="/dashboard/profile/templateselection" 
+                href="/dashboard/profile/cvtemplateselection" 
                 icon={Star} 
                 title="Resume Template" 
                 description={`Current: ${favoriteTemplate}`}
                 badge="Design"
               />
               <InfoCard 
-                href="/dashboard/profile/templateselection" 
+                href="/dashboard/profile/cltemplateselection" 
                 icon={FileText} 
                 title="Cover Letter Style" 
                 description="Select how your letters look to employers"

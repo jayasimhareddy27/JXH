@@ -73,7 +73,6 @@ export async function POST(req) {
     if (!name || name.trim() === "") {
       return NextResponse.json({ error: "Resume name is required" }, { status: 400 });
     }
-    const userRef = await UserReferences.findOne({ userId: userData.id }) 
 
     const initialResume = await Resume.create({
       userId: userData.id,

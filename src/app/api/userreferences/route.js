@@ -45,11 +45,11 @@ export async function PUT(request) {
   
   try {
     // 1. Destructure 'theme' from the request body as well
-    const { primaryResumeId, theme, aiResumeRef,myProfileRef,favResumeTemplateId } = await request.json();
+    const { primaryResumeId, theme, aiResumeRef,myProfileRef,favResumeTemplateId,favCoverletterTemplateId } = await request.json();
 
     // 2. Check if at least one property was provided
-    if (!primaryResumeId && !theme && !aiResumeRef && !myProfileRef && !favResumeTemplateId) {
-      return NextResponse.json({ error: 'primaryResumeId, theme, aiResumeRef, myProfileRef, or favResumeTemplateId is required' }, { status: 400 });
+    if (!primaryResumeId && !theme && !aiResumeRef && !myProfileRef && !favResumeTemplateId && !favCoverletterTemplateId) {
+      return NextResponse.json({ error: 'primaryResumeId, theme, aiResumeRef, myProfileRef, favResumeTemplateId, or favCoverletterTemplateId is required' }, { status: 400 });
     }
 
     const userRefs = await UserReferences.findOne({ userId: userData.id });
@@ -70,7 +70,10 @@ export async function PUT(request) {
     if (favResumeTemplateId) {
       userRefs.favResumeTemplateId = favResumeTemplateId;
     }
-    
+    if (favCoverletterTemplateId) {
+      userRefs.favCoverletterTemplateId = favCoverletterTemplateId;
+    }
+      
     await userRefs.save();
 
     // 4. Return the updated data in the response

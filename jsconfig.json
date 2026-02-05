@@ -7,7 +7,8 @@
       "@styles/*": ["./src/styles/*"],
       "@models/*": ["./models/*"],
       "@components/*": ["./public/components/*"],
-      "@resumetemplates/*": ["./resumetemplates/*"]
+      "@resumetemplates/*": ["./templates/cv/*"],
+      "@coverlettertemplates/*": ["./templates/cl/*"]
     }
   }
 }
