@@ -1,15 +1,22 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchResumes, returnuseReference } from "@lib/redux/features/resumes/resumecrud/thunks"; // Added returnuseReference
+import { fetchResumes, returnuseReference } from "@lib/redux/features/resumes/resumecrud/thunks";
+
+// UI Components
+import Pagination from "@public/components/pagination/pagination.js";
+import SearchBar from "@public/components/searchbar/searchbar.js";
 
 import CreateResume from "../(components)/createresume";
-import SearchBar from "../(components)/searchbar";
 import ResumeCardView from "../(components)/resumecardview";
-import Pagination from "../(components)/pagination";
 import AIConnectionCard from "../(components)/aiconnectioncard";
 
+// Hydration Fix Wrapper
+import ClientOnly from "@public/components/shared/clientonly.js";
+
+// Factories and Helpers
 import { 
   CopyResumeModal, 
   handleConnectAIFactory, 
@@ -39,21 +46,21 @@ export default function ResumesPage() {
   const [copyResumeId, setCopyResumeId] = useState(null);
   const [copyOldName, setCopyOldName] = useState("");
 
-  // SYNC ON RELOAD: Runs every time you refresh the page
+  // SYNC ON RELOAD
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/login");
     } else {
-      dispatch(fetchResumes()); // Fetch the list of resumes
-      dispatch(returnuseReference(token)); // Fetch pinned/AI references from DB
+      dispatch(fetchResumes()); 
+      dispatch(returnuseReference(token)); 
     }
   }, [dispatch, router]);
 
   // Handlers
   const handleCreateResume = handleCreateResumeFactory(dispatch, router);
   const handleDelete = handleDeleteFactory(dispatch);
-  const handleConnectAI = handleConnectAIFactory(dispatch); // Connect logic
+  const handleConnectAI = handleConnectAIFactory(dispatch);
   const handleMakePrimary = handleMakePrimaryFactory(dispatch, primaryResumeId);
   const handleMarkProfile = handleMarkProfileFactory(dispatch);
 
@@ -88,17 +95,23 @@ export default function ResumesPage() {
   return (
     <main className="min-h-screen p-6 bg-[color:var(--color-background-primary)]">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-center mb-8 text-[2.25rem] font-bold text-[color:var(--color-text-primary)]">Manage Your Resumes</h1>
+        <h1 className="text-center mb-8 text-[2.25rem] font-bold text-[color:var(--color-text-primary)]">
+          Manage Your Resumes
+        </h1>
 
+        {/* TOP SECTION: Create & AI Connection */}
         <div className="grid grid-cols-1 md:grid-cols-12 items-center mb-6 gap-6">
           <div className="md:col-span-4 card w-full h-full flex flex-col justify-center p-6 bg-[color:var(--color-card-bg)] rounded-xl border border-[color:var(--color-border-primary)] shadow-lg">
             <CreateResume isLoading={loading === "loading"} handleCreateResume={handleCopySubmit}/>
           </div>
           <div className="md:col-span-8 ">
-            <AIConnectionCard />
+            <ClientOnly fallback={<div className="h-32 bg-slate-100 animate-pulse rounded-xl" />}>
+              <AIConnectionCard />
+            </ClientOnly>
           </div>
         </div>
 
+        {/* SEARCH SECTION */}
         <div className="items-center mb-4 gap-4">
           <SearchBar 
             setCurrentPage={setCurrentPage}
@@ -109,8 +122,11 @@ export default function ResumesPage() {
           />
         </div>
 
+        {/* PAGINATION & FILTERS */}
         <div className="flex flex-col gap-4 mb-6">
-          <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage}/>
+          <ClientOnly fallback={<div className="h-10 w-full bg-slate-50 rounded animate-pulse" />}>
+            <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage}/>
+          </ClientOnly>
 
           <div className="flex flex-wrap justify-center gap-4 items-center">
             <select 
@@ -145,24 +161,34 @@ export default function ResumesPage() {
           </div>
         </div>
 
+        {/* MAIN LIST SECTION */}
         <div className="p-6">
-          <ResumeCardView 
-            handleConnectAI={handleConnectAI} 
-            handleMakePrimary={handleMakePrimary}   
-            handleMarkProfile={handleMarkProfile}
-            handleDelete={handleDelete} 
-            handleCopy={handleCopy} 
-            resumes={displayResumes} 
-            aiResumeRef={aiResumeRef} 
-            primaryResumeId={primaryResumeId} 
-            myProfileRef={myProfileRef}
-            isLoading={loading === "loading"} 
-            currentPage={1} 
-            resumesPerPage={displayResumes.length} 
-          />
+          <ClientOnly fallback={
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-48 bg-slate-100 rounded-lg animate-pulse" />
+              ))}
+            </div>
+          }>
+            <ResumeCardView 
+              handleConnectAI={handleConnectAI} 
+              handleMakePrimary={handleMakePrimary}   
+              handleMarkProfile={handleMarkProfile}
+              handleDelete={handleDelete} 
+              handleCopy={handleCopy} 
+              resumes={displayResumes} 
+              aiResumeRef={aiResumeRef} 
+              primaryResumeId={primaryResumeId} 
+              myProfileRef={myProfileRef}
+              isLoading={loading === "loading"} 
+              currentPage={1} 
+              resumesPerPage={displayResumes.length} 
+            />
+          </ClientOnly>
         </div>
       </div>
 
+      {/* MODAL SECTION */}
       {copyModalOpen && (
         <CopyResumeModal 
           oldName={copyOldName} 

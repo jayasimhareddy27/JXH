@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { templates } from '@resumetemplates/templatelist';
 import { useDispatch, useSelector } from 'react-redux';
-import {  markPrimaryResumeTemplate,  returnuseReference} from '@lib/redux/features/resumes/resumecrud/thunks';
+import { markPrimaryResumeTemplate, returnuseReference } from '@lib/redux/features/resumes/resumecrud/thunks';
+import ClientOnly from '@public/components/shared/clientonly.js';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -13,7 +14,7 @@ export default function TemplateSelectionPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const favResumeTemplateId = useSelector(  (state) => state.resumecrud.favResumeTemplateId);
+  const favResumeTemplateId = useSelector((state) => state.resumecrud.favResumeTemplateId);
 
   useEffect(() => {
     if (!favResumeTemplateId) {
@@ -34,13 +35,15 @@ export default function TemplateSelectionPage() {
     setCurrentPage(1);
   }, [searchTerm]);
 
-  const filteredTemplates = templates.filter((t) =>  t.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredTemplates = templates.filter((t) =>
+    t.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const totalPages = Math.max(  1,  Math.ceil(filteredTemplates.length / ITEMS_PER_PAGE));
+  const totalPages = Math.max(1, Math.ceil(filteredTemplates.length / ITEMS_PER_PAGE));
 
   const validCurrentPage = Math.min(currentPage, totalPages);
   const startIdx = (validCurrentPage - 1) * ITEMS_PER_PAGE;
-  const currentTemplates = filteredTemplates.slice(  startIdx,  startIdx + ITEMS_PER_PAGE);
+  const currentTemplates = filteredTemplates.slice(startIdx, startIdx + ITEMS_PER_PAGE);
 
   const handleTemplateSelect = (id) => {
     localStorage.setItem('favresumeTemplate', id);
@@ -58,24 +61,38 @@ export default function TemplateSelectionPage() {
         Choose Your Resume Template
       </h2>
 
-      {/* Search */}
+      {/* Search - Static UI is fine for SSR */}
       <div className="sticky top-0 z-10 mb-6 flex justify-center">
-        <input type="text" placeholder="Search templates..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}  className="form-input w-full max-w-xl"/>
+        <input
+          type="text"
+          placeholder="Search templates..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="form-input w-full max-w-xl"
+        />
       </div>
 
-      {/* Template Grid */}
-      <div className="grid grid-cols-1 gap-10 sm:grid-cols-3 lg:grid-cols-6">
-        {currentTemplates.map(({ id, name, Component }) => (
-          <div key={id} onClick={() => handleTemplateSelect(id)}
-            className={`cursor-pointer rounded-xl p-3 transition ${favResumeTemplateId === id  ? 'border-2 border-red-500 shadow-md'  : 'border'}`}>
-            {/* Preview */}
-            <div className="flex h-[220px] justify-center overflow-hidden rounded-lg">
-              <div className="pointer-events-none origin-top">  <Component  /></div>
+      {/* Hydration Fix: Wrap the dynamic grid */}
+      <ClientOnly fallback={<div className="h-64 flex items-center justify-center">Loading Templates...</div>}>
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-3 lg:grid-cols-6">
+          {currentTemplates.map(({ id, name, Component }) => (
+            <div
+              key={id}
+              onClick={() => handleTemplateSelect(id)}
+              className={`cursor-pointer rounded-xl p-3 transition ${
+                favResumeTemplateId === id ? 'border-2 border-red-500 shadow-md' : 'border'
+              }`}
+            >
+              <div className="flex h-[220px] justify-center overflow-hidden rounded-lg">
+                <div className="pointer-events-none origin-top">
+                  <Component />
+                </div>
+              </div>
+              <p className="mt-2 text-center text-sm font-medium">{name}</p>
             </div>
-            <p className="mt-2 text-center text-sm font-medium">{name}</p>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </ClientOnly>
 
       {/* Pagination */}
       {totalPages > 1 && (
@@ -102,4 +119,4 @@ export default function TemplateSelectionPage() {
       )}
     </main>
   );
-}
+} 

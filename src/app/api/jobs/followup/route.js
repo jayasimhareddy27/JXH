@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import { connectToDB } from '@lib/mongodb';
 import FollowUp from "@models/followup";
-import Job from "@models/job"; // Assuming your job model is named 'Job'
+import Job from "@models/jobtracking"; // Assuming your job model is named 'Job'
 
 const JWT_SECRET = process.env.JWT_SECRET || "SuperSecretKey";
 
@@ -28,17 +28,12 @@ export async function GET(request) {
     if (!userData) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
-    const { searchParams } = new URL(request.url);
-    const limit = parseInt(searchParams.get('limit')) || 10;
-
     // Fetch pending follow-ups for this user
     const upcomingTasks = await FollowUp.find({
       userId: userData.id,
       status: 'pending'
     })
     .sort({ followUpDateTime: 1 }) // Soonest first
-    .limit(limit);
 
     return NextResponse.json({
       success: true,

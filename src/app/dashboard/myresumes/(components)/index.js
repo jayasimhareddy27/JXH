@@ -1,4 +1,4 @@
-import { formatPrompts,promptMap } from "@public/staticfiles/prompts/resumeextraction/userdetailextraction";
+import { formatPrompts,promptMap } from "@public/staticfiles/prompts/resume/schema";
 import { deleteResume,  copyResume,  makePrimaryResume,  createResume,markAIPrimaryResume,markProfileResume} from "@lib/redux/features/resumes/resumecrud/thunks";
 import { useState } from "react";
 import { X } from 'lucide-react'; 

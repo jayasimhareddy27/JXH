@@ -1,132 +1,189 @@
 "use client";
-import { useEffect } from "react";
-import { useDispatch, useSelector, shallowEqual } from "react-redux";
-import { fetchJobs, updateJobStatus } from "@lib/redux/features/job/thunks";
-import { BarChart3, CheckCircle2, Send, Clock, Briefcase, ChevronRight } from "lucide-react";
+
+import { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchJobs } from "@lib/redux/features/job/thunks";
+import { fetchFollowUps } from "@lib/redux/features/followup/thunks";
+
+import SearchBar from "@public/components/searchbar/searchbar";
+import Pagination from "@public/components/pagination/pagination";
+import FilterBar from "./(components)/filterbar";
+import JobCard from "./(components)/jobcard";
+import JobInspector from "./(components)/jobinspector";
+import FollowUpList from "./(components)/followuplist.js"; // Specialized component
+import { FLOW_STAGES } from "./(components)/constants.js";
 import Link from "next/link";
+import { Bell, FileText } from "lucide-react";
+import { fetchCoverletters } from "@lib/redux/features/coverletter/coverlettercrud/thunks";
+import { fetchResumes } from "@lib/redux/features/resumes/resumecrud/thunks";
 
-export default function JobTrackerStats() {
+const PAGE_SIZE = 15;
+
+export default function JobTrackerPage() {
   const dispatch = useDispatch();
+  
+  // Selectors
+  const { trackerListing = [], loading } = useSelector((state) => state.jobsStore);
+  const { followUps = [] } = useSelector((state) => state.followupstore || { followUps: [] });
 
-  // Updated to use trackerListing from your jobsStore
-  const { items, loading, token } = useSelector(
-    (state) => ({ 
-      items: state.jobsStore.trackerListing,
-      loading: state.jobsStore.loading,
-      token: state.auth.token 
-    }), 
-    shallowEqual
-  );
+  // Local State
+  const [activeStage, setActiveStage] = useState("all");
+  const [selectedJobId, setSelectedJobId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [inspectorView, setInspectorView] = useState("followups");
 
+  // Initial Data Fetch
   useEffect(() => {
-    if (token) dispatch(fetchJobs("tracker"));
-  }, [dispatch, token]);
+    dispatch(fetchJobs("tracker"));
+    dispatch(fetchFollowUps());
+    dispatch(fetchCoverletters());
+    dispatch(fetchResumes());
+  }, [dispatch]);
 
-  // Motivational Metrics Logic
-  const stats = {
-    total: items?.length || 0,
-    interviewing: items?.filter(j => j.status === 'interviewing').length || 0,
-    appliedToday: items?.filter(j => 
-      new Date(j.createdAt).toDateString() === new Date().toDateString()
-    ).length || 0,
-    successRate: items?.length > 0 
-      ? ((items.filter(j => j.status === 'offer').length / items.length) * 100).toFixed(0) 
-      : 0
-  };
+    
+  // Auto-switch to details when a job is selected
+  useEffect(() => {
+    if (selectedJobId) setInspectorView("details");
+  }, [selectedJobId]);
 
-  const handleStatusChange = (jobId, companyName, newStatus) => {
-    dispatch(updateJobStatus({ jobId, status: newStatus, companyName }));
+  // Logic: Filter and Sort Follow-ups
+  const upcomingFollowUps = useMemo(() => {
+    const list = Array.isArray(followUps) ? followUps : [];
+    return list
+      .filter(f => f.status === 'pending')
+      .sort((a, b) => new Date(a.followUpDateTime) - new Date(b.followUpDateTime));
+  }, [followUps]);
+
+  // Logic: Filter and Search Jobs
+  const filteredJobs = useMemo(() => {
+    return trackerListing
+      .filter((job) => activeStage === "all" || job.stage === activeStage)
+      .filter((job) => {
+        const searchText = `${job.position || ""} ${job.companyName || ""}`.toLowerCase();
+        return searchText.includes(searchQuery.toLowerCase());
+      });
+  }, [trackerListing, activeStage, searchQuery]);
+
+  // Pagination
+  const totalPages = Math.ceil(filteredJobs.length / PAGE_SIZE);
+  const paginatedJobs = useMemo(() => {
+    const startIndex = (currentPage - 1) * PAGE_SIZE;
+    return filteredJobs.slice(startIndex, startIndex + PAGE_SIZE);
+  }, [filteredJobs, currentPage]);
+
+  const activeJob = useMemo(() => {
+    return trackerListing.find((job) => job._id === selectedJobId);
+  }, [trackerListing, selectedJobId]);
+
+  const stageIndex = FLOW_STAGES.findIndex((stage) => stage.key === activeStage);
+
+  const handleStageChange = (stage) => {
+    setActiveStage(stage);
+    setCurrentPage(1);
+    setSelectedJobId(null);
+    setInspectorView("followups");
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto min-h-screen bg-[color:var(--color-background-primary)]">
-      <header className="mb-10">
-        <h1 className="text-3xl font-bold text-gray-900">Application Tracker</h1>
-        <p className="text-gray-500">Analyze your progress and stay motivated, Jayasimha.</p>
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+      {/* Header */}
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl lg:text-3xl font-bold text-[var(--color-text-primary)]">My Job Applications</h1>
+          <p className="text-sm text-[var(--color-text-secondary)] mt-1">Manage pipeline and follow-ups.</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link href="/dashboard/stats" className="px-4 py-2 bg-[var(--color-button-secondary-bg)] text-[var(--color-text-primary)] rounded-xl text-sm font-semibold hover:bg-[var(--color-button-secondary-hover)] transition">
+            Analytics
+          </Link>
+          <Link href="/dashboard/jobs/new" className="px-4 py-2 bg-[var(--color-button-primary-bg)] text-white rounded-xl text-sm font-semibold hover:opacity-90 transition shadow-sm">
+            + Add New Job
+          </Link>
+        </div>
       </header>
 
-      {/* Motivational KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        <StatCard icon={<Send size={20}/>} label="Total Applied" value={stats.total} color="blue" />
-        <StatCard icon={<Clock size={20}/>} label="Applied Today" value={stats.appliedToday} color="purple" />
-        <StatCard icon={<BarChart3 size={20}/>} label="Interviews" value={stats.interviewing} color="yellow" />
-        <StatCard icon={<CheckCircle2 size={20}/>} label="Success Rate" value={`${stats.successRate}%`} color="green" />
-      </div>
+      {/* Filter Stepper */}
+      <FilterBar activeStage={activeStage} stageIndex={stageIndex} onStageChange={handleStageChange} />
 
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold text-gray-800">Recent Applications</h2>
-        <Link href="/dashboard/jobs/new" className="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
-          Add Manual <ChevronRight size={14}/>
-        </Link>
-      </div>
-
-      {loading === true && items.length === 0 ? (
-        <div className="space-y-4">
-          {[1, 2, 3].map(i => <div key={i} className="h-20 w-full bg-gray-100 animate-pulse rounded-2xl" />)}
-        </div>
-      ) : items.length === 0 ? (
-        <div className="text-center py-20 bg-white rounded-3xl border border-dashed">
-          <Briefcase className="mx-auto text-gray-300 mb-4" size={48} />
-          <p className="text-gray-500 font-medium">No applications tracked yet.</p>
-          <Link href="/dashboard/jobs" className="mt-4 inline-block btn-primary">Browse Job Board</Link>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {items.map(job => (
-            <div key={job._id} className="group flex flex-col md:flex-row items-start md:items-center justify-between p-5 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-all">
-              <div className="mb-4 md:mb-0">
-                <p className="font-bold text-lg text-gray-900">{job.position}</p>
-                <p className="text-gray-500 text-sm font-medium">
-                  {job.companyName} <span className="mx-2 text-gray-300">•</span> {new Date(job.createdAt).toLocaleDateString()}
-                </p>
-              </div>
+      {/* Main Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        {/* Left Column: Job List */}
+        <section className="lg:col-span-7 xl:col-span-8 space-y-4">
+{/* Search Bar Container */}
+      <SearchBar setSearchQuery={setSearchQuery} setCurrentPage={setCurrentPage} />
+        {filteredJobs.length} Applications
+    
+    {/* Improved Badge: Added z-index and fixed positioning */}
+          {loading ? (
+            <div className="py-20 text-center italic text-[var(--color-text-secondary)]">Fetching applications...</div>
+          ) : (
+            <div className="space-y-3">
+              {paginatedJobs.map((job) => (
+                <JobCard 
+                  key={job._id} 
+                  job={job} 
+                  isSelected={selectedJobId === job._id} 
+                  showStageTag={activeStage === "all"} 
+                  onClick={() => setSelectedJobId(job._id)} 
+                />
+              ))}
               
-              <div className="flex items-center gap-3 w-full md:w-auto">
-                <select 
-                  value={job.status}
-                  onChange={(e) => handleStatusChange(job._id, job.companyName, e.target.value)}
-                  className={`text-xs font-bold uppercase px-3 py-2 rounded-xl border-none outline-none cursor-pointer ${getStatusColor(job.status)}`}
-                >
-                  <option value="applied">Applied</option>
-                  <option value="interviewing">Interviewing</option>
-                  <option value="offer">Offer</option>
-                  <option value="rejected">Rejected</option>
-                </select>
-                <Link href={`/dashboard/jobs/${job._id}`} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                  <ChevronRight size={20} />
-                </Link>
-              </div>
+              {paginatedJobs.length === 0 && (
+                <div className="py-20 text-center border-2 border-dashed border-[var(--color-border-secondary)] rounded-3xl text-[var(--color-text-secondary)]">
+                  No applications found.
+                </div>
+              )}
+
+              {totalPages > 1 && (
+                <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
+              )}
             </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
+          )}
+        </section>
 
-function StatCard({ icon, label, value, color }) {
-  const colors = {
-    blue: "bg-blue-50 text-blue-600",
-    purple: "bg-purple-50 text-purple-600",
-    yellow: "bg-yellow-50 text-yellow-600",
-    green: "bg-green-50 text-green-600"
-  };
-  return (
-    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:border-blue-100 transition-colors">
-      <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${colors[color]}`}>
-        {icon}
+        {/* Right Column: Dynamic Inspector / Follow-ups */}
+        <aside className="lg:col-span-5 xl:col-span-4 sticky top-6">
+          <div className="bg-[var(--color-card-bg)] rounded-3xl border border-[var(--color-border-secondary)] shadow-xl overflow-hidden min-h-[600px] flex flex-col">
+            
+            {/* TOGGLE HEADER */}
+            <div className="p-2 border-b border-[var(--color-border-secondary)] flex bg-[var(--color-background-secondary)] gap-1">
+              <button 
+                onClick={() => setInspectorView("details")}
+                disabled={!selectedJobId}
+                className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-xs font-bold uppercase rounded-2xl transition-all ${
+                  inspectorView === "details" 
+                    ? "bg-[var(--color-button-primary-bg)] text-white shadow-md" 
+                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-card-hover-bg)]"
+                } ${!selectedJobId ? "opacity-30 cursor-not-allowed" : ""}`}
+              >
+                <FileText size={14} /> Job Details
+              </button>
+              <button 
+                onClick={() => setInspectorView("followups")}
+                className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-xs font-bold uppercase rounded-2xl transition-all ${
+                  inspectorView === "followups" 
+                    ? "bg-[var(--color-button-primary-bg)] text-white shadow-md" 
+                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-card-hover-bg)]"
+                }`}
+              >
+                <Bell size={14} /> Follow-ups ({upcomingFollowUps.length})
+              </button>
+            </div>
+
+            {/* DYNAMIC CONTENT AREA */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar">
+              {inspectorView === "details" && selectedJobId ? (
+                <JobInspector activeJob={activeJob} />
+              ) : (
+                <FollowUpList followUps={upcomingFollowUps} />
+              )}
+            </div>
+          </div>
+        </aside>
+
       </div>
-      <p className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">{label}</p>
-      <p className="text-3xl font-black text-gray-900">{value}</p>
-    </div>
+    </main>
   );
-}
-
-function getStatusColor(status) {
-  switch (status) {
-    case 'interviewing': return "bg-yellow-50 text-yellow-700 hover:bg-yellow-100";
-    case 'offer': return "bg-green-50 text-green-700 hover:bg-green-100";
-    case 'rejected': return "bg-red-50 text-red-700 hover:bg-red-100";
-    default: return "bg-blue-50 text-blue-700 hover:bg-blue-100";
-  }
 }

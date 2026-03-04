@@ -14,6 +14,8 @@ import AuthPersistence from '@lib/redux/features/auth/persistence';
 import ThemePersistence from '@lib/redux/features/theme/persistence';
 import ToastPersistence from '@lib/redux/features/toast/persistence';
 import AIAgentPersistence from '@lib/redux/features/aiagent/persistence';
+import ResumesPersistence from '@lib/redux/features/resumes/resumecrud/persistence';
+import CoverLetterPersistence from '@lib/redux/features/coverletter/coverlettercrud/persistence';
 
 //<StoreLogger />
 const inter = Inter({ subsets: ['latin'] });
@@ -30,10 +32,12 @@ export default function RootLayout({ children }) {
       </head>
       <body className={`${inter.className}`}>
         <ReduxProvider>
-          <ThemePersistence /> 
-          <AuthPersistence/>
-          <ToastPersistence /> 
           <AIAgentPersistence /> 
+          <AuthPersistence/>
+          <ResumesPersistence /> 
+          <CoverLetterPersistence />
+          <ThemePersistence /> 
+          <ToastPersistence /> 
 
           <div className="flex flex-col lg:flex-row lg:h-screen">
             <Sidebar initialOpen={false}/>

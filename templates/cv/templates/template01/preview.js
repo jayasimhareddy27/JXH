@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { sampleResume } from '../sampleresume';
+import { sampleResume } from '../../sampleresume';
 
 export default function Template01Preview() {
   const resume = sampleResume;

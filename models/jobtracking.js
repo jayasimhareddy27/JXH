@@ -8,7 +8,7 @@ const JobSchema = new mongoose.Schema({
     index: true 
   },
   resumeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Resume' },
-  
+  coverLetterId: { type: mongoose.Schema.Types.ObjectId, ref: 'CoverLetter' },
   // --- CORE INFO ---
   companyName: { type: String, required: true, trim: true },
   position: { type: String, required: true, trim: true },
@@ -35,22 +35,35 @@ const JobSchema = new mongoose.Schema({
   companyInsights: { type: String, trim: true }, // Culture fluff (Phase 4)
 
   // --- LOGISTICS & STATUS ---
-  status: {
+  stage: {
     type: String,
     enum: [
-      'saved', 'applied', 'pending', 'interviewing', 'declined', 
-      'offer', 'accepted', 'withdrawn', 'rejected', 'archived'
+      'saved', 'applied','screening', 'interview', 'assessment',  
+      'offer', 'decision', 'archived'
     ],
-    default: 'saved'
+    default: 'saved',
+    index: true,
+  },
+  state: {
+    type: String,
+    enum: [
+      "pending",     // Waiting for response
+      "completed",   // Finished this stage
+      "ghosted",     // No response / ghosted
+      "rejected",    // Rejected at this stage
+      "withdrawn",   // You withdrew
+    ],
+    default: "pending",
+    index: true,
   },
   postedDate: { type: Date },                   // From AI extraction
   applicationDate: { type: Date, default: Date.now },
-  jobLocation: { type: String, default: 'Aurora, IL' },
+  jobLocation: { type: String, default: '' },
   jobUrl: { type: String, trim: true },
   salary: { type: String, trim: true }
 }, { timestamps: true });
 
 // Optimized compound index for high-speed dashboard filtering
-JobSchema.index({ userId: 1, status: 1, createdAt: -1 });
+JobSchema.index({ userId: 1, stage: 1, state: 1, createdAt: -1 });
 
 export default mongoose.models.Job || mongoose.model('Job', JobSchema);

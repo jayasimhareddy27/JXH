@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchCoverletters } from "@lib/redux/features/coverletter/coverlettercrud/thunks";
 
-import Pagination from "../(components)/pagination"; 
-import SearchBar from "../(components)/searchbar";   
+import Pagination from "@public/components/pagination/pagination"; 
+import SearchBar from "@public/components/searchbar/searchbar";   
 import CoverLetterCardView from "../(components)/clcardview"; 
 import CreateCoverLetter from "../(components)/createcoverletter"; 
 
@@ -22,7 +22,6 @@ export default function MyCoverLettersPage() {
   const dispatch = useDispatch();
 
   const { allCoverletters, favCoverletterTemplateId, loading } = useSelector((state) => state.coverlettercrud);
-console.log(allCoverletters);
 
   // State for Filtering and Sorting
   const [currentPage, setCurrentPage] = useState(1);

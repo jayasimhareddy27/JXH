@@ -42,7 +42,6 @@ export async function GET(request) {
 
     // Sort jobs by newest first
     const sortedJobs = userRefs.jobTrackingRefs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
     return NextResponse.json({
       success: true,
       jobs: sortedJobs,
@@ -62,21 +61,23 @@ export async function POST(req) {
     }
 
     const jobData = await req.json();
-
+    console.log(jobData);
+    
     // Basic validation based on your Job Model requirements
     if (!jobData.companyName || !jobData.position) {
       return NextResponse.json({ error: "Company name and Position are required" }, { status: 400 });
     }
-
+    const userRefs = await UserReferences.findOne({ userId: userData.id });
+    const profileResumeId = jobData.resumeId ? jobData.resumeId : userRefs?.myProfileRef || null;
     // 1. Create the new Job record
     const newJob = await Job.create({
       ...jobData,
       userId: userData.id, // Ensure ownership
+      resumeId: profileResumeId
     });
 
     // 2. Update UserReferences to include this job
     // Note: Ensure your UserReferences model has a 'jobRefs' field
-    const userRefs = await UserReferences.findOne({ userId: userData.id });
     if (userRefs) {
       if (!userRefs.jobTrackingRefs) userRefs.jobTrackingRefs = [];
       userRefs.jobTrackingRefs.push(newJob._id);

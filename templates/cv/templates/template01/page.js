@@ -2,8 +2,8 @@
 
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { RESUME_IDS01 as IDS } from './index';
-import { bind } from '@resumetemplates/editorstyles';
-import { selectContainer } from '@lib/redux/features/resumes/resumeeditor/slice';
+import { bind } from '@/app/editor/(shared)/editorstyles';
+import { selectContainer } from '@lib/redux/features/editor/slice';
 import { useRef, useEffect, useState } from 'react';
 import { layoutGrid01 } from './index'; 
 
@@ -12,7 +12,7 @@ export default function Template01() {
   const resumeRef = useRef(null);
   const [contentHeight, setContentHeight] = useState(0);
 
-  const formDataMap = useSelector((state) => state.resumeEditor.formDataMap, shallowEqual);
+  const formDataMap = useSelector((state) => state.editor.formDataMap, shallowEqual);
 
   // Measure content height whenever data changes to toggle page guides
   useEffect(() => {

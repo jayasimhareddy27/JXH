@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { sampleCoverLetter } from '../samplercoverletter';
+import { sampleCoverLetter } from '../../samplercoverletter';
 
 export default function Template01CLPreview() {
   const cl = sampleCoverLetter;

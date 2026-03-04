@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { connectToDB } from '@lib/mongodb';
 import UserReferences from "@models/userreferences";
 import Resume from "@models/resume";
-import { formatPrompts } from '@public/staticfiles/prompts/resumeextraction/userdetailextraction';
+import { resumeformatPrompts } from '@public/staticfiles/prompts/resume/schema';
 
 const JWT_SECRET = process.env.JWT_SECRET || "SuperSecretKey";
 
@@ -50,6 +50,8 @@ export async function GET(request) {
       count: userRefs.resumeRefs.length,
       resumes: userRefs.resumeRefs.sort((a, b) =>   new Date(b.updatedAt) - new Date(a.updatedAt)),
       primaryResumeId: userRefs.primaryResumeRef?._id || null,
+      aiResumeRef: userRefs.aiResumeRef || null,
+      myProfileRef: userRefs.myProfileRef || null,
     });
   } catch (error) {
     console.error("Error fetching resumes:", error);
@@ -78,18 +80,18 @@ export async function POST(req) {
       userId: userData.id,
       name: name, 
 
-      personalInformation: { ...formatPrompts.personalInformation.initial,name: userData.name, email: userData.email },
-      onlineProfiles: formatPrompts.onlineProfiles.initial,
+      personalInformation: { ...resumeformatPrompts.personalInformation.initial,name: userData.name, email: userData.email },
+      onlineProfiles: resumeformatPrompts.onlineProfiles.initial,
 
-      educationHistory: formatPrompts.educationHistory.initial,
-      workExperience: formatPrompts.workExperience.initial,
+      educationHistory: resumeformatPrompts.educationHistory.initial,
+      workExperience: resumeformatPrompts.workExperience.initial,
 
-      projects: formatPrompts.projects.initial,
+      projects: resumeformatPrompts.projects.initial,
 
-      certifications: formatPrompts.certifications.initial,
+      certifications: resumeformatPrompts.certifications.initial,
       
-      skillsSummary: formatPrompts.skillsSummary.initial,
-      careerSummary: formatPrompts.careerSummary.initial,
+      skillsSummary: resumeformatPrompts.skillsSummary.initial,
+      careerSummary: resumeformatPrompts.careerSummary.initial,
       
       resumetextAireference: "",
     });

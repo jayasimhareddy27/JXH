@@ -54,34 +54,68 @@ export async function GET(request, { params }) {
   }
 }
 
-// PATCH to update status or notes
+// PATCH — Common job update route (future-proof)
 export async function PATCH(request, { params }) {
   try {
     await connectToDB();
-    const { id } = params;
+    const { id } = await params;
     const userData = await authenticate(request);
-    
+
     if (!userData) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await request.json();
+    const updates = await request.json();
 
-    // Ensure the user owns the job before updating
+    // Fields that must NEVER be updated from client
+    const PROTECTED_FIELDS = [
+      "_id",
+      "userId",
+      "createdAt",
+      "updatedAt"
+    ];
+
+    // Remove protected fields if present
+    for (const field of PROTECTED_FIELDS) {
+      if (field in updates) {
+        delete updates[field];
+      }
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return NextResponse.json(
+        { error: "No valid fields to update" },
+        { status: 400 }
+      );
+    }
+
+    // Ownership check
     const job = await Job.findById(id);
     if (!job || job.userId.toString() !== userData.id) {
-      return NextResponse.json({ error: "Job not found or unauthorized" }, { status: 403 });
+      return NextResponse.json(
+        { error: "Job not found or unauthorized" },
+        { status: 403 }
+      );
     }
 
     const updatedJob = await Job.findByIdAndUpdate(
       id,
-      { $set: body },
-      { new: true, runValidators: true }
-    ).populate('resumeId', 'name');
+      { $set: updates },
+      {
+        new: true,
+        runValidators: true
+      }
+    );
 
-    return NextResponse.json(updatedJob);
+    return NextResponse.json({
+      success: true,
+      job: updatedJob
+    });
   } catch (error) {
     console.error("Error updating job:", error);
-    return NextResponse.json({ error: "Failed to update job" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Failed to update job" },
+      { status: 500 }
+    );
   }
 }

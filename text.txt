@@ -1,8 +1,16 @@
-naming of layouts and rename Page Structure to ATS Templates
-rename
-Cover letter
 
-ATS Score
+
+Automating CV, CL with JD: 
+  Tailoring CV 
+  Tailoring CL
+
+
+Upgrade design tab ( 5/10 completed)
+upgrade content tab (8/10 completed)
+upgrade VISIBILITY tab (/8/10 completed)
+upgrade ATS Score tab -1
+Upgrade the Templates structring for cv/cl and increase templates
+add new tab where we can chat with ai to edit resume
 Suggest for better ATS score
 
 Better prompting
@@ -20,12 +28,8 @@ Ai Settings
   simplify ai settings further more
   add web ai
 
-profile page:
-  storage not yet finished
-
 
 job tracker page:
-  enable input of job description, company name,......
   show clear view of jobs applied, dates, resumes attached, ats score, cover letter,.....
 
 job finder page:
@@ -66,7 +70,3 @@ connect mail to the website to update the job status automatically
 
 
 
-DESIGN
-DETAILS
-LAYOUT AND VISIBILITY
-ATS

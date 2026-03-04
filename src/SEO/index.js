@@ -52,10 +52,6 @@ export const siteMetadata = {
     creator: '@jayareddy',
     images: ['/twitter-image.png'],
   },
-  icons: {
-    icon: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
-  },
   sitemap: 'https://jobxhunter.com/sitemap.xml',
 };
 

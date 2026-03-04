@@ -2,6 +2,10 @@ import mongoose from 'mongoose';
 
 const coverLetterSchema = new mongoose.Schema({
   userId: { type: String, required: true, index: true },
+
+  resumeId: {   type: mongoose.Schema.Types.ObjectId,   ref: 'Resume',   default: null },
+  jobId: {   type: mongoose.Schema.Types.ObjectId,   ref: 'Job',  default: null },
+
   name: { type: String, required: true, default: 'Default Cover letter by JXH' },
   designConfig: { type: mongoose.Schema.Types.Mixed, default: {layout: 'primary',containers: {},selectedContainer: null, } },
   
@@ -9,27 +13,30 @@ const coverLetterSchema = new mongoose.Schema({
 
   personalInformation: { 
     type: mongoose.Schema.Types.Mixed, 
-    default: {email: "",name: "",phone: "",address: {},onlineProfiles: []} 
+    default: {} 
   },
+  onlineProfiles: { type: mongoose.Schema.Types.Mixed, default: {} },
+
   
   recipientInformation: { 
     type: mongoose.Schema.Types.Mixed, 
-    default: {managerName: "",companyName: "",companyAddress: "",positionTitle: ""} 
+    default: {} 
   },
 
   letterMeta: {
     type: mongoose.Schema.Types.Mixed,
-    default: {date: new Date(),subjectLine: "", referenceNumber: "" }
+    default: {}
   },
 
   letterContent: { 
     type: mongoose.Schema.Types.Mixed, 
-    default: {salutation: "Dear Hiring Manager,",intro: "",bodyParagraphs: [], conclusion: ""} 
+    default: {} 
   },
+  bodyParagraphs: { type: mongoose.Schema.Types.Mixed, default: [] },
 
   signOff: { 
     type: mongoose.Schema.Types.Mixed, 
-    default: {complimentaryClose: "Sincerely,",signatureName: "", signatureImage: "" } 
+    default: {} 
   },
     
 }, { timestamps: true, strict: false });

@@ -72,13 +72,6 @@ export async function POST(req) {
     const newCoverLetter = await CoverLetter.create({
       userId: userData.id,
       name: name,
-      personalInformation: {
-        name: userData.name || "",
-        email: userData.email || "",
-        phone: "",
-        address: {},
-        onlineProfiles: []
-      }
       // Other fields like letterContent will use defaults defined in your schema
     });
 

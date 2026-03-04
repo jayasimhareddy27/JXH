@@ -2,28 +2,30 @@
 
 import { useParams } from "next/navigation";
 import { templates } from "@resumetemplates/templatelist"; 
-import { fetchResumeById } from "@lib/redux/features/resumes/resumeeditor/thunks";
-import { selectContainer } from "@lib/redux/features/resumes/resumeeditor/slice";
+import { fetchDocumentById } from "@lib/redux/features/editor/thunks";
+import { selectContainer } from "@lib/redux/features/editor/slice";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Loading from "./loading";
 import { Printer } from "lucide-react";
-import ResumeDesignEditor from "./(helpers)/resumedesigneditor";
+import DesignEditor from "../../(shared)/designeditor";
 
+const type="resume";
 export default function ResumeEditorPage() {
     const params = useParams();
     const resumeId = params?.id;
     const dispatch = useDispatch();
     
-    const resumeData = useSelector((state) => state.resumeEditor.formDataMap);
+    const resumeData = useSelector((state) => state.editor.formDataMap);
     const { token } = useSelector((state) => state.auth);
     
     const activeTemplateObj = templates.find(t => t.id === resumeData?.templateId) || templates[0];
     const SelectedTemplate = activeTemplateObj.page;
+    const [isMounted, setIsMounted] = useState(false);
     
     useEffect(() => {
         if (!token || !resumeId) return;
-        dispatch(fetchResumeById(resumeId));
+        dispatch(fetchDocumentById({id: resumeId, type}));
     }, [token, resumeId, dispatch]);
 
     const handleDeselect = (e) => {
@@ -41,6 +43,15 @@ export default function ResumeEditorPage() {
         return <Loading />;
     }
 
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    // If we haven't mounted yet, render a skeleton or nothing
+    // to prevent the server/client text mismatch
+    if (!isMounted) {
+        return <div className="flex h-screen items-center justify-center">Loading Editor...</div>;
+    }
     return (
         <div className="flex h-screen overflow-hidden bg-[var(--color-background-primary)] text-[var(--color-text-primary)] print:bg-white print:block">
      
@@ -73,7 +84,7 @@ export default function ResumeEditorPage() {
                    
             {/* Sidebar Section */}
             <div className="print:hidden w-1/3 h-full overflow-y-auto border-r border-[var(--color-border-primary)] bg-[var(--color-background-secondary)] shadow-xl z-10 custom-scrollbar">
-                {<ResumeDesignEditor resumeId={resumeId} selectedContainer={resumeData?.designConfig?.selectedContainer} activeTemplateObj={activeTemplateObj}/>}
+                {<DesignEditor type={type} selectedContainer={resumeData?.designConfig?.selectedContainer} activeTemplateObj={activeTemplateObj} templates={templates}/>}
             </div>
         </div>
     );

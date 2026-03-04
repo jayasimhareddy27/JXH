@@ -1,6 +1,6 @@
 'use client'
 import { fetchfromai } from "@public/components/ai/llmapi";
-import { jobPromptMap } from "@public/staticfiles/prompts/jobdescriptionextractor";
+import { jobPromptMap } from "@public/staticfiles/prompts/jobdescription";
 
 export async function fetchJobPhaseData(id, key, jobDescription, AiAgent, isArrayPhase = false) {
   const { provider, model, ApiKey } = AiAgent;
@@ -18,11 +18,11 @@ export async function fetchJobPhaseData(id, key, jobDescription, AiAgent, isArra
   
   // 3. Clean Markdown/Backticks
   const cleanedResponse = rawResponse.trim()
-    .replace(/^```json\s*/, '')
-    .replace(/^```/, '')
-    .replace(/```$/, '')
-    .trim();
-
+  .replace(/^```json\s*/, '')
+  .replace(/^```/, '')
+  .replace(/```$/, '')
+  .trim();
+  
   let data = JSON.parse(cleanedResponse);
 
   // 4. SMART CLEANING: Flatten Objects to Strings
