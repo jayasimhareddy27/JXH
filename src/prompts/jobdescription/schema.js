@@ -91,4 +91,3 @@ export const jobPromptMap = Object.fromEntries(
   jobExtractionPrompts.map((p) => [p.id, p.prompt])
 );
 
-export { jobExtractionPrompts };
