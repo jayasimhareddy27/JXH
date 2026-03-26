@@ -19,7 +19,7 @@ const ollamaModels = [
 
 
 const Companyname= "JobxHunter";
-const Companylogo = "https://jobxchaser.com/logo.png";
+//const Companylogo = "https://jobxchaser.com/logo.png";
 const Companyemail = "jayasimhareddy27@gmail.com"
 const Companyphone = "+1 4059569992";
 const Companyaddress = "500 station blvd, aurora, IL 60504";
@@ -39,7 +39,7 @@ const Companyadminid = "697638430080fc1241634262"
 
 export {
   Companyname,
-  Companylogo,
+  //Companylogo,
   Companyemail,
   Companyphone,
   Companyaddress,
@@ -51,7 +51,6 @@ export {
   Companyshortname,
   Companynameletters,
 
-  MONGODB_URI,
 
   geminiModels,
   huggingFaceModels,

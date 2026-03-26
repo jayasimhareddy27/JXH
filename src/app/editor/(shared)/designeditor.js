@@ -9,7 +9,7 @@ import { Save, LayoutGrid, Palette, FileText, Eye, Target, CloudCheck, Loader2 }
 import DesignTab from "../(components)/design";
 import DetailsTab from "../(components)/details";
 import LayoutVisibilityTab from "../(components)/layout_visibility";
-import AtsTab from "../(components)/ats";
+//import AtsTab from "../(components)/ats";
 import SelectTemplateTab from "../(components)/selecttemplate";
 
 
@@ -120,7 +120,7 @@ export default function DesignEditor({ type, selectedContainer, activeTemplateOb
           {activeTab === "visibility" && (
             <LayoutVisibilityTab activeTemplateObj={activeTemplateObj} selectedContainer={selectedContainer}/>
           )}
-          {activeTab === "ats" && <AtsTab formDataMap={formDataMap} />}
+          {/*{activeTab === "ats" && <AtsTab formDataMap={formDataMap} />}*/}
         </div>
       </main>
 
