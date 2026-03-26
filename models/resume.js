@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { resumeformatPrompts } from '@public/staticfiles/prompts/resume/schema';
+import { resumeformatPrompts } from '@public/prompts/resume/schema';
   
 const defaultSectionTitles = Object.values(resumeformatPrompts).map(phase => ({
     key: phase.key,

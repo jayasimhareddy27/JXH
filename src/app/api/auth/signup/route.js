@@ -4,7 +4,7 @@ import Resume from '@models/resume';
 import UserReferences from '@models/userreferences'; 
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { formatPrompts } from '@public/staticfiles/prompts/resume/schema';
+import { formatPrompts } from '@public/prompts/resume/schema';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 

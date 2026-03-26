@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { useRouter } from "next/navigation";
 import { createJob, fetchAIdata_job } from "@lib/redux/features/job/thunks";
-import { jobExtractionPrompts } from "@public/staticfiles/prompts/jobdescription/schema";
+import { jobExtractionPrompts } from "@public/prompts/jobdescription/schema";
 import { sanitizeJobData } from "./(helpers)/index"; 
 import { 
   ArrowLeft, Save, Loader2, ShieldAlert, Zap, 

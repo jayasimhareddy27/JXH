@@ -6,8 +6,8 @@ import { EyeOff, AlertCircle, Sparkles } from "lucide-react";
 import renderField from "../(shared)/renderfields";
 import PhaseAccordion from "../(shared)/phaseaccordion";
 
-import { resumeextractionPhases } from "@public/staticfiles/prompts/resume/index";
-import {clExtractionPhases} from "@public/staticfiles/prompts/coverletter/index";
+import { resumeextractionPhases } from "@public/prompts/resume/index";
+import {clExtractionPhases} from "@public/prompts/coverletter/index";
 
 const DetailsTab = memo(({ type, expandedPhase, toggleAccordion, handleFetchFromAI, handleSave }) => {
   const dispatch = useDispatch();

@@ -1,6 +1,6 @@
 'use client'
 import { fetchfromai } from "@public/components/ai/llmapi";
-import { jobPromptMap } from "@public/staticfiles/prompts/jobdescription";
+import { jobPromptMap } from "@public/prompts/jobdescription";
 
 export async function fetchJobPhaseData(id, key, jobDescription, AiAgent, isArrayPhase = false) {
   const { provider, model, ApiKey } = AiAgent;

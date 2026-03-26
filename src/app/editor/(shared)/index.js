@@ -1,6 +1,6 @@
 
 import { fetchfromai } from "@public/components/ai/llmapi";
-import { resumepromptMap } from "@public/staticfiles/prompts/resume/schema";
+import { resumepromptMap } from "@public/prompts/resume/schema";
 
 
 // This is a pure utility function for formatting strings. It stays.
