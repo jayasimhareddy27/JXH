@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, signupUser } from '@lib/redux/features/auth/thunks';
-import { signIn } from 'next-auth/react';
 import { Companynameletters } from '@/globalvar/companydetails';
 
 export default function AuthPage() {
@@ -90,7 +89,7 @@ export default function AuthPage() {
           {isLogin ? (
             <>
               <div className="text-center text-sm text-[var(--color-paragraph)]">or</div>
-              <button type="button" onClick={() => signIn('google')} className="w-full py-3 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold flex items-center justify-center gap-3 transition">
+              <button type="button" className="w-full py-3 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold flex items-center justify-center gap-3 transition">
                 Log in with Google
               </button>
               <p className="text-center text-sm text-[var(--color-paragraph)] mt-4">New user?{' '}
