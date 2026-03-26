@@ -13,6 +13,10 @@ const geminiModels = [
   { label: 'Gemini Pro', value: 'gemini-pro' },
 ];
 
+const ollamaModels = [
+  { label: 'llama', value: 'llama' },
+];
+
 
 const Companyname= "JobxHunter";
 const Companylogo = "https://jobxchaser.com/logo.png";
@@ -51,7 +55,8 @@ export {
 
   geminiModels,
   huggingFaceModels,
-  
+  ollamaModels,
+
   Companyadminid
 
 }

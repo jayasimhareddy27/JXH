@@ -43,50 +43,69 @@ export async function PUT(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   
+  
   try {
-    // 1. Destructure 'theme' from the request body as well
-    const { primaryResumeId, theme, aiResumeRef,myProfileRef,favResumeTemplateId,favCoverletterTemplateId } = await request.json();
+    const body = await request.json();
+    const { 
+      primaryResumeId, 
+      theme, 
+      aiResumeRef, 
+      myProfileRef, 
+      favResumeTemplateId, 
+      favCoverletterTemplateId,
+      newAiKey // Format: { agent, provider, apiKey }
+    } = body;
 
-    // 2. Check if at least one property was provided
-    if (!primaryResumeId && !theme && !aiResumeRef && !myProfileRef && !favResumeTemplateId && !favCoverletterTemplateId) {
-      return NextResponse.json({ error: 'primaryResumeId, theme, aiResumeRef, myProfileRef, favResumeTemplateId, or favCoverletterTemplateId is required' }, { status: 400 });
+    // 1. Validation: Ensure at least one field is being updated
+    const hasUpdate = (
+      primaryResumeId || theme || aiResumeRef || 
+      myProfileRef || favResumeTemplateId || 
+      favCoverletterTemplateId || newAiKey
+    );
+
+    if (!hasUpdate) {
+      return NextResponse.json({ 
+        error: 'At least one field (primaryResumeId, theme, aiResumeRef, myProfileRef, favResumeTemplateId, favCoverletterTemplateId, or newAiKey) is required' 
+      }, { status: 400 });
     }
 
     const userRefs = await UserReferences.findOne({ userId: userData.id });
-    
-    // 3. Conditionally update the properties if they exist
-    if (primaryResumeId) {
-      userRefs.primaryResumeRef = primaryResumeId;
+    if (!userRefs) {
+      return NextResponse.json({ error: 'User references not found' }, { status: 404 });
     }
-    if (aiResumeRef) {
-      userRefs.aiResumeRef = aiResumeRef;
-    }
-    if (theme) {
-      userRefs.theme = theme;
-    }
-    if (myProfileRef) {
-      userRefs.myProfileRef = myProfileRef;
-    }
-    if (favResumeTemplateId) {
-      userRefs.favResumeTemplateId = favResumeTemplateId;
-    }
-    if (favCoverletterTemplateId) {
-      userRefs.favCoverletterTemplateId = favCoverletterTemplateId;
+
+    // 2. Standard Preference Updates
+    if (primaryResumeId) userRefs.primaryResumeRef = primaryResumeId;
+    if (aiResumeRef) userRefs.aiResumeRef = aiResumeRef;
+    if (theme) userRefs.theme = theme;
+    if (myProfileRef) userRefs.myProfileRef = myProfileRef;
+    if (favResumeTemplateId) userRefs.favResumeTemplateId = favResumeTemplateId;
+    if (favCoverletterTemplateId) userRefs.favCoverletterTemplateId = favCoverletterTemplateId;
+
+    // 3. AI Key Logic
+    if (newAiKey) {
+      const { agent, provider, apiKey } = newAiKey;
+      if (provider !== 'ChromeAI') {
+          userRefs.aiKeys.push({ agent, provider, apiKey });
+        }
     }
       
+    // 4. Save (Triggers Mongoose pre-save hook to set primaryAiKeyRef)
     await userRefs.save();
 
-    // 4. Return the updated data in the response
+    // 5. Return the updated data
     return NextResponse.json({ 
       success: true, 
       primaryResumeId: userRefs.primaryResumeRef,
       aiResumeRef: userRefs.aiResumeRef,
       theme: userRefs.theme,
       myProfileRef: userRefs.myProfileRef,
-      favResumeTemplateId: userRefs.favResumeTemplateId
+      favResumeTemplateId: userRefs.favResumeTemplateId,
+      aiKeysCount: userRefs.aiKeys.length,
     });
+
   } catch (error) {
-    console.error(error);
+    console.error("PUT Error:", error);
     return NextResponse.json({ error: 'Failed to update user references' }, { status: 500 });
   }
 }
