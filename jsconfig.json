@@ -6,7 +6,7 @@
       "@public/*": ["./src/*"],
       "@styles/*": ["./src/styles/*"],
       "@models/*": ["./models/*"],
-      "@components/*": ["./public/components/*"],
+      "@components/*": ["./src/components/*"],
       "@resumetemplates/*": ["./templates/cv/*"],
       "@coverlettertemplates/*": ["./templates/cl/*"]
     }
