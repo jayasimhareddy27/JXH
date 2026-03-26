@@ -4,7 +4,7 @@ import Resume from '@models/resume';
 import UserReferences from '@models/userreferences'; 
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { formatPrompts } from '@public/prompts/resume/schema';
+import { resumeformatPrompts } from '@public/prompts/resume/schema';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -36,18 +36,18 @@ export async function POST(req) {
       userId: user._id,
       name: 'My Profile', 
 
-      personalInformation: { ...formatPrompts.personalInformation.initial,name: user.name, email: user.email },
-      onlineProfiles: formatPrompts.onlineProfiles.initial,
+      personalInformation: { ...resumeformatPrompts.personalInformation.initial,name: user.name, email: user.email },
+      onlineProfiles: resumeformatPrompts.onlineProfiles.initial,
 
-      educationHistory: formatPrompts.educationHistory.initial,
-      workExperience: formatPrompts.workExperience.initial,
+      educationHistory: resumeformatPrompts.educationHistory.initial,
+      workExperience: resumeformatPrompts.workExperience.initial,
 
-      projects: formatPrompts.projects.initial,
+      projects: resumeformatPrompts.projects.initial,
 
-      certifications: formatPrompts.certifications.initial,
+      certifications: resumeformatPrompts.certifications.initial,
       
-      skillsSummary: formatPrompts.skillsSummary.initial,
-      careerSummary: formatPrompts.careerSummary.initial,
+      skillsSummary: resumeformatPrompts.skillsSummary.initial,
+      careerSummary: resumeformatPrompts.careerSummary.initial,
       
       templateId: 'template01',
       resumetextAireference: "",
