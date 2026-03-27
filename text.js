@@ -14,7 +14,7 @@ const DetailsTab = memo(({ type, expandedPhase, toggleAccordion, handleFetchFrom
   const phaseRefs = useRef({});
 
   const { formDataMap, loading } = useSelector(  (state) => state.editor,  shallowEqual);
-  
+
   const designConfig = formDataMap?.designConfig || {};
   const visibility = designConfig.visibility || {};
   const isLoading = loading === "loading";
@@ -25,29 +25,6 @@ const DetailsTab = memo(({ type, expandedPhase, toggleAccordion, handleFetchFrom
   } else if(type==="coverletter"){
     Phases = clExtractionPhases;
   }
-  const selectedContainer = designConfig?.selectedContainer
-  
-  useEffect(() => {
-    if (selectedContainer) {
-      const matchedPhase = Phases.find(p => 
-        selectedContainer.startsWith(p.key) || 
-        (p.key === "workExperience" && selectedContainer.includes("job")) ||
-        (p.key === "educationHistory" && selectedContainer.includes("edu")) ||
-        (p.key === "projects" && selectedContainer.includes("project")) ||
-        (p.key === "certifications" && selectedContainer.includes("cert"))
-      );
-
-      if (matchedPhase && expandedPhase !== matchedPhase.key) {
-        toggleAccordion(matchedPhase.key);
-        setTimeout(() => {
-          phaseRefs.current[matchedPhase.key]?.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        }, 100);
-      }
-    }
-  }, [selectedContainer, Phases, toggleAccordion, expandedPhase]);
   // --- Hidden Sections Summary ---
   const hiddenSections = Phases.filter(p => visibility[p.key] === false);
 
@@ -96,7 +73,6 @@ const DetailsTab = memo(({ type, expandedPhase, toggleAccordion, handleFetchFrom
                   handleFetchFromAI={handleFetchFromAI} 
                   renderField={renderField} 
                   phaseindex={index}
-                  selectedContainer={selectedContainer}
                 />
               </div>
             </div>

@@ -8,9 +8,10 @@ export const getHighlightClass = (id, selected) => {
   return `resume-element ${isActive ? 'is-selected' : 'my-hover-effect'}`;
 };
 
+
+
 /* ----------------------------------------
    Full binder (handles clicks + styles)
------------------------------------------ */
 export const bind = (id, designConfig, selectedContainer, dispatch, extraClasses = "") => {
   const isActive = selectedContainer === id;
 
@@ -31,6 +32,37 @@ export const bind = (id, designConfig, selectedContainer, dispatch, extraClasses
       }
       else{
         dispatch(clearSelectedContainer());
+      }
+    },
+  };
+};
+   ----------------------------------------- */
+export const bind = (id, designConfig, selectedContainer, dispatch, extraClasses = "") => {
+  const isActive = selectedContainer === id;
+  
+  // 1. Get Global Styles (Page-level Theme)
+  const themeStyles = designConfig?.theme || {}; 
+  
+  // 2. Get Specific Styles (Element-level)
+  const specificStyles = designConfig?.containers?.[id]?.style || {};
+
+  // 3. Merge: Specific overrides Global
+  const mergedStyles = {
+    ...themeStyles,
+    ...specificStyles,
+  };
+
+  const finalClass = `resume-element ${isActive ? 'is-selected' : 'my-hover-effect'} ${extraClasses}`.trim();
+  
+  return {
+    className: finalClass,
+    style: mergedStyles, 
+    onClick: (e) => {
+      e.stopPropagation();
+      if (isActive) {
+        dispatch(clearSelectedContainer());
+      } else if (dispatch && id) {
+        dispatch(selectContainer(id));
       }
     },
   };

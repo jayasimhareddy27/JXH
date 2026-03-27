@@ -27,7 +27,7 @@ const Accordion = memo(({ title, isExpanded, onToggle, children }) => (
   </div>
 ));
 
-const FieldList = memo(({ phase, formDataMap, renderField, isLoading }) => {
+const FieldList = memo(({ phase, formDataMap, renderField, isLoading,selectedContainer}) => {
   const dispatch = useDispatch();
 
   const formData = formDataMap[phase.key] || phase.initial;
@@ -35,6 +35,7 @@ const FieldList = memo(({ phase, formDataMap, renderField, isLoading }) => {
   const sectionTitles = formDataMap.sectionTitles || [];
   const currentSection = sectionTitles.find(st => st.key === phase.key);
   const displayTitle = phase.title;
+console.log(currentSection);
 
 
   const handleRemoveItem = (index) => {
@@ -63,27 +64,74 @@ const FieldList = memo(({ phase, formDataMap, renderField, isLoading }) => {
       </div>
       <hr className="border-[color:var(--color-border)] mb-4" />
             
-      {phase.arrayFieldKey ? (
-        Array.isArray(formData) ? formData.map((item, index) => (
-          <div key={item.id || index} className="border p-3 rounded-md bg-white shadow-sm relative mb-4 dark:bg-[color:var(--color-card-bg)]">
-            {Object.entries(item).filter(([k]) => k !== "id").map(([key, val]) => {
+{phase.arrayFieldKey ? (
+  Array.isArray(formData) ? (
+    formData.map((item, index) => {
+      // Logic to check if the specific block (e.g., job_0) is selected
+      const isItemSelected = selectedContainer?.includes(`_${index}`);
+
+      return (
+        <div
+          key={item.id || index}
+          className={`border p-3 rounded-md bg-white shadow-sm relative mb-4 dark:bg-[color:var(--color-card-bg)] transition-all duration-300 ${
+            isItemSelected ? "ring-2 ring-[var(--color-button-primary-bg)] border-transparent shadow-md" : ""
+          }`}
+        >
+          {Object.entries(item)
+            .filter(([k]) => k !== "id")
+            .map(([key, val]) => {
               const updateItem = (updatedItem) => {
                 const newArray = [...formData];
                 newArray[index] = updatedItem;
                 dispatch(updatePhase({ phaseKey: phase.key, data: newArray }));
               };
-              return renderField([key, val], item, updateItem, index, isLoading);
+
+              // Logic to check if specific field (e.g., jobTitle_0) is selected
+              const isFieldSelected = selectedContainer === `${key}_${index}`;
+
+              // CRITICAL FIX: Added 'return' here
+              return (
+                <div 
+                  className={`transition-colors duration-200 ${isFieldSelected ? "bg-blue-50 rounded p-1 -m-1 ring-1 ring-blue-100" : ""}`} 
+                  key={`${key}-${index}`}
+                >
+                  {renderField([key, val], item, updateItem, index, isLoading)}
+                </div>
+              );
             })}
-            {formData.length >= 1 && (
-              <button type="button" className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-lg font-bold" onClick={() => handleRemoveItem(index)}>×</button>
-            )}
-          </div>
-        )) : <div className="text-red-600 font-semibold">Error: Invalid data format for this section.</div>
-      ) : (
-        Object.entries(formData || {}).map(([key, val]) =>
-          renderField([key, val], formData, (updatedData) => dispatch(updatePhase({ phaseKey: phase.key, data: updatedData })), null, isLoading)
-        )
+          
+          {formData.length >= 1 && (
+            <button
+              type="button"
+              className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-lg font-bold z-10"
+              onClick={() => handleRemoveItem(index)}
+            >
+              ×
+            </button>
+          )}
+        </div>
+      );
+    })
+  ) : (
+    <div className="text-red-600 font-semibold">Error: Invalid data format for this section.</div>
+  )
+) : (
+  /* Handling for non-array fields (like Career Summary) */
+  Object.entries(formData || {}).map(([key, val]) => (
+    <div 
+      className={`transition-colors duration-200 ${selectedContainer === key ? "bg-blue-50 rounded p-1 -m-1 ring-1 ring-blue-100" : ""}`} 
+      key={key}
+    >
+      {renderField(
+        [key, val], 
+        formData, 
+        (updatedData) => dispatch(updatePhase({ phaseKey: phase.key, data: updatedData })), 
+        null, 
+        isLoading
       )}
+    </div>
+  ))
+)}
     </>
   );
 });
@@ -121,13 +169,14 @@ const ActionButtons = memo(({ phase, formData, isLoading, handleFetchFromAI }) =
   );
 });
 
-function PhaseAccordion({ phase, formDataMap, isLoading, renderField, expandedPhase, toggleAccordion, handleFetchFromAI,phaseindex }) {
+function PhaseAccordion({ phase, formDataMap, isLoading, renderField, expandedPhase, toggleAccordion, handleFetchFromAI,phaseindex,selectedContainer }) {
   const titles=formDataMap?.sectionTitles||[];
   const displayTitle =titles[phaseindex]?.title || phase.title;
-  
+    console.log(formDataMap);
+    
   return (
     <Accordion title={displayTitle} isExpanded={expandedPhase === phase.key} onToggle={() => toggleAccordion(phase.key)}>
-      <FieldList phase={phase} formDataMap={formDataMap} renderField={renderField} isLoading={isLoading}/>
+      <FieldList phase={phase} formDataMap={formDataMap} renderField={renderField} isLoading={isLoading} selectedContainer={selectedContainer}/>
       <ActionButtons phase={phase} formData={formDataMap[phase.key] || phase.initial} isLoading={isLoading} handleFetchFromAI={handleFetchFromAI}/>
     </Accordion>
   );

@@ -1,9 +1,9 @@
 // index.js
-import Template01 from './page';
-import Template01Preview from './preview';
+import Template02 from './page';
+import Template02Preview from './preview';
 
 // ====================== LAYOUT GRID CONFIG ======================
-export const layoutGrid01 = {
+export const layoutGrid02 = {
   primary: "grid grid-cols-1 gap-6",           // Single Column - Clean Professional
   secondary: "grid grid-cols-3 gap-8",         // Classic Sidebar Layout
   tertiary: "grid grid-cols-4 gap-6",          // Balanced Modern
@@ -11,7 +11,7 @@ export const layoutGrid01 = {
 };
 
 // ====================== RESUME IDS 01 - Comprehensive ======================
-export const RESUME_IDS01 = {
+export const RESUME_IDS02 = {
   // ==================== PAGE & GLOBAL ====================
   PAGE: "page",
   HEADER: "header",
@@ -89,4 +89,4 @@ export const RESUME_IDS01 = {
 
 
 
-export { Template01, Template01Preview };
+export { Template02, Template02Preview };

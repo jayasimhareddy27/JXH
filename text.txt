@@ -1,10 +1,8 @@
-Upgrade design tab ( 5/10 completed)
 upgrade content tab (8/10 completed)
-upgrade VISIBILITY tab (/8/10 completed)
-upgrade ATS Score tab -1
-Upgrade the Templates structring for cv/cl and increase templates
+upgrade ATS Score tab , Suggest for better ATS scores
+Upgrade the Templates structring for cl and increase templates
 add new tab where we can chat with ai to edit resume
-Suggest for better ATS score
+
 
 Better prompting
 
