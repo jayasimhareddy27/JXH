@@ -6,6 +6,9 @@ export const siteMetadata = {
     default: 'JobxChaser | AI-Powered Resume Builder & Job Finder',
     template: '%s | JobxChaser',
   },
+  verification: {
+    google: 'google8c4702097ffc8dc4.html',
+  },
   description: 'Create professional resumes in minutes with our AI-powered builder. Find your next job, track applications, and get ahead in your career with JobxHunter.',
   keywords: ['resume builder', 'job finder', 'career tools', 'AI resume', 'job search', 'job tracker', 'cv builder', 'professional resume', 'free resume builder'],
   authors: [{ name: 'Jayasimha Reddy', url: 'https://www.linkedin.com/in/jayasimhareddy27/' }],
