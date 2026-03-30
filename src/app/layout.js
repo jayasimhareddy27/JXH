@@ -29,6 +29,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        <meta name="google-site-verification" content="ypYVEm52k-IC3jH9wodtltVI9PjRJ5tqIf7GBhdhodQ" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}/>
       </head>
       <body className={`${inter.className}`}>
