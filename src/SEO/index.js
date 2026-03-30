@@ -9,12 +9,12 @@ export const siteMetadata = {
   verification: {
     google: 'google8c4702097ffc8dc4.html',
   },
-  description: 'Create professional resumes in minutes with our AI-powered builder. Find your next job, track applications, and get ahead in your career with JobxHunter.',
+  description: 'Create professional resumes in minutes with our AI-powered builder. Find your next job, track applications, and get ahead in your career with JobxChaser.',
   keywords: ['resume builder', 'job finder', 'career tools', 'AI resume', 'job search', 'job tracker', 'cv builder', 'professional resume', 'free resume builder'],
   authors: [{ name: 'Jayasimha Reddy', url: 'https://www.linkedin.com/in/jayasimhareddy27/' }],
   creator: 'Jayasimha Reddy',
-  publisher: 'JobxHunter',
-  applicationName: 'JobxHunter',
+  publisher: 'JobxChaser',
+  applicationName: 'JobxChaser',
   robots: {
     index: true,
     follow: true,
@@ -29,9 +29,7 @@ export const siteMetadata = {
   alternates: {
     canonical: '/',
   },
-  verification: {
-    google: 'your-google-verification-code',
-  },
+  
   openGraph: {
     title: 'JobxChaser: AI-Powered Resume Builder & Job Finder',
     description: 'Build a standout resume and land your dream job with our intelligent career platform.',
@@ -42,7 +40,7 @@ export const siteMetadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'JobxHunter AI Resume Builder and Job Finder',
+        alt: 'JobxChaser AI Resume Builder and Job Finder',
       },
     ],
     locale: 'en_US',
@@ -50,7 +48,7 @@ export const siteMetadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'JobxHunter: AI-Powered Resume Builder & Job Finder',
+    title: 'JobxChaser: AI-Powered Resume Builder & Job Finder',
     description: 'Build a standout resume and land your dream job with our intelligent career platform.',
     creator: '@jayareddy',
     images: ['/twitter-image.png'],
