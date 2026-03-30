@@ -29,7 +29,7 @@ export async function POST(request) {
 
   try {
     const { resumeId, newName } = await request.json();
-
+    
     if (!resumeId || !newName) {
       return NextResponse.json({ error: 'Missing resumeId or newName' }, { status: 400 });
     }

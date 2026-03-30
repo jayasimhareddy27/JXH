@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
-import { saveDocumentById, fetchAIdata } from "@lib/redux/features/editor/thunks";
+import { saveDocumentById, fetchAIdataforDocument } from "@lib/redux/features/editor/thunks";
 import { Save, LayoutGrid, Palette, FileText, Eye, Target, CloudCheck, Loader2 } from "lucide-react";
 
 // Sub-tab Components
@@ -15,7 +15,7 @@ import SelectTemplateTab from "../(components)/selecttemplate";
 
 export default function DesignEditor({ type, selectedContainer, activeTemplateObj,templates }) {
   const dispatch = useDispatch();
-  
+  const abortControllerRef = useRef(null);
   // 1. ADD: State from original page.js to manage accordions
   const [activeTab, setActiveTab] = useState("design");
   const [activePhaseKey, setActivePhaseKey] = useState(null);
@@ -28,7 +28,15 @@ export default function DesignEditor({ type, selectedContainer, activeTemplateOb
     token: state.auth.token,
     aiAgent: state.aiAgent
   }), shallowEqual);
-
+  
+  // 2. Cleanup: Abort any ongoing AI requests when component unmounts
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
   if (!formDataMap) return null;
 
   // 3. HANDLER: Toggle Accordion logic
@@ -36,19 +44,17 @@ export default function DesignEditor({ type, selectedContainer, activeTemplateOb
     setActivePhaseKey((prevKey) => (prevKey === key ? null : key));
   }, []);
 
-  // 4. HANDLER: AI Data Fetching logic moved from page.js
   const handleFetchFromAI = useCallback(async (phase) => {
-    // You'll need the aiResumeRef here; it can be passed as a prop or selected from state
-    // For now, this is the shell matching your page.js logic
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    abortControllerRef.current = new AbortController();
     try {
-      await dispatch(fetchAIdata({
-        token,
-        phase,
-        aiAgentConfig: { 
-          provider: aiAgent.provider, 
-          model: aiAgent.agent, 
-          ApiKey: aiAgent.apiKey 
-        }
+      const sectionIds = phase.id ? [phase.id] : (phase.sectionIds || []);
+      await dispatch(fetchAIdataforDocument({
+        type: type=="resume" ? "resume" : "coverLetter",
+        sectionIds,
+        signal: abortControllerRef.current.signal, // Pass the signal here
       })).unwrap();
       setActivePhaseKey(phase.key);
     } catch (error) {

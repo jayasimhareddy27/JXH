@@ -1,10 +1,10 @@
 
 
 export const siteMetadata = {
-  metadataBase: new URL('https://jobxhunter.com'),
+  metadataBase: new URL('https://jxh-ly7o57diw-jayasimhareddy27s-projects.vercel.app/'),
   title: {
-    default: 'JobxHunter | AI-Powered Resume Builder & Job Finder',
-    template: '%s | JobxHunter',
+    default: 'JobxChaser | AI-Powered Resume Builder & Job Finder',
+    template: '%s | JobxChaser',
   },
   description: 'Create professional resumes in minutes with our AI-powered builder. Find your next job, track applications, and get ahead in your career with JobxHunter.',
   keywords: ['resume builder', 'job finder', 'career tools', 'AI resume', 'job search', 'job tracker', 'cv builder', 'professional resume', 'free resume builder'],
@@ -30,10 +30,10 @@ export const siteMetadata = {
     google: 'your-google-verification-code',
   },
   openGraph: {
-    title: 'JobxHunter: AI-Powered Resume Builder & Job Finder',
+    title: 'JobxChaser: AI-Powered Resume Builder & Job Finder',
     description: 'Build a standout resume and land your dream job with our intelligent career platform.',
-    url: 'https://jobxhunter.com',
-    siteName: 'JobxHunter',
+    url: 'https://jxh-ly7o57diw-jayasimhareddy27s-projects.vercel.app/',
+    siteName: 'JobxChaser',
     images: [
       {
         url: '/og-image.png',
@@ -52,7 +52,7 @@ export const siteMetadata = {
     creator: '@jayareddy',
     images: ['/twitter-image.png'],
   },
-  sitemap: 'https://jobxhunter.com/sitemap.xml',
+  sitemap: 'https://jxh-ly7o57diw-jayasimhareddy27s-projects.vercel.app/sitemap.xml',
 };
 
 
@@ -62,20 +62,20 @@ export const jsonLd = {
   '@graph': [
     {
       '@type': 'Organization',
-      'name': 'JobxHunter',
-      'url': 'https://jobxhunter.com',
-      'logo': 'https://jobxhunter.com/logo.png',
+      'name': 'JobxChaser',
+      'url': 'https://jxh-ly7o57diw-jayasimhareddy27s-projects.vercel.app/',
+      'logo': 'https://jxh-ly7o57diw-jayasimhareddy27s-projects.vercel.app/logo.png',
       'sameAs': [
         'https://www.linkedin.com/in/jayasimhareddy27/'
       ]
     },
     {
       '@type': 'WebSite',
-      'name': 'JobxHunter',
-      'url': 'https://jobxhunter.com',
+      'name': 'JobxChaser',
+      'url': 'https://jxh-ly7o57diw-jayasimhareddy27s-projects.vercel.app/',
       'potentialAction': {
         '@type': 'SearchAction',
-        'target': 'https://jobxhunter.com/search?q={search_term_string}',
+        'target': 'https://jxh-ly7o57diw-jayasimhareddy27s-projects.vercel.app/search?q={search_term_string}',
         'query-input': 'required name=search_term_string',
       },
     }

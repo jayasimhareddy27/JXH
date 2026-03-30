@@ -14,7 +14,7 @@ export async function fetchJobPhaseData(id, key, jobDescription, AiAgent, isArra
   const prompt = `${promptTemplate}\n\n${jobDescription}`;
   
   // 2. Server-side AI Call
-  const rawResponse = await fetchfromai(prompt, ApiKey, model, provider);
+  const rawResponse = await fetchfromai(prompt, ApiKey, model, provider, 1000);
   
   // 3. Clean Markdown/Backticks
   const cleanedResponse = rawResponse.trim()

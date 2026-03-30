@@ -1,5 +1,6 @@
 import { MapPin, Briefcase, Clock, ChevronRight, DollarSign, TrendingUp, Calendar } from "lucide-react";
 import { timeAgo } from "./utils.js";
+import Link from "next/link.js";
 
 export default function JobCard({ job, isSelected, onClick, showStageTag }) {
   const atsScore = 80;
@@ -7,7 +8,8 @@ export default function JobCard({ job, isSelected, onClick, showStageTag }) {
   const borderClass = isSelected
     ? "border-[var(--color-button-primary-bg)] shadow-lg bg-[var(--color-card-hover-bg)]"
     : "border-[var(--color-border-secondary)] bg-[var(--color-card-bg)] hover:bg-[var(--color-card-hover-bg)] hover:shadow-md";
-
+  console.log(job._id);
+  
   return (
     <div onClick={onClick} className={`p-4 sm:p-6 rounded-2xl border transition-all cursor-pointer ${borderClass}`}>
       <div className="flex flex-col sm:flex-row justify-between gap-4">
@@ -75,14 +77,10 @@ export default function JobCard({ job, isSelected, onClick, showStageTag }) {
             )}
           </div>
         </div>
-
-        {/* Chevron */}
-        <ChevronRight
-          size={20}
-          className={`flex-shrink-0 mt-2 sm:mt-1 transition-colors ${
-            isSelected ? "text-[var(--color-button-primary-bg)]" : "text-[var(--color-text-secondary)]"
-          }`}
-        />
+        <Link href={job._id} target="_blank" className="inline-flex items-center gap-1 mt-2 text-sm text-[var(--color-button-primary-bg)] font-medium">
+          <ChevronRight size={20}className={`flex-shrink-0 mt-2 sm:mt-1 transition-colors ${  isSelected ? "text-[var(--color-button-primary-bg)]" : "text-[var(--color-text-secondary)]"}`}/>         
+        </Link>
+        
       </div>
     </div>
   );

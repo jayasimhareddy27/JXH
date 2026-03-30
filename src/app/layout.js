@@ -16,6 +16,7 @@ import ToastPersistence from '@lib/redux/features/toast/persistence';
 import AIAgentPersistence from '@lib/redux/features/aiagent/persistence';
 import ResumesPersistence from '@lib/redux/features/resumes/resumecrud/persistence';
 import CoverLetterPersistence from '@lib/redux/features/coverletter/coverlettercrud/persistence';
+import JobsPersistence from '@lib/redux/features/job/persistence';
 
 //<StoreLogger />
 const inter = Inter({ subsets: ['latin'] });
@@ -38,6 +39,7 @@ export default function RootLayout({ children }) {
           <CoverLetterPersistence />
           <ThemePersistence /> 
           <ToastPersistence /> 
+          <JobsPersistence />
 
           <div className="flex flex-col lg:flex-row lg:h-screen">
             <Sidebar initialOpen={false}/>

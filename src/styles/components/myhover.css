@@ -35,10 +35,16 @@
 
 @media print {
   /* 1. Hide the entire Sidebar and any Navbars */
+  @page {
+    size: A4;
+    padding-top: 30px; 
+  }
   aside, nav, footer, .print\:hidden, button {
     display: none !important;
   }
-
+  #header {
+    padding-top: 10mm !important;
+  }
   /* 2. Reset the Main and Body containers to be full-width */
   body, html {
     background: white !important;

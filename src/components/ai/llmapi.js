@@ -1,18 +1,23 @@
-// This function now uses the 'provider' to decide which API to call.
-export async function fetchfromai(prompt, apiKey, model, provider) {
+import { aiManager } from "./chromeaimanager.js";
+// --- Main Switcher ---
+export async function fetchfromai(prompt, apiKey, agent, provider, maxtokens=1000) {
   switch (provider) {
     case 'Gemini':
-      return await api_Gemini(prompt, model, apiKey);
+      return await api_Gemini(prompt, agent, apiKey, maxtokens);
     case 'HuggingFace':
-      return await api_HuggingFaceai(prompt, model, apiKey);
+      return await api_HuggingFaceai(prompt, agent, apiKey, maxtokens);
     case 'Ollama':
-      return await api_Ollama(prompt, apiKey, model); // Ollama uses the ApiKey as the URL
+      return await api_Ollama(prompt, agent, apiKey, maxtokens); // apiKey acts as the URL for Ollama
+    case 'ChromeAI':
+      return await api_ChromeAI(prompt, maxtokens);
     default:
       throw new Error(`Unsupported AI provider: ${provider}`);
   }
 }
 
-async function api_HuggingFaceai(prompt, model, apiKey) {
+// --- HuggingFace (OpenAI Compatible Router) ---
+async function api_HuggingFaceai(prompt, agent, apiKey, maxtokens=1000) {
+  
   const response = await fetch('https://router.huggingface.co/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -20,28 +25,36 @@ async function api_HuggingFaceai(prompt, model, apiKey) {
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model,
+      model:agent,
       messages: [{ role: 'user', content: prompt }],
+      max_tokens: maxtokens, // Added
+      temperature: 0.7,
     }),
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`HuggingFace API Error: ${response.status} - ${errorText}`);
+    throw new Error(`HuggingFace Error: ${response.status} - ${errorText}`);
   }
 
   const data = await response.json();
   return data?.choices?.[0]?.message?.content || '';
 }
 
-async function api_Gemini(prompt, model, apiKey) {
-  
+// --- Google Gemini (External API) ---
+async function api_Gemini(prompt, agent, apiKey, maxtokens=1000) {
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/agents/${agent}:generateContent?key=${apiKey}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: prompt }] }] }),
+      body: JSON.stringify({ 
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: {
+          maxOutputTokens: maxtokens, // Added
+          temperature: 0.7,
+        }
+      }),
     }
   );
   if (!response.ok) {
@@ -52,24 +65,41 @@ async function api_Gemini(prompt, model, apiKey) {
   return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 }
 
-async function api_Ollama(prompt, url, model) {
+// --- Ollama (Local Server) ---
+async function api_Ollama(prompt, agent, url, maxtokens=1000) {
   const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model,
+      model:agent,
       prompt,
       stream: false,
+      options: {
+        num_predict: maxtokens, // Added for Ollama
+      }
     }),
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Ollama API Error: ${response.status} - ${errorText}`);
+    throw new Error(`Ollama Error: ${response.status} - ${errorText}`);
   }
 
   const data = await response.json();
   return data.response || '';
 }
 
-export { api_Gemini, api_HuggingFaceai, api_Ollama };
+async function api_ChromeAI(prompt) {
+  try {
+    const agent = await aiManager.getModel({ temperature: 0.5, topK: 40 });
+    const response = await agent.invoke(prompt);
+    return response;
+  } catch (error) {
+    await aiManager.dispose();
+    throw new Error(`Chrome AI Error: ${error.message}`);
+  }
+}
+
+
+
+export { api_Gemini, api_HuggingFaceai, api_Ollama, api_ChromeAI };

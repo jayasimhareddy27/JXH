@@ -112,7 +112,6 @@ const SettingsPage = () => {
         type: 'info' 
       }));
     }
-    console.log(isExisting);
     
     dispatch(connectAiAgent({ provider, ...config, isExisting: effectiveIsExisting })).unwrap().then(() => {
         dispatch(displayToast({ 

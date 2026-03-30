@@ -14,10 +14,10 @@ function toDisplayDateFormat(dateStr) {
 
 function DateFieldInput({ label, value, onChange, disabled }) {
   return (
-    <div className="mb-6">
+    <div className="mb-6 ">
       <label
         htmlFor="date-input"
-        className="block mb-2 text-lg font-semibold"
+        className="block mb-2 "
         style={{ color: 'var(--color-text-primary)' }}
       >
         {label}

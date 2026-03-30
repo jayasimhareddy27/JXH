@@ -61,7 +61,6 @@ export async function POST(req) {
     }
 
     const jobData = await req.json();
-    console.log(jobData);
     
     // Basic validation based on your Job Model requirements
     if (!jobData.companyName || !jobData.position) {

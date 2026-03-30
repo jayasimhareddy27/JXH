@@ -1,183 +1,228 @@
 "use client";
-import { memo } from "react";
+import { memo, useState } from "react"; // Added useState
 import { useDispatch } from 'react-redux';
 import { updatePhase, resetPhase, addPhaseItem, removePhaseItem } from '@lib/redux/features/editor/slice';
-import { displayToast } from '@lib/redux/features/toast/thunks';
 
-const Accordion = memo(({ title, isExpanded, onToggle, children }) => (
+const Accordion = memo(({ title, isExpanded, onToggle, children, headerActions }) => (
   <div
-    className={`rounded-lg mb-3 shadow-sm transition-all duration-300 overflow-hidden
+    className={`rounded-xl mb-3 transition-all duration-300 overflow-hidden border
       ${isExpanded 
-        ? "bg-[color:var(--color-card-bg)] border-2 border-[color:var(--color-button-primary-bg)] shadow-lg" 
-        : "bg-[color:var(--color-background-secondary)] border border-[color:var(--color-border-primary)] hover:shadow-md"
+        ? "bg-[color:var(--color-card-bg)] border-[color:var(--color-button-primary-bg)]" 
+        : "bg-white border-[color:var(--color-border-primary)] hover:border-gray-300"
       }`}
   >
-    <button
-      onClick={onToggle}
-      className={`w-full flex justify-between items-center p-1 text-left text-md font-medium transition-colors duration-200
-        ${isExpanded 
-          ? "text-[color:var(--color-text-primary)] bg-[color:var(--color-background-tertiary)]" 
-          : "text-[color:var(--color-text-secondary)] hover:bg-[color:var(--color-card-hover-bg)]"
-        }`}
-    >
-      <span>{title}</span>
-      <span className="text-sm">{isExpanded ? "▲" : "▼"}</span>
-    </button>
-    {isExpanded && <div className="p-4 animate-fade-in">{children}</div>}
+    <div className={`flex items-center justify-between transition-colors ${isExpanded ? "bg-gray-50/50" : ""}`}>
+      <button
+        onClick={onToggle}
+        className="flex-grow flex items-center justify-between px-4 py-3 text-left outline-none"
+      >
+        <span className={`text-[11px] uppercase tracking-widest font-black ${isExpanded ? "text-[var(--color-button-primary-bg)]" : "text-gray-400"}`}>
+          {title}
+        </span>
+      </button>
+      {headerActions}
+    </div>
+    {isExpanded && <div className="p-4 pt-0 animate-fade-in">{children}</div>}
   </div>
 ));
 
-const FieldList = memo(({ phase, formDataMap, renderField, isLoading,selectedContainer}) => {
+const FieldList = memo(({ phase, formDataMap, renderField, isLoading, selectedContainer }) => {
   const dispatch = useDispatch();
-
   const formData = formDataMap[phase.key] || phase.initial;
-
   const sectionTitles = formDataMap.sectionTitles || [];
-  const currentSection = sectionTitles.find(st => st.key === phase.key);
   const displayTitle = phase.title;
-console.log(currentSection);
-
 
   const handleRemoveItem = (index) => {
     dispatch(removePhaseItem({ phaseKey: phase.key, index }));
   };
 
   const onTitleChange = (updatedValue) => {
-      const newTitle = updatedValue.title;
-      
-      const existingTitleIndex = sectionTitles.findIndex(st => st.key === phase.key);
-      let updatedTitles = [...sectionTitles];
-      
-      if (existingTitleIndex !== -1) {
-          updatedTitles[existingTitleIndex] = { ...updatedTitles[existingTitleIndex], title: newTitle };
-      } else {
-          updatedTitles.push({ key: phase.key, title: newTitle });
-      }
-      
-      dispatch(updatePhase({ phaseKey: 'sectionTitles', data: updatedTitles }));
+    const newTitle = updatedValue.title;
+    const existingTitleIndex = sectionTitles.findIndex(st => st.key === phase.key);
+    let updatedTitles = [...sectionTitles];
+    if (existingTitleIndex !== -1) {
+      updatedTitles[existingTitleIndex] = { ...updatedTitles[existingTitleIndex], title: newTitle };
+    } else {
+      updatedTitles.push({ key: phase.key, title: newTitle });
+    }
+    dispatch(updatePhase({ phaseKey: 'sectionTitles', data: updatedTitles }));
   };
 
   return (
-    <>
-      <div className="mb-4">
-          {renderField(["title", displayTitle], displayTitle , onTitleChange, null, isLoading)}
+    <div className="space-y-4">
+      <div className="bg-gray-50/50 p-2 rounded-md border border-dashed border-gray-200">
+        <p className="text-[9px] uppercase text-gray-400 mb-1 font-bold tracking-tighter">Display Title</p>
+        {renderField(["title", displayTitle], { title: displayTitle }, onTitleChange, null, isLoading)}
       </div>
-      <hr className="border-[color:var(--color-border)] mb-4" />
-            
-{phase.arrayFieldKey ? (
-  Array.isArray(formData) ? (
-    formData.map((item, index) => {
-      // Logic to check if the specific block (e.g., job_0) is selected
-      const isItemSelected = selectedContainer?.includes(`_${index}`);
 
-      return (
-        <div
-          key={item.id || index}
-          className={`border p-3 rounded-md bg-white shadow-sm relative mb-4 dark:bg-[color:var(--color-card-bg)] transition-all duration-300 ${
-            isItemSelected ? "ring-2 ring-[var(--color-button-primary-bg)] border-transparent shadow-md" : ""
-          }`}
-        >
-          {Object.entries(item)
-            .filter(([k]) => k !== "id")
-            .map(([key, val]) => {
+      {phase.arrayFieldKey ? (
+        Array.isArray(formData) && (
+          <div className="space-y-6">
+            {formData.map((item, index) => {
+              const isItemSelected = selectedContainer?.includes(`_${index}`);
+              const entries = Object.entries(item).filter(([k]) => k !== "id");
+              const dateFields = entries.filter(([k]) => k.toLowerCase().includes("date"));
+              const otherFields = entries.filter(([k]) => !k.toLowerCase().includes("date"));
+
               const updateItem = (updatedItem) => {
                 const newArray = [...formData];
                 newArray[index] = updatedItem;
                 dispatch(updatePhase({ phaseKey: phase.key, data: newArray }));
               };
 
-              // Logic to check if specific field (e.g., jobTitle_0) is selected
-              const isFieldSelected = selectedContainer === `${key}_${index}`;
-
-              // CRITICAL FIX: Added 'return' here
               return (
-                <div 
-                  className={`transition-colors duration-200 ${isFieldSelected ? "bg-blue-50 rounded p-1 -m-1 ring-1 ring-blue-100" : ""}`} 
-                  key={`${key}-${index}`}
+                <div
+                  key={item.id || index}
+                  className={`group relative p-4 rounded-xl border transition-all duration-300 ${
+                    isItemSelected 
+                      ? "border-[var(--color-button-primary-bg)] bg-blue-50/5 shadow-sm" 
+                      : "border-gray-100 bg-white"
+                  }`}
                 >
-                  {renderField([key, val], item, updateItem, index, isLoading)}
+                  <div className="absolute -left-2 top-4 bg-gray-100 text-[9px] px-1.5 py-0.5 rounded font-mono text-gray-400">
+                    {index + 1}
+                  </div>
+
+                  <div className="space-y-3">
+                    {otherFields.map(([key, val]) => (
+                      <div 
+                        className={`transition-all duration-200 rounded-md ${selectedContainer === `${key}_${index}` ? "ring-1 ring-[var(--color-button-primary-bg)] bg-white p-1" : ""}`} 
+                        key={`${key}-${index}`}
+                      >
+                        {renderField([key, val], item, updateItem, index, isLoading)}
+                      </div>
+                    ))}
+
+                    {dateFields.length > 0 && (
+                      <div className="grid grid-cols-2 gap-4 pt-2">
+                        {dateFields.map(([key, val]) => (
+                          <div 
+                            className={`transition-all duration-200 rounded-md ${selectedContainer === `${key}_${index}` ? "ring-1 ring-[var(--color-button-primary-bg)] bg-white p-1" : ""}`} 
+                            key={`${key}-${index}`}
+                          >
+                            {renderField([key, val], item, updateItem, index, isLoading)}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {formData.length > 1 && (
+                    <button
+                      type="button"
+                      className="absolute -top-2 -right-2 w-6 h-6 flex items-center justify-center bg-white border border-red-100 text-red-400 rounded-full shadow-sm hover:bg-red-500 hover:text-white transition-all opacity-0 group-hover:opacity-100 z-20"
+                      onClick={() => handleRemoveItem(index)}
+                    >
+                      ×
+                    </button>
+                  )}
                 </div>
               );
             })}
-          
-          {formData.length >= 1 && (
-            <button
-              type="button"
-              className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-lg font-bold z-10"
-              onClick={() => handleRemoveItem(index)}
+          </div>
+        )
+      ) : (
+        <div className="space-y-3">
+          {Object.entries(formData || {}).map(([key, val]) => (
+            <div 
+              className={`transition-all duration-200 rounded-md ${selectedContainer === key ? "ring-1 ring-[var(--color-button-primary-bg)] bg-white p-1" : ""}`} 
+              key={key}
             >
-              ×
-            </button>
-          )}
+              {renderField(
+                [key, val], 
+                formData, 
+                (updatedData) => dispatch(updatePhase({ phaseKey: phase.key, data: updatedData })), 
+                null, 
+                isLoading
+              )}
+            </div>
+          ))}
         </div>
-      );
-    })
-  ) : (
-    <div className="text-red-600 font-semibold">Error: Invalid data format for this section.</div>
-  )
-) : (
-  /* Handling for non-array fields (like Career Summary) */
-  Object.entries(formData || {}).map(([key, val]) => (
-    <div 
-      className={`transition-colors duration-200 ${selectedContainer === key ? "bg-blue-50 rounded p-1 -m-1 ring-1 ring-blue-100" : ""}`} 
-      key={key}
-    >
-      {renderField(
-        [key, val], 
-        formData, 
-        (updatedData) => dispatch(updatePhase({ phaseKey: phase.key, data: updatedData })), 
-        null, 
-        isLoading
       )}
     </div>
-  ))
-)}
-    </>
   );
 });
 
-const ActionButtons = memo(({ phase, formData, isLoading, handleFetchFromAI }) => {
+function PhaseAccordion({ phase, formDataMap, isLoading, renderField, expandedPhase, toggleAccordion, handleFetchFromAI, phaseindex, selectedContainer }) {
   const dispatch = useDispatch();
-  const displayTitle = phase.title;
+  
+  // Local loading to trigger spinner immediately upon click
+  const [isLocalLoading, setIsLocalLoading] = useState(false);
 
-  const handleAddItem = () => {
+  const titles = formDataMap?.sectionTitles || [];
+  const displayTitle = titles[phaseindex]?.title || phase.title;
+
+  const handleAddItem = (e) => {
+    e.stopPropagation();
     const newItem = { ...Object.fromEntries(phase.fields.map(f => [f, ""])), id: `item-${Date.now()}` };
     dispatch(addPhaseItem({ phaseKey: phase.key, newItem }));
+    if (expandedPhase !== phase.key) toggleAccordion(phase.key);
   };
 
-  const handleReset = () => {
-    dispatch(resetPhase(phase.key));
-    dispatch(displayToast({ message: `${displayTitle} reset successfully`, type: "success" }));
+  const handleAI = async (e) => {
+    e.stopPropagation();
+    setIsLocalLoading(true); // Start local spinner
+    try {
+      await handleFetchFromAI(phase);
+    } catch (err) {
+      console.error("AI Fetch Error:", err);
+    } finally {
+      setIsLocalLoading(false); // Stop local spinner
+    }
   };
 
-  return (
-    <div className="space-y-4 pt-4">
+  const headerActions = (
+    <div className="flex items-center gap-2 mr-2">
+      <button
+        onClick={handleAI}
+        disabled={isLoading || isLocalLoading}
+        className="relative flex items-center justify-center w-8 h-8 text-[var(--color-button-primary-bg)] hover:bg-blue-50 rounded-full transition-all disabled:opacity-50"
+        title="AI Enhance"
+      >
+        {/* Spinner triggers if either Global or Local loading is true */}
+        {(isLoading || isLocalLoading) ? (
+          <div className="w-4 h-4 border-2 border-[var(--color-button-primary-bg)] border-t-transparent rounded-full animate-spin" />
+        ) : (
+          <span className="text-sm">✨</span>
+        )}
+      </button>
+
       {phase.arrayFieldKey && (
-        <button type="button" className="px-3 py-1 bg-[color:var(--color-button-primary-bg)] text-white rounded hover:bg-[color:var(--color-button-primary-hover-bg)] transition-colors font-semibold" onClick={handleAddItem}>
-          + Add {displayTitle}
+        <button
+          onClick={handleAddItem}
+          className="flex items-center gap-1 px-2 py-1 text-[10px] font-bold uppercase tracking-tighter border border-gray-200 text-gray-400 hover:text-[var(--color-button-primary-bg)] hover:border-[var(--color-button-primary-bg)] rounded transition-all"
+        >
+          <span>+</span> Add
         </button>
       )}
-      <div className="flex gap-4">
-        <button type="button" disabled={isLoading} className="flex-1 px-4 py-2 bg-[color:var(--color-cta-bg)] text-[color:var(--color-cta-text)] rounded hover:bg-[color:var(--color-cta-hover-bg)] disabled:opacity-50 transition-colors font-semibold" onClick={() => handleFetchFromAI(phase)}>
-          {isLoading ? "Fetching..." : "Fetch from AI"}
-        </button>
-        <button type="button" className="flex-1 px-4 py-2 bg-[color:var(--color-danger)] text-white rounded hover:bg-[color:var(--color-danger-hover)] transition-colors font-semibold" onClick={handleReset}>
-          Reset
-        </button>
-      </div>
     </div>
   );
-});
 
-function PhaseAccordion({ phase, formDataMap, isLoading, renderField, expandedPhase, toggleAccordion, handleFetchFromAI,phaseindex,selectedContainer }) {
-  const titles=formDataMap?.sectionTitles||[];
-  const displayTitle =titles[phaseindex]?.title || phase.title;
-    console.log(formDataMap);
-    
   return (
-    <Accordion title={displayTitle} isExpanded={expandedPhase === phase.key} onToggle={() => toggleAccordion(phase.key)}>
-      <FieldList phase={phase} formDataMap={formDataMap} renderField={renderField} isLoading={isLoading} selectedContainer={selectedContainer}/>
-      <ActionButtons phase={phase} formData={formDataMap[phase.key] || phase.initial} isLoading={isLoading} handleFetchFromAI={handleFetchFromAI}/>
+    <Accordion 
+      title={displayTitle} 
+      isExpanded={expandedPhase === phase.key} 
+      onToggle={() => toggleAccordion(phase.key)}
+      headerActions={headerActions}
+    >
+      <FieldList 
+        phase={phase} 
+        formDataMap={formDataMap} 
+        renderField={renderField} 
+        isLoading={isLoading || isLocalLoading} 
+        selectedContainer={selectedContainer}
+      />
+      
+      <div className="mt-4 pt-2 border-t border-gray-50 flex justify-end">
+        <button 
+          className="text-[10px] font-bold uppercase text-gray-300 hover:text-red-400 transition-colors"
+          onClick={() => {
+            if(window.confirm("Reset this section?")) dispatch(resetPhase(phase.key));
+          }}
+        >
+          Reset Section
+        </button>
+      </div>
     </Accordion>
   );
 }

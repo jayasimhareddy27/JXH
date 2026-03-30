@@ -4,7 +4,7 @@ import Template01Preview from './preview';
 
 // ====================== LAYOUT GRID CONFIG ======================
 export const layoutGrid01 = {
-  primary: "grid grid-cols-1 gap-6",           // Single Column - Clean Professional
+  primary: "grid grid-cols-1 ",           // Single Column - Clean Professional
   secondary: "grid grid-cols-3 gap-8",         // Classic Sidebar Layout
   tertiary: "grid grid-cols-4 gap-6",          // Balanced Modern
   quaternary: "grid grid-cols-5 gap-6",        // Wide Sidebar
