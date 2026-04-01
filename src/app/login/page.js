@@ -58,7 +58,7 @@ export default function AuthPage() {
               </span>
             ))}
           </div>
-          <h1 className="text-4xl font-bold">Unleash Your Potential with JXH</h1>
+          <h1 className="text-4xl font-bold">Unleash Your Potential with JXC</h1>
           <p className="text-lg opacity-70 mt-3">Streamline tasks, collaborate effortlessly, and achieve more with our intuitive platform.</p>
         </div>
       </div>

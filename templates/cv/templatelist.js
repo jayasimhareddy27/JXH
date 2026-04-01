@@ -5,7 +5,7 @@ import { layoutGrid02, RESUME_IDS02,Template02,Template02Preview } from './templ
 
 
 const templates = [
-  { id: 'template01', name: 'Default resume by JXH', Component: Template01Preview, page:Template01, layout:layoutGrid01,RESUME_IDS:RESUME_IDS01},
+  { id: 'template01', name: 'Default resume by JXC', Component: Template01Preview, page:Template01, layout:layoutGrid01,RESUME_IDS:RESUME_IDS01},
   { id: 'template02', name: 'Basic', Component: Template02Preview, page:Template02, layout:layoutGrid02,RESUME_IDS:RESUME_IDS02},
 ];
 

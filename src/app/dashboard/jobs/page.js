@@ -42,7 +42,7 @@ export default function JobBoard() {
       <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">Explore Opportunities</h1>
-          <p className="text-gray-500 mt-2 text-lg">Direct listings from JxH partner companies.</p>
+          <p className="text-gray-500 mt-2 text-lg">Direct listings from JxC partner companies.</p>
         </div>
         <div className="text-sm font-medium text-blue-600 bg-blue-50 px-4 py-2 rounded-full">
           {marketjobs?.length || 0} Openings Found

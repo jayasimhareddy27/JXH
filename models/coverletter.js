@@ -6,7 +6,7 @@ const coverLetterSchema = new mongoose.Schema({
   resumeId: {   type: mongoose.Schema.Types.ObjectId,   ref: 'Resume',   default: null },
   jobId: {   type: mongoose.Schema.Types.ObjectId,   ref: 'Job',  default: null },
 
-  name: { type: String, required: true, default: 'Default Cover letter by JXH' },
+  name: { type: String, required: true, default: 'Default Cover letter by JXC' },
   designConfig: { type: mongoose.Schema.Types.Mixed, default: {layout: 'primary',containers: {},selectedContainer: null, } },
   
   templateId: {type: String,default: 'template01'},

@@ -4,7 +4,7 @@ import { layoutGrid01, COVERLETTER_IDS01,Template01,Template01Preview } from './
 
 
 const templates = [
-  { id: 'template01', name: 'Default Cover letter by JXH', Component: Template01Preview, page:Template01, layout:layoutGrid01,COVERLETTER_IDS:COVERLETTER_IDS01},
+  { id: 'template01', name: 'Default Cover letter by JXC', Component: Template01Preview, page:Template01, layout:layoutGrid01,COVERLETTER_IDS:COVERLETTER_IDS01},
 ];
 
 

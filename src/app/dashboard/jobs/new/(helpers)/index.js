@@ -45,7 +45,7 @@ export async function fetchJobPhaseData(id, key, jobDescription, AiAgent, isArra
 
 /**
  * Sanitizes AI-extracted data to ensure no nulls reach React 
- * and applies default values for missing fields based on JXH schema.
+ * and applies default values for missing fields based on JXC schema.
  */
 export const sanitizeJobData = (rawPayload) => {
   const today = new Date().toISOString().split('T')[0];
