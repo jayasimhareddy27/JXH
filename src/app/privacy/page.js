@@ -12,9 +12,9 @@ const PrivacyPolicy = () => {
 
       <section className="mb-8">
         <p className="leading-relaxed">
-          At <strong>JobxHunter</strong>, accessible from <a href="https://jobxhunter.com" className="text-blue-600 hover:underline">https://jobxhunter.com</a>, 
+          At <strong>Job x Chaser</strong>, accessible from <a href="https://www.jobchaser.org/" className="text-blue-600 hover:underline">https://www.jobchaser.org/</a>, 
           the privacy of our visitors is one of our main priorities. This Privacy Policy document contains types of 
-          information that is collected and recorded by JobxHunter and how we use it.
+          information that is collected and recorded by Job x Chaser and how we use it.
         </p>
       </section>
 
@@ -36,7 +36,7 @@ const PrivacyPolicy = () => {
         {/* Section 2 */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 text-slate-900 dark:text-white">2. How We Use Your Information</h2>
-          <p className="mb-4">We use your information to power the core features of JobxHunter:</p>
+          <p className="mb-4">We use your information to power the core features of Job x Chaser:</p>
           <ul className="list-disc pl-6 space-y-2">
             <li><strong>AI Content Generation:</strong> Processing data to create optimized resumes and cover letters.</li>
             <li><strong>Data Persistence:</strong> Saving your progress across devices via our persistence layers (Auth, Resumes, Jobs).</li>
@@ -77,7 +77,7 @@ const PrivacyPolicy = () => {
           <h2 className="text-2xl font-semibold mb-4 text-slate-900 dark:text-white">6. Contact Us</h2>
           <p className="mb-2">If you have questions about this policy, please reach out:</p>
           <ul className="space-y-1">
-            <li>Email: <span className="text-blue-600">support@jobxhunter.com</span></li>
+            <li>Email: <span className="text-blue-600">support@Job x Chaser.com</span></li>
             <li>Creator: <a href="https://www.linkedin.com/in/jayasimhareddy27/" className="text-blue-600 hover:underline">Jayasimha Reddy</a></li>
           </ul>
         </section>

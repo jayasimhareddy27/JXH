@@ -3,8 +3,8 @@ import Link from 'next/link';
 
 export default async function HomePage() {
   const steps = [
-    { title: 'Set Up Your Profile', desc: 'Quickly add your professional details and resume.', href: '/userextraction' },
-    { title: 'Edit Your Resume', desc: 'Use our AI to tailor your resume for the job.', href: '/resume-editor' },
+    { title: 'Set Up Your Profile', desc: 'Quickly add your professional details and resume.', href: '/dashboard/profile' },
+    { title: 'Edit Your Resume', desc: 'Use our AI to tailor your resume for the job.', href: '/dashboard/myresumes' },
     { title: 'Download & Automate', desc: 'Get our extension for live scoring as you browse.', href: '/chrome-extension' }
   ];
 

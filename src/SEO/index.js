@@ -1,20 +1,20 @@
 
 
 export const siteMetadata = {
-  metadataBase: new URL('https://jxh-ly7o57diw-jayasimhareddy27s-projects.vercel.app/'),
+  metadataBase: new URL('https://www.jobchaser.org/'),
   title: {
-    default: 'JobxChaser | AI-Powered Resume Builder & Job Finder',
-    template: '%s | JobxChaser',
+    default: 'Job x Chaser | AI-Powered Resume Builder & Job Finder',
+    template: '%s | Job x Chaser',
   },
   verification: {
     google: 'google8c4702097ffc8dc4.html',
   },
-  description: 'Create professional resumes in minutes with our AI-powered builder. Find your next job, track applications, and get ahead in your career with JobxChaser.',
+  description: 'Create professional resumes in minutes with our AI-powered builder. Find your next job, track applications, and get ahead in your career with Job x Chaser.',
   keywords: ['resume builder', 'job finder', 'career tools', 'AI resume', 'job search', 'job tracker', 'cv builder', 'professional resume', 'free resume builder'],
   authors: [{ name: 'Jayasimha Reddy', url: 'https://www.linkedin.com/in/jayasimhareddy27/' }],
   creator: 'Jayasimha Reddy',
-  publisher: 'JobxChaser',
-  applicationName: 'JobxChaser',
+  publisher: 'Job x Chaser',
+  applicationName: 'Job x Chaser',
   robots: {
     index: true,
     follow: true,
@@ -31,16 +31,16 @@ export const siteMetadata = {
   },
   
   openGraph: {
-    title: 'JobxChaser: AI-Powered Resume Builder & Job Finder',
+    title: 'Job x Chaser: AI-Powered Resume Builder & Job Finder',
     description: 'Build a standout resume and land your dream job with our intelligent career platform.',
-    url: 'https://jxh-ly7o57diw-jayasimhareddy27s-projects.vercel.app/',
-    siteName: 'JobxChaser',
+    url: 'https://www.jobchaser.org/',
+    siteName: 'Job x Chaser',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'JobxChaser AI Resume Builder and Job Finder',
+        alt: 'Job x Chaser AI Resume Builder and Job Finder',
       },
     ],
     locale: 'en_US',
@@ -48,12 +48,12 @@ export const siteMetadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'JobxChaser: AI-Powered Resume Builder & Job Finder',
+    title: 'Job x Chaser: AI-Powered Resume Builder & Job Finder',
     description: 'Build a standout resume and land your dream job with our intelligent career platform.',
     creator: '@jayareddy',
     images: ['/twitter-image.png'],
   },
-  sitemap: 'https://jxh-ly7o57diw-jayasimhareddy27s-projects.vercel.app/sitemap.xml',
+  sitemap: 'https://www.jobchaser.org/sitemap.xml',
 };
 
 
@@ -63,20 +63,20 @@ export const jsonLd = {
   '@graph': [
     {
       '@type': 'Organization',
-      'name': 'JobxChaser',
-      'url': 'https://jxh-ly7o57diw-jayasimhareddy27s-projects.vercel.app/',
-      'logo': 'https://jxh-ly7o57diw-jayasimhareddy27s-projects.vercel.app/logo.png',
+      'name': 'Job x Chaser',
+      'url': 'https://www.jobchaser.org/',
+      'logo': 'https://www.jobchaser.org/logo.png',
       'sameAs': [
         'https://www.linkedin.com/in/jayasimhareddy27/'
       ]
     },
     {
       '@type': 'WebSite',
-      'name': 'JobxChaser',
-      'url': 'https://jxh-ly7o57diw-jayasimhareddy27s-projects.vercel.app/',
+      'name': 'Job x Chaser',
+      'url': 'https://www.jobchaser.org/',
       'potentialAction': {
         '@type': 'SearchAction',
-        'target': 'https://jxh-ly7o57diw-jayasimhareddy27s-projects.vercel.app/search?q={search_term_string}',
+        'target': 'https://www.jobchaser.org/search?q={search_term_string}',
         'query-input': 'required name=search_term_string',
       },
     }

@@ -18,7 +18,7 @@ const ollamaModels = [
 ];
 
 
-const Companyname= "JobxHunter";
+const Companyname= "Job x Chaser";
 //const Companylogo = "https://jobxchaser.com/logo.png";
 const Companyemail = "jayasimhareddy27@gmail.com"
 const Companyphone = "+1 4059569992";
@@ -31,10 +31,10 @@ const Companysocials = {
   linkedin: "https://www.linkedin.com/company/jobxchaser",
   instagram: "https://www.instagram.com/jobxchaser",
 };
-const Companyterms = "https://jobxhunter.com/terms";
-const Companyprivacy = "https://jobxhunter.com/privacy";
-const Companyshortname = "J.C";
-const Companynameletters = ["J", ".", "C"];
+const Companyterms = "https://jobxchaser.com/terms";
+const Companyprivacy = "https://jobxchaser.com/privacy";
+const Companyshortname = "JXC";
+const Companynameletters = ["J", "X", "C"];
 const Companyadminid = "697638430080fc1241634262"
 
 export {
