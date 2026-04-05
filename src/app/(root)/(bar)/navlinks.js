@@ -5,13 +5,9 @@ import { useDispatch, useSelector } from 'react-redux'; // <-- 1. Import Redux h
 import { clearCredentials } from '@lib/redux/features/auth/slice'; // <-- 2. Import the logout action
 import Link from 'next/link';
 import {  Home,  LogIn, LogOut } from 'lucide-react';
-import { 
-  UserCircle, 
-  FileBadge,      // Better for My Resumes (Your achievements)
-  FileSignature,        // Better for My Cover Letters (The message/pitch)
-  BarChart3,   // Better for Job Tracker (Analytics/Status)
-  Search,   // Better for Job Board (Professional opportunities)
-} from 'lucide-react';
+import { UserCircle, FileBadge,      FileSignature,    BarChart3,   Search,   } from 'lucide-react';
+import { signOut } from 'next-auth/react'; // 1. Import signOut
+
 const links = [
   // --- CORE ---
   { name: 'Home', href: '/', Icon: Home },
@@ -34,10 +30,12 @@ export default function NavLinks({ isOpen }) {
   // 4. Get the user directly from the Redux store
   const { user } = useSelector((state) => state.auth);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     // 5. Dispatch the Redux action to log out
     dispatch(clearCredentials());
-    window.location.href = '/';
+    await signOut({ callbackUrl: '/' });
+
+    window.location.href = '/login';
   };
 
   return (

@@ -8,7 +8,6 @@ import ReduxProvider from "@lib/redux/provider";
 
 import { ThemeSwitcher } from '@lib/redux/features/theme/switcher'; // Corrected import path
 import { siteMetadata, jsonLd, siteviewport } from '@/SEO';
-import StoreLogger from './StoreLogger.js';
 
 import AuthPersistence from '@lib/redux/features/auth/persistence';
 import ThemePersistence from '@lib/redux/features/theme/persistence';
@@ -17,6 +16,8 @@ import AIAgentPersistence from '@lib/redux/features/aiagent/persistence';
 import ResumesPersistence from '@lib/redux/features/resumes/resumecrud/persistence';
 import CoverLetterPersistence from '@lib/redux/features/coverletter/coverlettercrud/persistence';
 import JobsPersistence from '@lib/redux/features/job/persistence';
+import { SessionProvider } from "next-auth/react"
+import CombinedProvider from './(root)/combinedprovider';
 
 //<StoreLogger />
 const inter = Inter({ subsets: ['latin'] });
@@ -33,10 +34,10 @@ export default function RootLayout({ children }) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}/>
       </head>
       <body className={`${inter.className}`}>
-        <ReduxProvider>
-          <AIAgentPersistence /> 
-          <AuthPersistence/>
-          <ResumesPersistence /> 
+          <CombinedProvider>
+            <AIAgentPersistence /> 
+            <AuthPersistence/>
+            <ResumesPersistence /> 
           <CoverLetterPersistence />
           <ThemePersistence /> 
           <ToastPersistence /> 
@@ -53,8 +54,7 @@ export default function RootLayout({ children }) {
             </main>
           </div>
           <Footer />
-        
-        </ReduxProvider>
+        </CombinedProvider>
       </body>
     </html>
   );

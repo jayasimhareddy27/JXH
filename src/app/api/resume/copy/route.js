@@ -3,15 +3,26 @@ import jwt from 'jsonwebtoken';
 import { connectToDB } from '@lib/mongodb';
 import Resume from '@models/resume';
 import UserReferences from '@models/userreferences';
+import { getToken } from 'next-auth/jwt';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'SuperSecretKey';
 
 async function authenticate(request) {
+
+  const session = await getToken({ 
+    req: request, 
+    secret: process.env.NEXTAUTH_SECRET 
+  });
+
+  if (session) {
+    // If found, return the user data from the session
+    return { id: session.id, email: session.email, name: session.name };
+  }
+
   const authHeader = request.headers.get('authorization');
   if (!authHeader?.startsWith('Bearer ')) return null;
 
   const token = authHeader.substring(7);
-
   try {
     return jwt.verify(token, JWT_SECRET);
   } catch {
