@@ -16,6 +16,7 @@ import ResumesPersistence from '@lib/redux/features/resumes/resumecrud/persisten
 import CoverLetterPersistence from '@lib/redux/features/coverletter/coverlettercrud/persistence';
 import JobsPersistence from '@lib/redux/features/job/persistence';
 import CombinedProvider from './(root)/combinedprovider';
+import { Analytics } from "@vercel/analytics/next"
 
 //<StoreLogger />
 const inter = Inter({ subsets: ['latin'] });
@@ -48,6 +49,8 @@ export default function RootLayout({ children }) {
                 <ThemeSwitcher />
               </div>
               {children}
+              <Analytics />
+
               <AIConnectionFloating />
             </main>
           </div>

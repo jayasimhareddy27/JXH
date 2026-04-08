@@ -24,15 +24,15 @@ const Companyemail = "jayasimhareddy27@gmail.com"
 const Companyphone = "+1 4059569992";
 const Companyaddress = "500 station blvd, aurora, IL 60504";
 const Companydescription = "JobXChaser is a leading job portal connecting job seekers with top employers. We provide a platform for job listings, applications, and career resources to help individuals find their dream jobs.";
-const Companywebsite = "https://jobxchaser.com";
+const Companywebsite = "https://www.jobchaser.org/";
 const Companysocials = {
   facebook: "https://www.facebook.com/jobxchaser",
   twitter: "https://twitter.com/jobxchaser",
   linkedin: "https://www.linkedin.com/company/jobxchaser",
   instagram: "https://www.instagram.com/jobxchaser",
 };
-const Companyterms = "https://jobxchaser.com/terms";
-const Companyprivacy = "https://jobxchaser.com/privacy";
+const Companyterms = "https://www.jobchaser.org/terms";
+const Companyprivacy = "https://www.jobchaser.org/privacy";
 const Companyshortname = "JXC";
 const Companynameletters = ["J", "X", "C"];
 const Companyadminid = "69d28b13320f08b6a22a51f5"
