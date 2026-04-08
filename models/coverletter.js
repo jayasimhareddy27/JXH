@@ -4,8 +4,9 @@ const coverLetterSchema = new mongoose.Schema({
   userId: { type: String, required: true, index: true },
 
   resumeId: {   type: mongoose.Schema.Types.ObjectId,   ref: 'Resume',   default: null },
-  jobId: {   type: mongoose.Schema.Types.ObjectId,   ref: 'Job',  default: null },
-
+// The jobs using this cover letter (One Letter -> Many Jobs)
+  jobs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }],
+  
   name: { type: String, required: true, default: 'Default Cover letter by JXC' },
   designConfig: { type: mongoose.Schema.Types.Mixed, default: {layout: 'primary',containers: {},selectedContainer: null, } },
   

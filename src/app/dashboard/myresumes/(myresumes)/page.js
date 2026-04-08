@@ -58,7 +58,6 @@ export default function ResumesPage() {
   }, [dispatch, router]);
 
   // Handlers
-  const handleCreateResume = handleCreateResumeFactory(dispatch, router);
   const handleDelete = handleDeleteFactory(dispatch);
   const handleConnectAI = handleConnectAIFactory(dispatch);
   const handleMakePrimary = handleMakePrimaryFactory(dispatch, primaryResumeId);

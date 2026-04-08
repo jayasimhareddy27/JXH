@@ -1,5 +1,5 @@
-import { clFormatPrompts } from "../../../../../../public/staticfiles/prompts/coverletter/schema"; // Ensure this path is correct
-import { fetchfromai } from "../../../../../../public/components/ai/llmapi";
+import { clFormatPrompts } from "@/prompts/coverletter/schema"; // Ensure this path is correct
+import { fetchfromai } from "@public/components/ai/llmapi";
 import { updatePhase } from "../../../editor/slice";
 import { saveDocumentById } from "../../../editor/thunks";
 import { convertResumeToPromptString } from "../resume";

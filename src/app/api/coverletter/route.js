@@ -74,29 +74,48 @@ export async function POST(req) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name } = await req.json();
+    const body = await req.json();
+    const { name, jobId, resumeId } = body;
+    
     if (!name || name.trim() === "") {
       return NextResponse.json({ error: "Cover letter name is required" }, { status: 400 });
     }
 
-    // 1. Create the Cover Letter using schema defaults
+    // 1. Context Fetch: Get Personal Info from the linked Resume
+    // This ensures the Cover Letter starts with the user's latest contact data
+    let personalInfo = {};
+    if (resumeId) {
+      const sourceResume = await Resume.findOne({ _id: resumeId, userId: userData.id });
+      if (sourceResume) {
+        personalInfo = sourceResume.personalInformation || {};
+      }
+    }
+
+    // 2. Create the Cover Letter (One Letter -> Many Jobs)
     const newCoverLetter = await CoverLetter.create({
       userId: userData.id,
       name: name,
-      // Other fields like letterContent will use defaults defined in your schema
+      resumeId: resumeId || null,
+      jobs: jobId ? [jobId] : [], // Initialize usage history
+      personalInformation: personalInfo, // Cloned from Resume for a "straight" start
     });
 
-    // 2. Update UserReferences to include this new letter
-    const userRefs = await UserReferences.findOne({ userId: userData.id });
-    if (userRefs) {
-      // Ensure your UserReferences schema has a coverLetterRefs array field
-      if (!userRefs.coverLetterRefs) userRefs.coverLetterRefs = [];
-      
-      userRefs.coverLetterRefs.push(newCoverLetter._id);
-      await userRefs.save();
+    // 3. Update the Job (One Job -> One Cover Letter)
+    if (jobId) {
+      await Job.findOneAndUpdate(
+        { _id: jobId, userId: userData.id },
+        { $set: { coverLetterId: newCoverLetter._id } }
+      );
     }
 
-    return NextResponse.json(newCoverLetter);
+    // 4. Update UserReferences (Global tracking)
+    // Using $addToSet is faster and prevents duplicate IDs
+    await UserReferences.updateOne(
+      { userId: userData.id },
+      { $addToSet: { coverLetterRefs: newCoverLetter._id } }
+    );
+
+    return NextResponse.json(newCoverLetter, { status: 201 });
 
   } catch (error) {
     console.error("Error creating cover letter:", error);

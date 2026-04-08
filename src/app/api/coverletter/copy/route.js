@@ -40,31 +40,48 @@ export async function POST(req) {
 
     const { coverletterId, newName } = await req.json();
 
-    // 1. Fetch the original document
+    if (!coverletterId || !newName) {
+      return NextResponse.json({ error: "Missing coverletterId or newName" }, { status: 400 });
+    }
+
+    // 1. Fetch the original document (Ownership check)
     const original = await CoverLetter.findOne({ _id: coverletterId, userId: userData.id });
     if (!original) {
       return NextResponse.json({ error: "Original cover letter not found" }, { status: 404 });
     }
 
-    // 2. Clone the data and strip out the old ID and timestamps
+    // 2. Clone the data and strip database-specific fields
     const copyData = original.toObject();
     delete copyData._id;
     delete copyData.createdAt;
     delete copyData.updatedAt;
+    delete copyData.__v;
 
-    // 3. Update the name and create the new record
+    // 3. THE CRITICAL CHANGE: Reset usage history
+    // A copy is a new version/template and shouldn't be linked to the original's jobs.
+    copyData.jobs = []; 
     copyData.name = newName;
+    copyData.userId = userData.id;
+
+    // 4. Create the new record
     const newCoverletter = await CoverLetter.create(copyData);
 
-    // 4. Update UserReferences to include the new copy
+    // 5. Update UserReferences using $addToSet (Cleaner and prevents duplicates)
     await UserReferences.findOneAndUpdate(
       { userId: userData.id },
-      { $push: { coverLetterRefs: newCoverletter._id } }
+      { $addToSet: { coverLetterRefs: newCoverletter._id } }
     );
 
-    return NextResponse.json({ newCoverletter });
+    return NextResponse.json({ 
+      success: true, 
+      newCoverletter 
+    }, { status: 201 });
+
   } catch (error) {
     console.error("Copy error:", error);
-    return NextResponse.json({ error: "Failed to copy cover letter" }, { status: 500 });
+    return NextResponse.json({ 
+      error: "Failed to copy cover letter", 
+      details: error.message 
+    }, { status: 500 });
   }
 }

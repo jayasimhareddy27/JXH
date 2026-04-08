@@ -29,14 +29,12 @@ async function authenticate(request) {
   }
 }
 
-
 export async function GET(request) {
     await connectToDB();
     
     const userData = await authenticate(request);
     
     if (!userData) {
-      console.log("Unauthorized access attempt to /api/userreferences");
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -49,7 +47,6 @@ export async function GET(request) {
     });
 }
 
-
 export async function PUT(request) {
   await connectToDB();
   const userData = await authenticate(request);
@@ -58,65 +55,65 @@ export async function PUT(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   
-  
   try {
     const body = await request.json();
+    
+    // Use destructuring to capture all possible incoming fields
     const { 
-      primaryResumeId, 
+      primaryResumeRef, // Changed from primaryResumeId to match your schema keys
       theme, 
       aiResumeRef, 
       myProfileRef, 
       favResumeTemplateId, 
       favCoverletterTemplateId,
-      newAiKey // Format: { agent, provider, apiKey }
+      newAiKey 
     } = body;
-
-    // 1. Validation: Ensure at least one field is being updated
-    const hasUpdate = (
-      primaryResumeId || theme || aiResumeRef || 
-      myProfileRef || favResumeTemplateId || 
-      favCoverletterTemplateId || newAiKey
-    );
-
-    if (!hasUpdate) {
-      return NextResponse.json({ 
-        error: 'At least one field (primaryResumeId, theme, aiResumeRef, myProfileRef, favResumeTemplateId, favCoverletterTemplateId, or newAiKey) is required' 
-      }, { status: 400 });
-    }
 
     const userRefs = await UserReferences.findOne({ userId: userData.id });
     if (!userRefs) {
       return NextResponse.json({ error: 'User references not found' }, { status: 404 });
     }
 
-    // 2. Standard Preference Updates
-    if (primaryResumeId) userRefs.primaryResumeRef = primaryResumeId;
-    if (aiResumeRef) userRefs.aiResumeRef = aiResumeRef;
-    if (theme) userRefs.theme = theme;
-    if (myProfileRef) userRefs.myProfileRef = myProfileRef;
-    if (favResumeTemplateId) userRefs.favResumeTemplateId = favResumeTemplateId;
-    if (favCoverletterTemplateId) userRefs.favCoverletterTemplateId = favCoverletterTemplateId;
+    // 1. IMPROVED VALIDATION: Use 'in' check to allow setting fields to null
+    const updateFields = [
+      'primaryResumeRef', 'theme', 'aiResumeRef', 'myProfileRef', 
+      'favResumeTemplateId', 'favCoverletterTemplateId', 'newAiKey'
+    ];
+    
+    const hasUpdate = updateFields.some(field => field in body);
 
-    // 3. AI Key Logic
+    if (!hasUpdate) {
+      return NextResponse.json({ error: 'No valid fields provided for update' }, { status: 400 });
+    }
+
+    // 2. Map updates (Ensures we use the correct schema key names)
+    if ('primaryResumeRef' in body) userRefs.primaryResumeRef = primaryResumeRef;
+    if ('aiResumeRef' in body) userRefs.aiResumeRef = aiResumeRef;
+    if ('theme' in body) userRefs.theme = theme;
+    if ('myProfileRef' in body) userRefs.myProfileRef = myProfileRef;
+    if ('favResumeTemplateId' in body) userRefs.favResumeTemplateId = favResumeTemplateId;
+    if ('favCoverletterTemplateId' in body) userRefs.favCoverletterTemplateId = favCoverletterTemplateId;
+
+    // 3. AI Key Logic (Using $addToSet logic internally via push)
     if (newAiKey) {
       const { agent, provider, apiKey } = newAiKey;
-      if (provider !== 'ChromeAI') {
+      if (provider !== 'ChromeAI' && apiKey) {
+        // Prevent duplicate keys for the same agent/provider
+        const exists = userRefs.aiKeys.find(k => k.agent === agent && k.provider === provider);
+        if (exists) {
+          exists.apiKey = apiKey; // Update existing
+        } else {
           userRefs.aiKeys.push({ agent, provider, apiKey });
         }
+      }
     }
       
-    // 4. Save (Triggers Mongoose pre-save hook to set primaryAiKeyRef)
+    // 4. Save
     await userRefs.save();
 
-    // 5. Return the updated data
     return NextResponse.json({ 
       success: true, 
-      primaryResumeId: userRefs.primaryResumeRef,
-      aiResumeRef: userRefs.aiResumeRef,
-      theme: userRefs.theme,
-      myProfileRef: userRefs.myProfileRef,
-      favResumeTemplateId: userRefs.favResumeTemplateId,
-      aiKeysCount: userRefs.aiKeys.length,
+      references: userRefs 
     });
 
   } catch (error) {

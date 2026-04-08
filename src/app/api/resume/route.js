@@ -77,51 +77,53 @@ export async function POST(req) {
   try {
     await connectToDB();
     const userData = await authenticate(req);
+    
     if (!userData) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name,resumetextAireference } = await req.json();
+    const { name, resumetextAireference } = await req.json();
+    
     if (!name || name.trim() === "") {
       return NextResponse.json({ error: "Resume name is required" }, { status: 400 });
     }
 
-    const initialResume = await Resume.create({
+    // Create the resume in one go
+    const newResume = await Resume.create({
       userId: userData.id,
-      name: name, 
+      name: name,
+      // Initialize the jobs array for your new relationship logic
+      jobs: [], 
 
-      personalInformation: { ...resumeformatPrompts.personalInformation.initial,name: userData.name, email: userData.email },
+      personalInformation: { 
+        ...resumeformatPrompts.personalInformation.initial,
+        name: userData.name || "", 
+        email: userData.email || "" 
+      },
+      
       onlineProfiles: resumeformatPrompts.onlineProfiles.initial,
-
       educationHistory: resumeformatPrompts.educationHistory.initial,
       workExperience: resumeformatPrompts.workExperience.initial,
-
       projects: resumeformatPrompts.projects.initial,
-
       certifications: resumeformatPrompts.certifications.initial,
-      
       skillsSummary: resumeformatPrompts.skillsSummary.initial,
       careerSummary: resumeformatPrompts.careerSummary.initial,
       
-      resumetextAireference: "",
+      // Handle the AI reference string directly
+      resumetextAireference: resumetextAireference || "",
     });
 
-
-    if(resumetextAireference){
-      initialResume.resumetextAireference = resumetextAireference;
-    }
-
-    // Create new Resume document with cloned data
-    await initialResume.save();
-
-    // Update UserReferences by adding new resume ref
+    // Update UserReferences
     const userRefs = await UserReferences.findOne({ userId: userData.id });
     if (userRefs) {
-      userRefs.resumeRefs.push(initialResume._id);
-      await userRefs.save();
+      // Use $addToSet to prevent duplicate references by mistake
+      await UserReferences.updateOne(
+        { userId: userData.id },
+        { $addToSet: { resumeRefs: newResume._id } }
+      );
     }
 
-    return NextResponse.json(initialResume);
+    return NextResponse.json(newResume, { status: 201 });
 
   } catch (error) {
     console.error("Error creating resume:", error);

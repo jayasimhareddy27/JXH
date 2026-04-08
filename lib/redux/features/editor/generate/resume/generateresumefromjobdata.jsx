@@ -4,32 +4,44 @@ import { updatePhase } from "../../../editor/slice";
 import { saveDocumentById } from "../../../editor/thunks";
 import { fetchfromai } from "@public/components/ai/llmapi";
 
-export const generateresumefromjobdata = (aiAgent,sectionIds, jobData, currentResume, dispatch, displayToast, signal) => async () => {
+export const generateresumefromjobdata = (
+  aiAgent, 
+  sectionIds, 
+  jobData, 
+  sourceResume, 
+  dispatch, 
+  displayToast, 
+  signal
+) => async () => {
   const token = localStorage.getItem("token");
-  const { apiKey, agent, provider} =aiAgent
+  const { apiKey, agent, provider } = aiAgent;
   
   try {
-    let baseResume = currentResume ? structuredClone(currentResume) : {};    
+    // We use the SOURCE resume as the base for the prompt strings
+    let baseResume = sourceResume ? structuredClone(sourceResume) : {};    
 
-    // CASE 2: Generate AI tailoring for sections
     for (const id of sectionIds) {
       if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
+      
       const config = Object.values(resumeformatPrompts).find(p => p.id === id);
       if (!config) continue;
 
+      // The AI takes info from SOURCE and tailors it to JOB
       const prompt = `${config.prompt} ${convertResumeToPromptString(baseResume)} JobDescription: ${jobData?.rawDescription}`;
       
-      const response = await fetchfromai(prompt,apiKey, agent, provider, 1000);
+      const response = await fetchfromai(prompt, apiKey, agent, provider, 1000);
       const cleanJson = response.replace(/```json|```/g, "").trim();
       const parsedData = JSON.parse(cleanJson);
-      console.log(prompt);
       
-      dispatch(updatePhase({   phaseKey: config.key,   data: parsedData }));
+      // We update the EDITOR (the resume you are currently looking at)
+      dispatch(updatePhase({ phaseKey: config.key, data: parsedData }));
+      
+      // Immediately save the progress to the database
       dispatch(saveDocumentById());
       
+      // Update local loop variable so next section in loop has updated context
       baseResume[config.key] = parsedData;
     }
-    
     // Return the merged draft WITHOUT saving to DB
     return { 
       ...baseResume, 

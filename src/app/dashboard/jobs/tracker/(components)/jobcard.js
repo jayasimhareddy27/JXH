@@ -8,7 +8,6 @@ export default function JobCard({ job, isSelected, onClick, showStageTag }) {
   const borderClass = isSelected
     ? "border-[var(--color-button-primary-bg)] shadow-lg bg-[var(--color-card-hover-bg)]"
     : "border-[var(--color-border-secondary)] bg-[var(--color-card-bg)] hover:bg-[var(--color-card-hover-bg)] hover:shadow-md";
-  console.log(job._id);
   
   return (
     <div onClick={onClick} className={`p-4 sm:p-6 rounded-2xl border transition-all cursor-pointer ${borderClass}`}>

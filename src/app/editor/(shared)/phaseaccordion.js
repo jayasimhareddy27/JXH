@@ -110,8 +110,7 @@ const FieldList = memo(({ phase, formDataMap, renderField, isLoading, selectedCo
                   {formData.length > 1 && (
                     <button
                       type="button"
-                      className="absolute -top-2 -right-2 w-6 h-6 flex items-center justify-center bg-white border border-red-100 text-red-400 rounded-full shadow-sm hover:bg-red-500 hover:text-white transition-all opacity-0 group-hover:opacity-100 z-20"
-                      onClick={() => handleRemoveItem(index)}
+                      className="absolute -top-2 -right-2 w-6 h-6 flex items-center justify-center bg-white border border-red-100 text-red-400 rounded-full shadow-sm hover:bg-red-500 hover:text-white transition-all z-20"                      onClick={() => handleRemoveItem(index)}
                     >
                       ×
                     </button>

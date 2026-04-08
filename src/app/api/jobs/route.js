@@ -5,6 +5,8 @@ import UserReferences from "@models/userreferences";
 import Job from "@models/jobtracking.js";
 import { Companyadminid } from '@/globalvar/companydetails';
 import { getToken } from 'next-auth/jwt';
+import CoverLetter from '@models/coverletter';
+import Resume from '@models/resume.js';
 
 
 const JWT_SECRET = process.env.JWT_SECRET || "SuperSecretKey";
@@ -67,32 +69,55 @@ export async function POST(req) {
   try {
     await connectToDB();
     const userData = await authenticate(req);
+    
     if (!userData) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const jobData = await req.json();
     
-    // Basic validation based on your Job Model requirements
+    // 1. Basic Validation
     if (!jobData.companyName || !jobData.position) {
       return NextResponse.json({ error: "Company name and Position are required" }, { status: 400 });
     }
+
+    // 2. Resolve & Validate Resume Link
     const userRefs = await UserReferences.findOne({ userId: userData.id });
-    const profileResumeId = jobData.resumeId ? jobData.resumeId : userRefs?.myProfileRef || null;
-    // 1. Create the new Job record
+    let finalResumeId = jobData.resumeId || userRefs?.myProfileRef || null;
+
+    // Security check: Ensure the chosen resume actually belongs to this user
+    if (finalResumeId) {
+      const resumeExists = await Resume.exists({ _id: finalResumeId, userId: userData.id });
+      if (!resumeExists) finalResumeId = null; 
+    }
+
+    // 3. Create the Job
     const newJob = await Job.create({
       ...jobData,
-      userId: userData.id, // Ensure ownership
-      resumeId: profileResumeId
+      userId: userData.id,
+      resumeId: finalResumeId,
+      // coverLetterId will be handled if passed in jobData
     });
 
-    // 2. Update UserReferences to include this job
-    // Note: Ensure your UserReferences model has a 'jobRefs' field
-    if (userRefs) {
-      if (!userRefs.jobTrackingRefs) userRefs.jobTrackingRefs = [];
-      userRefs.jobTrackingRefs.push(newJob._id);
-      await userRefs.save();
+    // 4. Update Resume (One Resume -> Many Jobs)
+    if (finalResumeId) {
+      await Resume.findByIdAndUpdate(finalResumeId, {
+        $addToSet: { jobs: newJob._id }
+      });
     }
+
+    // 5. Update Cover Letter (If linked during creation)
+    if (newJob.coverLetterId) {
+      await CoverLetter.findByIdAndUpdate(newJob.coverLetterId, {
+        $addToSet: { jobs: newJob._id }
+      });
+    }
+
+    // 6. Update UserReferences tracking
+    await UserReferences.updateOne(
+      { userId: userData.id },
+      { $addToSet: { jobTrackingRefs: newJob._id } }
+    );
 
     return NextResponse.json({
       success: true,

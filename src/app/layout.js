@@ -4,7 +4,6 @@ import Sidebar from './(root)/(bar)/sidebar';
 import Footer from './(root)/(bar)/footer';
 import AIConnectionFloating from './(root)/(bar)/aiconnection';
 
-import ReduxProvider from "@lib/redux/provider"; 
 
 import { ThemeSwitcher } from '@lib/redux/features/theme/switcher'; // Corrected import path
 import { siteMetadata, jsonLd, siteviewport } from '@/SEO';
@@ -16,7 +15,6 @@ import AIAgentPersistence from '@lib/redux/features/aiagent/persistence';
 import ResumesPersistence from '@lib/redux/features/resumes/resumecrud/persistence';
 import CoverLetterPersistence from '@lib/redux/features/coverletter/coverlettercrud/persistence';
 import JobsPersistence from '@lib/redux/features/job/persistence';
-import { SessionProvider } from "next-auth/react"
 import CombinedProvider from './(root)/combinedprovider';
 
 //<StoreLogger />

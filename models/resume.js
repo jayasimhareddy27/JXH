@@ -9,7 +9,10 @@ const defaultSectionTitles = Object.values(resumeformatPrompts).map(phase => ({
 const resumeSchema = new mongoose.Schema({
   userId: { type: String, required: true },
   name: { type: String, required: true, default: 'Default Resume by JXC' },
-  
+  jobs: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Job' 
+  }],
   designConfig: { 
     type: mongoose.Schema.Types.Mixed, 
     default: {

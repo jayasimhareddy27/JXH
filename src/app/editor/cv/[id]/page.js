@@ -49,8 +49,6 @@ export default function ResumeEditorPage() {
         setIsMounted(true);
     }, []);
 
-    // If we haven't mounted yet, render a skeleton or nothing
-    // to prevent the server/client text mismatch
     if (!isMounted) {
         return <div className="flex h-screen items-center justify-center">Loading Editor...</div>;
     }

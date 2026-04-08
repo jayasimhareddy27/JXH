@@ -72,15 +72,6 @@ export const handleCopySubmitFactory =
   };
 
 
-export const handleCreateResumeFactory = (dispatch, router) => async (name) => {
-  const resultAction = await dispatch(createResume(name));
-  
-  if (createResume.fulfilled.match(resultAction)) {
-    const newResumeId = resultAction.payload._id;
-    
-    router.push(`/editor/cv/${newResumeId}`);
-  }
-};
 
 // ---- Data Prep (filter/sort/paginate) ----
 export const prepareResumes = ({

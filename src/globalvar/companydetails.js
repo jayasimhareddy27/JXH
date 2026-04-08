@@ -35,7 +35,7 @@ const Companyterms = "https://jobxchaser.com/terms";
 const Companyprivacy = "https://jobxchaser.com/privacy";
 const Companyshortname = "JXC";
 const Companynameletters = ["J", "X", "C"];
-const Companyadminid = "697638430080fc1241634262"
+const Companyadminid = "69d28b13320f08b6a22a51f5"
 
 export {
   Companyname,

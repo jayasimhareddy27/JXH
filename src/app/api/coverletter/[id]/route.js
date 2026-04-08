@@ -77,6 +77,7 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: "Cover letter ID is required" }, { status: 400 });
     }
 
+    // 1. Find and Delete the Cover Letter (Ownership check)
     const deletedCoverLetter = await CoverLetter.findOneAndDelete({
       _id: coverletterId,
       userId: userData.id,
@@ -86,34 +87,33 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: "Cover letter not found" }, { status: 404 });
     }
 
-    // Clean up reference in UserReferences
-    const userRefs = await UserReferences.findOne({ userId: userData.id });
-    if (userRefs && userRefs.coverletterRefs) {
-      userRefs.coverletterRefs = userRefs.coverletterRefs.filter(
-        (id) => id.toString() !== coverletterId
-      );
+    // 2. RELATIONSHIP CLEANUP: Update all Jobs linked to this Cover Letter
+    // This prevents "dead" links in your Job tracker
+    await Job.updateMany(
+      { coverLetterId: coverletterId, userId: userData.id },
+      { $set: { coverLetterId: null } }
+    );
 
-      // If you track a primary cover letter similar to primaryResumeRef
-      if (userRefs.primaryCoverletterRef?.toString() === coverletterId) {
-        userRefs.primaryCoverletterRef = null;
+    // 3. Update UserReferences (Global tracking)
+    // Using atomic $pull is faster than fetching and filtering
+    await UserReferences.updateOne(
+      { userId: userData.id },
+      { 
+        $pull: { coverLetterRefs: coverletterId } 
       }
+    );
 
-      await userRefs.save();
-    }
-
-    return NextResponse.json({ success: true, deletedCoverLetter });
+    return NextResponse.json({ success: true, message: "Cover letter deleted and jobs unlinked" });
   } catch (error) {
     console.error("Error deleting cover letter:", error);
     return NextResponse.json({ error: "Failed to delete cover letter" }, { status: 500 });
   }
 }
 
-// PATCH: Update cover letter content
 export async function PATCH(req, context) {
-  const { id: coverletterId } = await context.params;
-
   try {
     await connectToDB();
+    const { id: coverletterId } = await context.params;
 
     const userData = await authenticate(req);
     if (!userData?.id) {
@@ -121,15 +121,14 @@ export async function PATCH(req, context) {
     }
 
     const body = await req.json();
-
     if (!body || Object.keys(body).length === 0) {
       return NextResponse.json({ error: "No data provided to update." }, { status: 400 });
     }
 
-    // Strip immutable / forbidden fields
     const {
       _id,
       userId,
+      jobs, 
       createdAt,
       updatedAt,
       __v,

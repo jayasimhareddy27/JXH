@@ -1,8 +1,11 @@
 export const convertResumeToPromptString=(resumeData) =>{
+  if (resumeData?.resumetextAireference!=="") {
+    return resumeData.resumetextAireference.trim();
+  }
   const {   personalInformation,   careerSummary,   workExperience,   educationHistory,   skillsSummary,   projects } = resumeData;
 
-  let promptString = `RESUME FOR ${personalInformation.fullName.toUpperCase()}\n`;
-  promptString += `Email: ${personalInformation.email} | Phone: ${personalInformation.phoneNumber}\n\n`;
+  let promptString = `RESUME FOR ${personalInformation?.fullName?.toUpperCase()}\n`;
+  promptString += `Email: ${personalInformation?.email} | Phone: ${personalInformation?.phoneNumber}\n\n`;
 
   // 1. Summary
   if (careerSummary?.summary) {

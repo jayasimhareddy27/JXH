@@ -4,6 +4,8 @@ import { connectToDB } from '@lib/mongodb';
 import Job from "@models/jobtracking.js";
 import { Companyadminid } from '@/globalvar/companydetails';
 import { getToken } from 'next-auth/jwt';
+import Resume from '@models/resume.js';
+import CoverLetter from '@models/coverletter';
 
 const JWT_SECRET = process.env.JWT_SECRET || "SuperSecretKey";
 
@@ -79,56 +81,70 @@ export async function PATCH(request, { params }) {
     }
 
     const updates = await request.json();
+    const job = await Job.findById(id);
 
-    // Fields that must NEVER be updated from client
-    const PROTECTED_FIELDS = [
-      "_id",
-      "userId",
-      "createdAt",
-      "updatedAt"
-    ];
+    // 1. Ownership check for the JOB
+    if (!job || job.userId.toString() !== userData.id) {
+      return NextResponse.json({ error: "Job not found or unauthorized" }, { status: 403 });
+    }
 
-    // Remove protected fields if present
-    for (const field of PROTECTED_FIELDS) {
-      if (field in updates) {
-        delete updates[field];
+    // 2. Handle Resume Relationship Swap (Improved)
+    // Check if resumeId is in the updates (even if it's null)
+    if ("resumeId" in updates && updates.resumeId !== job.resumeId?.toString()) {
+      
+      // A. Validate the NEW resume belongs to this user (if it's not null)
+      if (updates.resumeId) {
+        const newResume = await Resume.findOne({ _id: updates.resumeId, userId: userData.id });
+        if (!newResume) {
+          return NextResponse.json({ error: "Target Resume not found or unauthorized" }, { status: 403 });
+        }
+      }
+
+      // B. Remove Job ID from the OLD resume's array
+      if (job.resumeId) {
+        await Resume.findByIdAndUpdate(job.resumeId, { $pull: { jobs: id } });
+      }
+
+      // C. Add Job ID to the NEW resume's array (if it's not null)
+      if (updates.resumeId) {
+        await Resume.findByIdAndUpdate(updates.resumeId, { $addToSet: { jobs: id } });
       }
     }
+// 3. Handle Cover Letter Relationship Swap
+  if ("coverLetterId" in updates && updates.coverLetterId !== job.coverLetterId?.toString()) {
+      // Validate the NEW cover letter (if not null)
+      if (updates.coverLetterId) {
+        const hasCL = await CoverLetter.exists({ _id: updates.coverLetterId, userId: userData.id });
+        if (!hasCL) return NextResponse.json({ error: "Target Cover Letter unauthorized" }, { status: 403 });
+      }
+      // Remove Job ID from the OLD cover letter
+      if (job.coverLetterId) {
+        await CoverLetter.findByIdAndUpdate(job.coverLetterId, { $pull: { jobs: id } });
+      }
+      // Add Job ID to the NEW cover letter
+      if (updates.coverLetterId) {
+        await CoverLetter.findByIdAndUpdate(updates.coverLetterId, { $addToSet: { jobs: id } });
+      }
+    }
+    // 3. Protection & Cleanup
+    const PROTECTED_FIELDS = ["_id", "userId", "createdAt", "updatedAt"];
+    PROTECTED_FIELDS.forEach(field => delete updates[field]);
 
     if (Object.keys(updates).length === 0) {
-      return NextResponse.json(
-        { error: "No valid fields to update" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "No valid fields to update" }, { status: 400 });
     }
 
-    // Ownership check
-    const job = await Job.findById(id);
-    if (!job || job.userId.toString() !== userData.id) {
-      return NextResponse.json(
-        { error: "Job not found or unauthorized" },
-        { status: 403 }
-      );
-    }
-
+    // 4. Final Update
     const updatedJob = await Job.findByIdAndUpdate(
       id,
       { $set: updates },
-      {
-        new: true,
-        runValidators: true
-      }
+      { new: true, runValidators: true }
     );
 
-    return NextResponse.json({
-      success: true,
-      job: updatedJob
-    });
+    return NextResponse.json({ success: true, job: updatedJob });
+    
   } catch (error) {
     console.error("Error updating job:", error);
-    return NextResponse.json(
-      { error: "Failed to update job" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to update job" }, { status: 500 });
   }
 }

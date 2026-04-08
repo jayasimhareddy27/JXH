@@ -11,7 +11,6 @@ class ChromeAiManager {
     const configChanged = JSON.stringify(newConfig) !== JSON.stringify(this.currentConfig);
 
     if (!this.instance || configChanged) {
-      console.log(configChanged ? "Config changed, re-initializing..." : "First time init...");
       
       // Cleanup the old model to free up VRAM before making a new one
       if (this.instance && this.instance.destroy) {

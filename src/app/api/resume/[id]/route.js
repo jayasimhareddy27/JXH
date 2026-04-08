@@ -72,11 +72,9 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const {id:resumeId} =await params;
-    if (!resumeId) {
-      return NextResponse.json({ error: "Resume ID is required" }, { status: 400 });
-    }
+    const { id: resumeId } = await params;
 
+    // 1. Find and Delete the Resume (Ownership check included)
     const deletedResume = await Resume.findOneAndDelete({
       _id: resumeId,
       userId: userData.id,
@@ -86,83 +84,76 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: "Resume not found" }, { status: 404 });
     }
 
+    // 2. RELATIONSHIP CLEANUP: Update all Jobs linked to this Resume
+    // We set their resumeId to null so they don't point to a deleted document
+    await Job.updateMany(
+      { resumeId: resumeId, userId: userData.id },
+      { $set: { resumeId: null } }
+    );
+
+    // 3. Update UserReferences
     const userRefs = await UserReferences.findOne({ userId: userData.id });
     if (userRefs) {
+      // Remove from the list of all resumes
       userRefs.resumeRefs = userRefs.resumeRefs.filter(
         (id) => id.toString() !== resumeId
       );
 
-      if (userRefs.primaryResumeRef?.toString() === resumeId) {
-        userRefs.primaryResumeRef = null;
-      }
+      // If this was the primary, AI, or Profile resume, reset those pointers
+      if (userRefs.primaryResumeRef?.toString() === resumeId) userRefs.primaryResumeRef = null;
+      if (userRefs.myProfileRef?.toString() === resumeId) userRefs.myProfileRef = null;
+      if (userRefs.aiResumeRef?.toString() === resumeId) userRefs.aiResumeRef = null;
 
       await userRefs.save();
     }
 
-    return NextResponse.json({ success: true, deletedResume });
+    return NextResponse.json({ success: true, message: "Resume deleted and jobs unlinked" });
   } catch (error) {
     console.error("Error deleting resume:", error);
     return NextResponse.json({ error: "Failed to delete resume" }, { status: 500 });
   }
 }
 
-
-
 export async function PATCH(req, context) {
-  const { id: resumeId } = await context.params; // ✅ REQUIRED by Next.js
-
   try {
     await connectToDB();
-
-    // 🔐 Get authenticated user
+    const { id: resumeId } = await context.params;
     const userData = await authenticate(req);
+
     if (!userData?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // 📦 Parse body
     const body = await req.json();
-
     if (!body || Object.keys(body).length === 0) {
-      return NextResponse.json(
-        { error: "No data provided to update." },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "No data provided" }, { status: 400 });
     }
 
-    // 🚫 Strip immutable / forbidden fields
+    // 🚫 PROTECTION: Prevent manual tampering with the 'jobs' array via PATCH
+    // The 'jobs' array should only be updated by the Job routes (One Job -> One Resume logic)
     const {
       _id,
       userId,
+      jobs, // We strip this so users can't manually inject Job IDs here
       createdAt,
       updatedAt,
       __v,
       ...updateData
     } = body;
 
-    // 📝 Update resume
     const updatedResume = await Resume.findOneAndUpdate(
       { _id: resumeId, userId: userData.id },
       { $set: updateData },
-      { new: true }
+      { new: true, runValidators: true }
     );
 
     if (!updatedResume) {
-      return NextResponse.json(
-        { error: "Resume not found or unauthorized." },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Resume not found or unauthorized" }, { status: 404 });
     }
 
     return NextResponse.json(updatedResume);
   } catch (err) {
     console.error("Error updating resume:", err);
-    return NextResponse.json(
-      { error: err.message || "Failed to update resume." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to update resume" }, { status: 500 });
   }
 }
