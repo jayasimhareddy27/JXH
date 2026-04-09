@@ -6,12 +6,7 @@ const clFormatPrompts = {
     title: 'Your Contact Info', // UPDATED
     arrayFieldKey: false,
     fields: ['name', 'email', 'phone', 'address', ],
-    initial: { 
-      name: 'Jonathan Doe', 
-      email: 'j.doe@example.com', 
-      phone: '+1 (555) 000-0000', 
-      address: '123 Business Way, New York, NY 10001'
-    },
+    initial: {   name: '',   email: '',   phone: '',   address: ''},
     prompt: `Act as an expert document parser. Extract the sender's contact details.
 Return ONLY a valid JSON object. No prose, no markdown code blocks, no explanation.
 {
@@ -31,12 +26,7 @@ Source Text:`
     title: 'Employer Information', // UPDATED
     arrayFieldKey: false,
     fields: ['managerName', 'companyName', 'companyAddress', 'positionTitle'],
-    initial: { 
-      managerName: 'Hiring Manager', 
-      companyName: 'Target Company Name', 
-      companyAddress: '123 Enterprise Way, City, State', 
-      positionTitle: 'Target Position Title'
-    },
+    initial: {   managerName: '',   companyName: '',   companyAddress: '',   positionTitle: ''},
     prompt: `Identify the hiring manager and company details from the text.
 Return ONLY a valid JSON object. 
 {
@@ -57,8 +47,8 @@ Source Text:`
     arrayFieldKey: false,
     fields: ['date', 'subjectLine', 'referenceNumber'],
     initial: { 
-      date: `${(new Date().getMonth() + 1).toString().padStart(2, '0')}/${new Date().getDate().toString().padStart(2, '0')}/${new Date().getFullYear()}`, 
-      subjectLine: 'Application for [Position Title]', 
+      date: '', 
+      subjectLine: '', 
       referenceNumber: '' 
     },
     prompt: `Extract the formal elements of the letter.
@@ -80,9 +70,9 @@ Source Text:`
     arrayFieldKey: false,
     fields: ['salutation', 'intro', 'conclusion'],
     initial: { 
-      salutation: 'Dear First Name Last Name or Hiring Manager: ,', 
-      intro: 'I am writing to express my enthusiastic interest in the [Position Name] role at [Company Name]. With my background in [Your Field], I am confident that I can contribute significantly to your team.', 
-      conclusion: 'Thank you for your time and consideration. I am eager to discuss how my experience can support your goals and look forward to the possibility of an interview.'
+      salutation: '', 
+      intro: '', 
+      conclusion: ''
     },
     prompt: `Extract the opening and closing remarks. Do not extract the main body paragraphs here.
 Return ONLY a valid JSON object.
@@ -102,7 +92,7 @@ Source Text:`
     arrayFieldKey: true,
     fields: ['bodyParagraph'],
     initial: [
-      { bodyParagraph: "With a strong background in [Your Field/Skill], I have developed a deep understanding of [Specific Industry Problem]. In my previous role at [Previous Company], I successfully [Achievement], which resulted in [Quantifiable Result]. I am confident that my technical expertise and problem-solving abilities make me an ideal candidate for this position." }
+      { bodyParagraph: "" }
     ],
     prompt: `Extract the core experience paragraphs. Break the main text into a logical sequence of paragraphs.
 Return ONLY a JSON array of objects.
@@ -120,18 +110,18 @@ Source Text:`
     arrayFieldKey: false,
     fields: ['linkedin', 'github', 'portfolio', 'other'],
     initial: {
-      linkedin: 'linkedin.com/in/username', 
-      github: 'github.com/username', 
-      portfolio: 'portfolio-link.com', 
+      linkedin: '', 
+      github: '', 
+      portfolio: '', 
       other: ''
     },
     prompt: `Extract the core experience paragraphs. Break the main text into a logical sequence of paragraphs.
 Return ONLY a JSON array of objects.
 {
-  "linkedin": "LinkedIn URL",
-  "github": "GitHub URL",
-  "portfolio": "Portfolio URL",
-  "other": "Other relevant profile URL"
+  "linkedin": "",
+  "github": "",
+  "portfolio": "",
+  "other": ""
 }
 Do not include the salutation or the sign-off.
 
@@ -145,8 +135,8 @@ Source Text:`
     arrayFieldKey: false,
     fields: ['complimentaryClose', 'signatureName'],
     initial: { 
-      complimentaryClose: 'Sincerely,', 
-      signatureName: 'John Doe' 
+      complimentaryClose: '', 
+      signatureName: '' 
     },
     prompt: `Extract the formal sign-off.
 Return ONLY a valid JSON object.

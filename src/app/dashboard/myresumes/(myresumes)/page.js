@@ -18,16 +18,15 @@ import ClientOnly from "@public/components/shared/clientonly.js";
 
 // Factories and Helpers
 import { 
-  CopyResumeModal, 
-  handleConnectAIFactory, 
+  handleConnectAIFactory,   
   handleDeleteFactory, 
   handleCopyFactory, 
   handleCopySubmitFactory, 
   handleMakePrimaryFactory, 
-  handleCreateResumeFactory, 
   prepareResumes,
   handleMarkProfileFactory
 } from "../(components)/index";
+import { CopyResumeModal } from "../(components)/copyresumemodal";
 
 export default function ResumesPage() {
   const router = useRouter();

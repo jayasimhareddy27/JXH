@@ -27,10 +27,8 @@ export const handleCopySubmitCLFactory = (dispatch, closeModal) => async (clId, 
 
 
 export const handleCreateCLFactory = (dispatch, router) => async (name) => {
-  // We dispatch the createCoverletter thunk
   const resultAction = await dispatch(createCoverletter(name));
   
-  // If the creation is successful, Redux Toolkit provides a .match helper
   if (createCoverletter.fulfilled.match(resultAction)) {
     const newCLId = resultAction.payload._id;
     

@@ -3,23 +3,9 @@ import { useRouter } from "next/navigation";
 import { Edit, Eye, Download, Star, Trash, Copy, Bot, User } from "lucide-react"; 
 import Loading from "./../(myresumes)/loading";
 
-const ResumeCardView = ({ 
-  resumes, 
-  isLoading, 
-  currentPage, 
-  resumesPerPage, 
-  handleMakePrimary, 
-  handleDelete, 
-  handleCopy, 
-  handleConnectAI, 
-  handleMarkProfile, // ✅ Added handler
-  primaryResumeId, 
-  aiResumeRef, 
-  myProfileRef 
-}) => {
+const ResumeCardView = ({ resumes, isLoading, currentPage, resumesPerPage, handleMakePrimary, handleDelete, handleCopy, handleConnectAI, handleMarkProfile, primaryResumeId, aiResumeRef, myProfileRef }) => {
   const router = useRouter();
 
-  // PINNING LOGIC: Sort resumes so marked ones are always on top
   const sortedResumes = [...resumes].sort((a, b) => {
     const isAPinned = a._id === primaryResumeId || a._id === aiResumeRef || a._id === myProfileRef;
     const isBPinned = b._id === primaryResumeId || b._id === aiResumeRef || b._id === myProfileRef;
@@ -34,73 +20,44 @@ const ResumeCardView = ({
   const formatDate = (dateString) => new Date(dateString).toLocaleDateString();
 
   const getActionButtons = (resume, isPrimary, isAI, isProfile) => [
-    {
-      title: "Edit",
-      icon: <Edit size={14} />,
-      onClick: (e) => {
+    {title: "Edit",icon: <Edit size={14} />, onClick: (e) => {
         e.stopPropagation();
         router.push(`/editor/cv/${resume._id}`);
       },
     },
-    {
-      title: "Preview",
-      icon: <Eye size={14} />,
-      onClick: (e) => {
+    {title: "Preview",icon: <Eye size={14} />,onClick: (e) => {
         e.stopPropagation();
         window.open(`/editor/cv/${resume._id}`, "_blank");
       },
     },
-    {
-      title: "Download",
-      icon: <Download size={14} />,
-      onClick: (e) => {
+    { title: "Download", icon: <Download size={14} />, onClick: (e) => {
         e.stopPropagation();
         window.location.href = `/api/resume/download/${resume._id}`;
       },
     },
-    {
-      title: "Copy",
-      icon: <Copy size={14} />,
-      onClick: (e) => {
+    { title: "Copy", icon: <Copy size={14} />, onClick: (e) => {
         e.stopPropagation();
         handleCopy(resume._id, resume.name);
       },
     },
     // PROFILE CONNECTION: Hidden if already the profile
-    ...(!isProfile ? [{
-      title: "Set as Profile",
-      icon: <User size={14} />,
-      isProfileAction: true,
-      onClick: (e) => {
+    ...(!isProfile ? [{ title: "Set as Profile", icon: <User size={14} />, isProfileAction: true, onClick: (e) => {
         e.stopPropagation();
         handleMarkProfile(resume._id);
       },
     }] : []),
     // AI CONNECTION: Hidden if already connected
-    ...(!isAI ? [{
-      title: "Connect AI",
-      icon: <Bot size={14} />,
-      isAIAction: true,
-      onClick: (e) => {
+    ...(!isAI ? [{ title: "Connect AI", icon: <Bot size={14} />, isAIAction: true, onClick: (e) => {
         e.stopPropagation();
         handleConnectAI(resume._id);
       },
     }] : []),
-    {
-      title: "Make Primary",
-      icon: <Star size={14} />,
-      disabled: isPrimary,
-      onClick: (e) => {
+    { title: "Make Primary", icon: <Star size={14} />, disabled: isPrimary, onClick: (e) => {
         e.stopPropagation();
         handleMakePrimary(resume._id);
       },
     },
-    {
-      title: "Delete",
-      disabled: isPrimary,
-      danger: true,
-      icon: <Trash size={14} />,
-      onClick: (e) => {
+    { title: "Delete", disabled: isPrimary, danger: true, icon: <Trash size={14} />, onClick: (e) => {
         e.stopPropagation();
         handleDelete(resume._id);
       },

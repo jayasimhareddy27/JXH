@@ -6,40 +6,36 @@ export const layoutGrid01 = {
   primary: "grid grid-cols-1 gap-6",
 };
 
+// index.js
 export const COVERLETTER_IDS01 = {
   PAGE: "page",
-  HEADER: "header",
   
-  // Sender info
-  SENDER_NAME: "senderName",
-  SENDER_EMAIL: "senderEmail",
-  SENDER_PHONE: "senderPhone",
-  SENDER_ADDRESS: "senderAddress",
+  // Section Wrappers (These open the main tabs)
+  HEADER: "personalInformation", 
+  RECIPIENT_BLOCK: "recipientInformation", 
+  SUBJECT_BLOCK: "letterMeta",
+  BODY_WRAPPER: "letterBodyParagraphs",
+  SIGN_OFF_BLOCK: "signOff",
 
-  // --- NEW: RECIPIENT BLOCK WRAPPER ---
-  // Allows the user to select the entire block for spacing/style changes
-  RECIPIENT_BLOCK: "recipientBlock", 
-  DATE: "letterDate",
+  // Individual Fields (These highlight specific inputs within tabs)
+  SENDER_NAME: "name",
+  SENDER_EMAIL: "email",
+  SENDER_PHONE: "phone",
+  SENDER_ADDRESS: "address",
+
+  DATE: "date",
   RECIPIENT_NAME: "managerName",
   RECIPIENT_COMPANY: "companyName",
   RECIPIENT_ADDRESS: "companyAddress",
 
-  // --- NEW: SUBJECT SECTION ---
-  // Vital for formal letters to keep the 'RE:' line distinct
-  SUBJECT_BLOCK: "subjectBlock",
   SUBJECT: "subjectLine",
   REF_NUMBER: "referenceNumber",
 
-  // Content
   SALUTATION: "salutation",
   INTRO: "intro",
-  BODY_WRAPPER: "letterBodyParagraphs",
   BODY_PARA: (i) => `bodyParagraph_${i}`,
   CONCLUSION: "conclusion",
 
-  // Sign off
-  // --- NEW: SIGN OFF WRAPPER ---
-  SIGN_OFF_BLOCK: "signOffBlock",
   CLOSE: "complimentaryClose",
   SIGNATURE: "signatureName",
 };

@@ -54,13 +54,19 @@ export default function Template01() {
           <Visible id={IDS.CONTACT_INFO} designConfig={designConfig}>
             <div className="flex justify-center items-center gap-6 text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-secondary)]">
               <Visible id={IDS.EMAIL} designConfig={designConfig}>
-                <span>{renderRichText(pi.email)}</span>
+                <div {...getBind(IDS.EMAIL, "text-xxs ")}>
+                  <span>{renderRichText(pi.email)}</span>
+                </div>
               </Visible>
               <Visible id={IDS.PHONE_NUMBER} designConfig={designConfig}>
-                <span>{renderRichText(pi.phoneNumber)}</span>
+                <div {...getBind(IDS.PHONE_NUMBER, "text-xxs ")}>
+                  <span>{renderRichText(pi.phoneNumber)}</span>
+                </div>
               </Visible>
               <Visible id={IDS.ADDRESS} designConfig={designConfig}>
+                <div {...getBind(IDS.ADDRESS, "text-xxs ")}>
                 <span>{renderRichText(pi.address || "")}</span>
+                </div>
               </Visible>
             </div>
           </Visible>

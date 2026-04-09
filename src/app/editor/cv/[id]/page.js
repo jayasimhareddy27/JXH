@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import Loading from "./loading";
 import { Printer } from "lucide-react";
 import DesignEditor from "../../(shared)/designeditor";
-import { fetchJobs } from "@lib/redux/features/job/thunks";
 
 const type="resume";
 export default function ResumeEditorPage() {
@@ -26,7 +25,6 @@ export default function ResumeEditorPage() {
     
     useEffect(() => {
         if (!token || !resumeId) return;
-        dispatch(fetchJobs("tracker")); // Ensure we have the latest job data for AI generation context
         dispatch(fetchDocumentById({id: resumeId, type}));
     }, [token, resumeId, dispatch]);
 

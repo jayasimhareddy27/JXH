@@ -28,7 +28,7 @@ export const RESUME_IDS01 = {
   CAREER_SUMMARY: "careerSummary",
   CAREER_SUMMARY_TITLE: "careerSummary_title",
   CAREER_SUMMARY_DECORATOR: "careerSummary_decorator",
-  CAREER_SUMMARY_CONTENT: "careerSummary_content",
+  CAREER_SUMMARY_CONTENT: "summary",
 
   EXPERIENCE: "workExperience",
   EXPERIENCE_DECORATOR: "experience_decorator",

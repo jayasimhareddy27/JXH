@@ -50,7 +50,6 @@ export default function RootLayout({ children }) {
               </div>
               {children}
               <Analytics />
-
               <AIConnectionFloating />
             </main>
           </div>

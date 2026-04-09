@@ -1,148 +1,117 @@
 'use client';
 
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
-import { COVERLETTER_IDS01 as IDS } from './index';
-import { bind } from '@/app/editor/(shared)/editorstyles';
-import { selectContainer } from '@lib/redux/features/editor/slice';
-import { useRef } from 'react';
+import { useCoverletterLogic } from '@coverlettertemplates/utils/usecoverletterlogic';
+import { COVERLETTER_IDS01 as IDS, layoutGrid01 } from './index';
+import { renderRichText } from '@coverlettertemplates/utils';
 
 export default function Template01() {
-  const dispatch = useDispatch();
-  const clRef = useRef(null);
+  const logic = useCoverletterLogic(IDS, layoutGrid01);
+  if (logic.loading) return null;
 
-  const formDataMap = useSelector((state) => state.editor.formDataMap, shallowEqual);
-
-  if (!formDataMap) return null;
-
-  const {
-    personalInformation: pi = {},
-    recipientInformation: ri = {},
-    letterMeta: meta = {},
-    letterContent: content = {},
-    letterBodyParagraphs = [],
-    onlineProfiles: op = {}, 
-    signOff = {},
-    designConfig = {},
-  } = formDataMap;
-
-  const selectedContainer = designConfig.selectedContainer;
-  const visibility = designConfig.containers || {}; // Get hide/show states
-
-  // Helper to check if a section is toggled 'on'
-  const isVisible = (id) => visibility[id] !== false;
-
-  const getBind = (id, classes = '') => 
-    bind(id, designConfig, selectedContainer, dispatch, `${classes} break-words whitespace-pre-wrap overflow-hidden`);
-
-  const handleDeselect = (e) => {
-    if (e.target === e.currentTarget) {
-      dispatch(selectContainer(null));
-    }
-  };
+  const { 
+    getBind, 
+    handleDeselect, 
+    coverletterRef, 
+    contentHeight,
+    personalInformation: pi,
+    recipientInformation: ri,
+    letterMeta: meta,
+    letterContent: content,
+    signOff: so
+  } = logic;
+    
+  const A4_HEIGHT_PX = 1122; // Height of one A4 page in pixels
 
   return (
-    <div className="flex justify-center bg-slate-200 min-h-screen py-10 print:bg-white print:p-0" onClick={handleDeselect}>
+    <div className="flex flex-col items-center bg-[var(--color-background-tertiary)] min-h-screen py-10 print:bg-white print:p-0 print:py-0" onClick={handleDeselect}>
       <div 
-        ref={clRef} 
-        {...getBind(IDS.PAGE, 'w-[210mm] min-h-[297mm] bg-white p-[25mm] flex flex-col font-serif text-[#111] shadow-2xl print:shadow-none print:m-0')}
+        ref={coverletterRef}
+        {...getBind(IDS.PAGE, "w-[210mm] h-auto min-h-[297mm] bg-white p-[20mm] flex flex-col font-sans relative shadow-2xl print:shadow-none print:m-0")}
       >
         
-        {/* HEADER: Only shows if not hidden */}
-        {isVisible(IDS.HEADER) && (
-          <header {...getBind(IDS.HEADER, "mb-8 text-left border-b border-gray-100 pb-4")}>
-            <h1 {...getBind(IDS.SENDER_NAME, "text-2xl font-bold text-black leading-tight")}>
-              {pi.name || "Jonathan Doe"}
-            </h1>
-            
-            <div className="text-[10.5pt] font-sans text-gray-700 space-y-0.5">
-              <div className="flex gap-x-3 flex-wrap">
-                 <span {...getBind(IDS.SENDER_EMAIL)} className="text-blue-600 underline">{pi.email || "j.doe@example.com"}</span>
-                 <span {...getBind(IDS.SENDER_PHONE)}>{pi.phone || "+1 (555) 000-0000"}</span>
-              </div>
-              <div {...getBind(IDS.SENDER_ADDRESS)}>{pi.address || "123 Business Way, New York, NY 10001"}</div>
-              
-              <div className="text-[9pt] text-gray-500 pt-1 italic font-sans">
-                {op.linkedin ? (
-                  <span><strong>LinkedIn:</strong> {op.linkedin}</span>
-                ) : op.portfolio ? (
-                  <span><strong>Portfolio:</strong> {op.portfolio}</span>
-                ) : null}
-              </div>
-            </div>
-          </header>
-        )}
-
-        <div className="flex-1">
-          {/* DATE */}
-          {isVisible(IDS.DATE) && (
-            <div {...getBind(IDS.DATE, 'mb-8 text-[11pt] text-black')}>
-              {meta.date}
-            </div>
-          )}
-
-          {/* RECIPIENT BLOCK */}
-          {isVisible(IDS.RECIPIENT_BLOCK) && (
-            <section {...getBind(IDS.RECIPIENT_BLOCK, "mb-8 text-[11pt] leading-snug")}>
-              <div {...getBind(IDS.RECIPIENT_NAME, 'font-bold')}>{ri.managerName || "Hiring Manager"}</div>
-              <div {...getBind(IDS.RECIPIENT_COMPANY)}>{ri.companyName}</div>
-              <div {...getBind(IDS.RECIPIENT_ADDRESS)}>{ri.companyAddress}</div>
-            </section>
-          )}
-
-          {/* SUBJECT LINE */}
-          {isVisible(IDS.SUBJECT_BLOCK) && meta.subjectLine && (
-            <div {...getBind(IDS.SUBJECT_BLOCK, "mb-6 text-[11pt] font-bold uppercase")}>
-              <span {...getBind(IDS.SUBJECT)}>RE: {meta.subjectLine}</span>
-              {meta.referenceNumber && (
-                <span {...getBind(IDS.REF_NUMBER)} className="ml-2 font-normal text-gray-600 italic">
-                  ({meta.referenceNumber})
+        {/* PAGE 1 LIMIT INDICATOR (Repeats for page 2 if needed) */}
+        <div className="print:hidden pointer-events-none absolute inset-0 z-10">
+          {[1, 2].map((page) => (
+            contentHeight > (A4_HEIGHT_PX * page) && (
+              <div 
+                key={page}
+                className="absolute left-0 w-full border-t-2 border-dashed border-red-300 opacity-60" 
+                style={{ top: `${297 * page}mm` }}
+              >
+                <span className="bg-red-400 text-white text-[10px] px-2 absolute -top-2.5 right-10 font-bold uppercase">
+                  Page {page} Limit
                 </span>
-              )}
-            </div>
-          )}
-
-          {/* SALUTATION */}
-          {isVisible(IDS.SALUTATION) && (
-            <p {...getBind(IDS.SALUTATION, 'mb-6 text-[11pt] text-black')}>
-              {content.salutation || "Dear Hiring Manager:"}
-            </p>
-          )}
-
-          {/* LETTER BODY */}
-          <div className="space-y-6 text-[11pt] leading-relaxed text-justify text-black">
-            {isVisible(IDS.INTRO) && <p {...getBind(IDS.INTRO)}>{content.intro}</p>}
-
-            {/* Check if Body Paragraphs section is hidden */}
-            {isVisible(IDS.BODY_WRAPPER) && (
-              Array.isArray(letterBodyParagraphs) && letterBodyParagraphs.length > 0 ? (
-                letterBodyParagraphs.map((para, i) => {
-                  const text = typeof para === 'object' ? (para.bodyParagraph || Object.values(para)[0]) : para;
-                  return (
-                    <p key={i} {...getBind(IDS.BODY_PARA(i))}>
-                      {text}
-                    </p>
-                  );
-                })
-              ) : (
-                <p>{content.bodyParagraphs}</p>
-              )
-            )}
-
-            {isVisible(IDS.CONCLUSION) && <p {...getBind(IDS.CONCLUSION)}>{content.conclusion}</p>}
-          </div>
-
-          {/* SIGN OFF */}
-          {isVisible(IDS.SIGN_OFF_BLOCK) && (
-            <div {...getBind(IDS.SIGN_OFF_BLOCK, "mt-12 text-[11pt]")}>
-              <p {...getBind(IDS.CLOSE)} className="mb-10">{signOff.complimentaryClose || "Sincerely,"}</p>
-              <div className="max-w-[250px]">
-                <p {...getBind(IDS.SIGNATURE, 'font-bold text-black border-t border-gray-200 pt-1')}>
-                  {signOff.signatureName || "Jonathan Doe"}
-                </p>
               </div>
-            </div>
+            )
+          ))}
+        </div>
+
+        {/* 1. SENDER HEADER */}
+        <header {...getBind(IDS.HEADER, "mb-10 border-b-2 pb-6 border-slate-900 cursor-pointer group")}>
+          <h1 {...getBind(IDS.SENDER_NAME, "text-4xl font-black uppercase tracking-tighter text-slate-900 group-hover:text-blue-600 transition-colors")}>
+            {pi?.name || "JONATHAN DOE"}
+          </h1>
+          <div className="flex flex-wrap gap-x-6 gap-y-1 mt-3 text-sm font-medium text-slate-600">
+            <span {...getBind(IDS.SENDER_EMAIL)} className="hover:text-blue-500">{pi?.email || "j.doe@example.com"}</span>
+            <span {...getBind(IDS.SENDER_PHONE)} className="hover:text-blue-500">{pi?.phone || "+1 123-456-7890"}</span>
+            <span {...getBind(IDS.SENDER_ADDRESS)} className="hover:text-blue-500">{pi?.address || "Aurora, IL"}</span>
+          </div>
+        </header>
+
+        {/* 2. RECIPIENT & DATE BLOCK */}
+        <section {...getBind(IDS.RECIPIENT_BLOCK, "mb-10 space-y-1 text-sm text-slate-800 cursor-pointer hover:bg-slate-50 p-2 -m-2 rounded transition-colors")}>
+          <div {...getBind(IDS.DATE, "mb-6 text-slate-500 font-bold tracking-widest")}>
+            {meta?.date || "February 05, 2026"}
+          </div>
+          <p {...getBind(IDS.RECIPIENT_NAME, "font-bold text-base")}>{ri?.managerName || "Hiring Manager"}</p>
+          <p {...getBind(IDS.RECIPIENT_COMPANY, "uppercase font-semibold")}>{ri?.companyName || "TechCorp Solutions"}</p>
+          <p {...getBind(IDS.RECIPIENT_ADDRESS)}>{ri?.companyAddress || "456 Enterprise Dr, Chicago, IL 60601"}</p>
+        </section>
+
+        {/* 3. SUBJECT BLOCK */}
+        <div {...getBind(IDS.SUBJECT_BLOCK, "mb-8 cursor-pointer hover:bg-slate-50 p-2 -m-2 rounded transition-colors")}>
+          <h2 {...getBind(IDS.SUBJECT, "font-bold text-lg text-slate-900 uppercase underline decoration-2 underline-offset-4")}>
+            {meta?.subjectLine || "Application for Position"}
+          </h2>
+          {meta?.referenceNumber && (
+            <span {...getBind(IDS.REF_NUMBER, "text-xs font-mono text-slate-500 block mt-2")}>
+              Ref: {meta.referenceNumber}
+            </span>
           )}
         </div>
+
+        {/* 4. CONTENT SECTION */}
+        <article className="flex-grow text-[11pt] leading-relaxed text-slate-700 space-y-6">
+          <p {...getBind(IDS.SALUTATION, "font-bold text-slate-900 cursor-pointer hover:text-blue-600")}>
+            {content?.salutation || "Dear Hiring Manager,"}
+          </p>
+          
+          <div {...getBind(IDS.INTRO, "cursor-pointer hover:bg-slate-50 p-1 rounded")}>
+            {renderRichText(content?.intro || "I am writing to express my interest...")}
+          </div>
+
+          <div {...getBind(IDS.BODY_WRAPPER, "space-y-4")}>
+            {content?.bodyParagraphs?.map((para, i) => (
+              <div key={i} {...getBind(IDS.BODY_PARA(i), "cursor-pointer hover:bg-slate-50 p-1 rounded border-l-2 border-transparent hover:border-blue-400 transition-all")}>
+                {renderRichText(para)}
+              </div>
+            )) || <p>Details about my experience in Next.js and full-stack development.</p>}
+          </div>
+
+          <div {...getBind(IDS.CONCLUSION, "cursor-pointer hover:bg-slate-50 p-1 rounded")}>
+            {renderRichText(content?.conclusion || "Thank you for your consideration.")}
+          </div>
+        </article>
+
+        {/* 5. SIGN OFF BLOCK */}
+        <footer {...getBind(IDS.SIGN_OFF_BLOCK, "mt-12 pt-6 border-t border-slate-100 cursor-pointer hover:bg-slate-50 p-2 -m-2 rounded transition-colors")}>
+          <p {...getBind(IDS.CLOSE, "mb-10 text-slate-600")}>
+            {so?.complimentaryClose || "Sincerely,"}
+          </p>
+          <p {...getBind(IDS.SIGNATURE, "text-2xl font-bold text-slate-900 tracking-tight")}>
+            {so?.signatureName || pi?.name || "Jonathan Doe"}
+          </p>
+        </footer>
       </div>
     </div>
   );

@@ -40,12 +40,8 @@ export const generateresumefromjobdata = (
       dispatch(saveDocumentById());
       
       // Update local loop variable so next section in loop has updated context
-      baseResume[config.key] = parsedData;
     }
-    // Return the merged draft WITHOUT saving to DB
-    return { 
-      ...baseResume, 
-    };
+    
 
   } catch (error) {
     if (error.name === 'AbortError') throw error;

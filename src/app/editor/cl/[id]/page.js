@@ -11,7 +11,7 @@ import { Printer } from "lucide-react";
 import DesignEditor from "../../(shared)/designeditor";
 
 const type="coverletter";
-export default function ResumeEditorPage() {
+export default function CoverletterEditorPage() {
     const params = useParams();
     const coverletterId = params?.id;
     const dispatch = useDispatch();
@@ -47,16 +47,12 @@ export default function ResumeEditorPage() {
         setIsMounted(true);
     }, []);
 
-    // If we haven't mounted yet, render a skeleton or nothing
-    // to prevent the server/client text mismatch
     if (!isMounted) {
         return <div className="flex h-screen items-center justify-center">Loading Editor...</div>;
     }
     return (
         <div className="flex h-screen overflow-hidden bg-[var(--color-background-primary)] text-[var(--color-text-primary)] print:bg-white print:block">
      
-
-            {/* Live Preview Area */}
             <div className="flex-1 flex flex-col h-full overflow-hidden bg-[var(--color-background-tertiary)] print:bg-white print:block">
                 
                 {/* NEW TOP ACTION BAR - STICKY AND OUT OF THE WAY */}

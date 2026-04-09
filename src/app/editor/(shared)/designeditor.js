@@ -42,9 +42,10 @@ export default function DesignEditor({ type, selectedContainer, activeTemplateOb
   const handleFetchFromAI = useCallback(async (phase) => {
     if (abortControllerRef.current) abortControllerRef.current.abort();
     abortControllerRef.current = new AbortController();
+    
     try {
       await dispatch(fetchAIdataforDocument({
-        type: type === "resume" ? "resume" : "coverLetter",
+        type: type === "resume" ? "resume" : "coverletter",
         sectionIds: phase.id ? [phase.id] : (phase.sectionIds || []),
         signal: abortControllerRef.current.signal,
       })).unwrap();
