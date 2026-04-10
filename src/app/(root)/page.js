@@ -32,7 +32,7 @@ export default async function HomePage() {
               Stop guessing. Our AI platform gives you a precise match score and actionable feedback against any job description.
             </p>
             <Link
-              href="/dashboard/myresumes"
+              href="/atsscore"
               className="inline-block rounded-lg py-4 px-8 font-bold 
                          bg-[var(--color-cta-bg)] text-[var(--color-cta-text)] 
                          shadow-md transition-all duration-300

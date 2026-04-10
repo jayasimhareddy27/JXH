@@ -1,9 +1,3 @@
-upgrade content tab (8/10 completed)
-upgrade ATS Score tab , Suggest for better ATS scores
-Upgrade the Templates structring for cl and increase templates
-add new tab where we can chat with ai to edit resume
-
-
 Better prompting
 
 Job Tracking
