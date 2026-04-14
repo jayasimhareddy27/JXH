@@ -18,8 +18,9 @@ const FONT_OPTIONS = [
   { label: "Montserrat", value: "'Montserrat', sans-serif" },
 ];
 
-export default function DesignTab({ selectedContainer }) {
+export default function DesignTab({ selectedContainer,activeTemplateObj }) {
   const dispatch = useDispatch();
+  
   const { formDataMap } = useSelector((state) => state.editor, shallowEqual);
   const [activeGroup, setActiveGroup] = useState("typography");
 
@@ -61,7 +62,10 @@ export default function DesignTab({ selectedContainer }) {
   return (
     <div className="space-y-6 animate-in fade-in duration-500 pb-20 px-1">
       <div className="flex items-center gap-2 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">
-        Style Engine
+        Reset Styles               
+        <button onClick={handleReset} className="p-1 hover:bg-slate-100 rounded-md transition-colors">
+                <RotateCcw size={14} className={isGlobal ? 'text-white' : 'text-slate-400'} />
+              </button>
       </div>
 
       {!selectedContainer ? (
@@ -74,20 +78,7 @@ export default function DesignTab({ selectedContainer }) {
       ) : (
         <div className="space-y-4 animate-in slide-in-from-bottom-2">
           
-          {/* Header Card */}
-          <div className={`p-4 rounded-2xl shadow-sm border ${isGlobal ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
-            <div className="flex justify-between items-center mb-1">
-              <span className={`text-[9px] font-black uppercase tracking-widest ${isGlobal ? 'text-slate-400' : 'text-blue-500'}`}>
-                {isGlobal ? "Global Theme" : "Local Element"}
-              </span>
-              <button onClick={handleReset} className="p-1 hover:bg-slate-100 rounded-md transition-colors">
-                <RotateCcw size={14} className={isGlobal ? 'text-white' : 'text-slate-400'} />
-              </button>
-            </div>
-            <h4 className={`text-xs font-bold truncate ${isGlobal ? 'text-white' : 'text-slate-700'}`}>
-              {selectedContainer.replace(/([A-Z]|_)/g, ' $1').trim()}
-            </h4>
-          </div>
+
 
           {/* GROUP 1: TYPOGRAPHY (Includes Letter/Line Spacing & Link) */}
           <StyleGroup title="Typography" icon={<Type size={14}/>} isOpen={activeGroup === "typography"} onToggle={() => setActiveGroup("typography")}>

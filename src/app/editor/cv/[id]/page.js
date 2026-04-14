@@ -19,7 +19,7 @@ export default function ResumeEditorPage() {
     
     const resumeData = useSelector((state) => state.editor.formDataMap);
     const { token } = useSelector((state) => state.auth);
-    const selectedContainer = useSelector((state) => state.editor.selectedContainer);
+    const selectedContainer = useSelector((state) => state.editor.formDataMap?.designConfig?.selectedContainer);
     
     const activeTemplateObj = templates.find(t => t.id === resumeData?.templateId) || templates[0];
     const SelectedTemplate = activeTemplateObj.page;
@@ -43,6 +43,7 @@ export default function ResumeEditorPage() {
     if (!isMounted || !resumeData || Object.keys(resumeData).length === 0) {
         return <Loading />;
     }
+    
 
     return (
         <div className="flex flex-col lg:flex-row h-screen overflow-hidden bg-[var(--color-background-primary)] text-[var(--color-text-primary)] print:bg-white print:block">
@@ -94,14 +95,37 @@ export default function ResumeEditorPage() {
                     
                     {/* Editor Status Bar / Mobile Handle */}
 
-                        {selectedContainer && (
-                            <button 
-                                onClick={handleDeselect}
-                                className="flex items-center gap-1 text-[10px] font-bold text-blue-500 bg-blue-500/10 px-2 py-1 rounded-full"
-                            >
-                                Done <ChevronDown size={12} />
-                            </button>
-                        )}
+                        {/* Editor Status Bar / Mobile Handle */}
+<div className="flex items-center justify-between px-4 py-3 bg-[var(--color-background-secondary)]/90 backdrop-blur-md border-b border-[var(--color-border-primary)] lg:hidden sticky top-0 z-30">
+    
+    {/* Drag Handle & Active Element Indicator */}
+    <div className="flex flex-col gap-1.5 flex-1">
+        {/* The visual 'Grab' handle */}
+        <div className="w-8 h-1 bg-slate-300 dark:bg-slate-700 rounded-full mx-0 mb-1" />
+        
+        <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-secondary)]">
+                {selectedContainer ? (
+                    <span>Editing <span className="text-[var(--color-text-primary)] font-black">{selectedContainer.replace(/_/g, ' ')}</span></span>
+                ) : (
+                    "Select Element"
+                )}
+            </span>
+        </div>
+    </div>
+
+    {/* Enhanced Done Button */}
+    {selectedContainer && (
+        <button 
+            onClick={handleDeselect}
+            className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-tight text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl shadow-lg shadow-blue-500/20 active:scale-95 transition-all"
+        >
+            Done
+            <ChevronDown size={14} strokeWidth={3} />
+        </button>
+    )}
+</div>
 
                     {/* Scrollable Editor Content */}
                     <div className="flex-1 overflow-y-auto custom-scrollbar p-2 lg:p-0">
