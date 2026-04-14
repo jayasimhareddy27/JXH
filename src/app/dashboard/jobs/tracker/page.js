@@ -10,7 +10,7 @@ import Pagination from "@public/components/pagination/pagination";
 import FilterBar from "./(components)/filterbar";
 import JobCard from "./(components)/jobcard";
 import JobInspector from "./(components)/jobinspector";
-import FollowUpList from "./(components)/followuplist.js"; // Specialized component
+import FollowUpList from "./(components)/followuplist.js"; 
 import { FLOW_STAGES } from "./(components)/constants.js";
 import Link from "next/link";
 import { Bell, FileText } from "lucide-react";
@@ -22,18 +22,15 @@ const PAGE_SIZE = 15;
 export default function JobTrackerPage() {
   const dispatch = useDispatch();
   
-  // Selectors
   const { trackerListing = [], loading } = useSelector((state) => state.jobsStore);
   const { followUps = [] } = useSelector((state) => state.followupstore || { followUps: [] });
 
-  // Local State
   const [activeStage, setActiveStage] = useState("all");
   const [selectedJobId, setSelectedJobId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [inspectorView, setInspectorView] = useState("followups");
 
-  // Initial Data Fetch
   useEffect(() => {
     dispatch(fetchJobs("tracker"));
     dispatch(fetchFollowUps());
@@ -41,13 +38,10 @@ export default function JobTrackerPage() {
     dispatch(fetchResumes());
   }, [dispatch]);
 
-    
-  // Auto-switch to details when a job is selected
   useEffect(() => {
     if (selectedJobId) setInspectorView("details");
   }, [selectedJobId]);
 
-  // Logic: Filter and Sort Follow-ups
   const upcomingFollowUps = useMemo(() => {
     const list = Array.isArray(followUps) ? followUps : [];
     return list
@@ -55,7 +49,6 @@ export default function JobTrackerPage() {
       .sort((a, b) => new Date(a.followUpDateTime) - new Date(b.followUpDateTime));
   }, [followUps]);
 
-  // Logic: Filter and Search Jobs
   const filteredJobs = useMemo(() => {
     return trackerListing
       .filter((job) => activeStage === "all" || job.stage === activeStage)
@@ -65,7 +58,6 @@ export default function JobTrackerPage() {
       });
   }, [trackerListing, activeStage, searchQuery]);
 
-  // Pagination
   const totalPages = Math.ceil(filteredJobs.length / PAGE_SIZE);
   const paginatedJobs = useMemo(() => {
     const startIndex = (currentPage - 1) * PAGE_SIZE;
@@ -86,7 +78,7 @@ export default function JobTrackerPage() {
   };
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8 bg-[var(--color-background-primary)] min-h-screen transition-colors duration-300">
       {/* Header */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -94,7 +86,7 @@ export default function JobTrackerPage() {
           <p className="text-sm text-[var(--color-text-secondary)] mt-1">Manage pipeline and follow-ups.</p>
         </div>
         <div className="flex items-center gap-3">
-          <Link href="/dashboard/stats" className="px-4 py-2 bg-[var(--color-button-secondary-bg)] text-[var(--color-text-primary)] rounded-xl text-sm font-semibold hover:bg-[var(--color-button-secondary-hover)] transition">
+          <Link href="/dashboard/stats" className="px-4 py-2 bg-[var(--color-background-secondary)] border border-[var(--color-border-primary)] text-[var(--color-text-primary)] rounded-xl text-sm font-semibold hover:bg-[var(--color-background-tertiary)] transition-all">
             Analytics
           </Link>
           <Link href="/dashboard/jobs/new" className="px-4 py-2 bg-[var(--color-button-primary-bg)] text-white rounded-xl text-sm font-semibold hover:opacity-90 transition shadow-sm">
@@ -111,13 +103,15 @@ export default function JobTrackerPage() {
         
         {/* Left Column: Job List */}
         <section className="lg:col-span-7 xl:col-span-8 space-y-4">
-{/* Search Bar Container */}
-      <SearchBar setSearchQuery={setSearchQuery} setCurrentPage={setCurrentPage} />
-        {filteredJobs.length} Applications
-    
-    {/* Improved Badge: Added z-index and fixed positioning */}
+          <div className="space-y-4">
+            <SearchBar setSearchQuery={setSearchQuery} setCurrentPage={setCurrentPage} />
+            <p className="text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] px-1">
+              {filteredJobs.length} Applications Found
+            </p>
+          </div>
+
           {loading ? (
-            <div className="py-20 text-center italic text-[var(--color-text-secondary)]">Fetching applications...</div>
+            <div className="py-20 text-center italic text-[var(--color-text-secondary)] animate-pulse">Fetching applications...</div>
           ) : (
             <div className="space-y-3">
               {paginatedJobs.map((job) => (
@@ -131,13 +125,15 @@ export default function JobTrackerPage() {
               ))}
               
               {paginatedJobs.length === 0 && (
-                <div className="py-20 text-center border-2 border-dashed border-[var(--color-border-secondary)] rounded-3xl text-[var(--color-text-secondary)]">
+                <div className="py-20 text-center border-2 border-dashed border-[var(--color-border-secondary)] rounded-3xl text-[var(--color-text-secondary)] bg-[var(--color-background-secondary)]/30">
                   No applications found.
                 </div>
               )}
 
               {totalPages > 1 && (
-                <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
+                <div className="pt-4">
+                  <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
+                </div>
               )}
             </div>
           )}
@@ -145,17 +141,17 @@ export default function JobTrackerPage() {
 
         {/* Right Column: Dynamic Inspector / Follow-ups */}
         <aside className="lg:col-span-5 xl:col-span-4 sticky top-6">
-          <div className="bg-[var(--color-card-bg)] rounded-3xl border border-[var(--color-border-secondary)] shadow-xl overflow-hidden min-h-[600px] flex flex-col">
+          <div className="bg-[var(--color-card-bg)] rounded-3xl border border-[var(--color-border-primary)] shadow-xl overflow-hidden min-h-[600px] flex flex-col transition-all">
             
             {/* TOGGLE HEADER */}
-            <div className="p-2 border-b border-[var(--color-border-secondary)] flex bg-[var(--color-background-secondary)] gap-1">
+            <div className="p-2 border-b border-[var(--color-border-primary)] flex bg-[var(--color-background-secondary)] gap-1">
               <button 
                 onClick={() => setInspectorView("details")}
                 disabled={!selectedJobId}
                 className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-xs font-bold uppercase rounded-2xl transition-all ${
                   inspectorView === "details" 
                     ? "bg-[var(--color-button-primary-bg)] text-white shadow-md" 
-                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-card-hover-bg)]"
+                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-background-tertiary)]"
                 } ${!selectedJobId ? "opacity-30 cursor-not-allowed" : ""}`}
               >
                 <FileText size={14} /> Job Details
@@ -165,7 +161,7 @@ export default function JobTrackerPage() {
                 className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-xs font-bold uppercase rounded-2xl transition-all ${
                   inspectorView === "followups" 
                     ? "bg-[var(--color-button-primary-bg)] text-white shadow-md" 
-                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-card-hover-bg)]"
+                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-background-tertiary)]"
                 }`}
               >
                 <Bell size={14} /> Follow-ups ({upcomingFollowUps.length})
@@ -173,7 +169,7 @@ export default function JobTrackerPage() {
             </div>
 
             {/* DYNAMIC CONTENT AREA */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar">
+            <div className="flex-1 overflow-y-auto custom-scrollbar bg-[var(--color-background-primary)]/10">
               {inspectorView === "details" && selectedJobId ? (
                 <JobInspector activeJob={activeJob} />
               ) : (

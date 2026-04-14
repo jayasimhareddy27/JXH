@@ -3,118 +3,191 @@ import Link from 'next/link';
 
 export default async function HomePage() {
   const steps = [
-    { title: 'Set Up Your Profile', desc: 'Quickly add your professional details and resume.', href: '/dashboard/profile' },
-    { title: 'Edit Your Resume', desc: 'Use our AI to tailor your resume for the job.', href: '/dashboard/myresumes' },
-    { title: 'Download & Automate', desc: 'Get our extension for live scoring as you browse.', href: '/chrome-extension' }
+    { title: 'Profile Setup', desc: 'Construct your professional foundation with our intuitive profile builder.', href: '/dashboard/profile' },
+    { title: 'AI-Driven Optimization', desc: 'Align your unique achievements with specific job requirements using neural insights.', href: '/dashboard/myresumes' },
+    { title: 'Job X Chaser', desc: 'Deploy our browser extension for live scoring and automation on any job board.', href: '/chrome-extension' }
   ];
 
-  const features = [
-    { title: 'Resume Templates', desc: 'Choose from beautifully designed resume templates for any role.', href: '/template02' },
-    { title: 'ATS Match Score', desc: 'Check how well your resume matches the job description.', href: '/ats-score' },
-    { title: 'Job Tracker', desc: 'Keep track of your job applications, deadlines, and progress.', href: '/job-tracker' }
+  const comparisons = [
+    { feature: "Feedback", manual: "Vague or None", chaser: "Actionable & Instant" },
+    { feature: "ATS Keywords", manual: "Guesswork", chaser: "Data-Driven Matching" },
+    { feature: "Time Spent", manual: "Hours per App", chaser: "Minutes with AI" },
+  ];
+
+  const faq = [
+    { q: "How does the ATS Match Score work?", a: "Our AI parses your resume exactly like a corporate Applicant Tracking System, scanning for keyword density, structural compatibility, and semantic relevance to the job description." },
+    { q: "Is Job X Chaser free to use?", a: "Yes, you can start auditing your resume for free. We also offer advanced AI features for candidates looking to deeply personalize their bullet points and cover letters." },
+    { q: "Which job boards does the extension support?", a: "Job X Chaser works natively on major platforms like LinkedIn, Indeed, Glassdoor, and most Greenhouse or Lever-hosted career pages." }
   ];
 
   return (
-    <main className="font-sans bg-[var(--color-background-primary)] text-[var(--color-text-primary)]">
-      <h1 className="text-4xl lg:text-5xl font-bold text-[var(--color-text-secondary)] tracking-tight text-center">
-        {Companyname} - Your Job Search Companion
-      </h1>
+    <main className="min-h-screen bg-[var(--color-background-primary)] text-[var(--color-text-primary)] selection:bg-[var(--color-cta-bg)] selection:text-[var(--color-cta-text)] transition-colors duration-300">
+      
+      {/* === STICKY HEADER === */}
+      <header className="sticky top-0 z-50 border-b border-[var(--color-border-primary)] bg-[var(--color-background-primary)]/80 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl sm:text-3xl font-black tracking-tighter text-[var(--color-text-primary)]">
+              {Companyname} 
+            </span>
+          </div>
+          <nav className="flex items-center gap-4 sm:gap-8">
+            <Link href="/atsscore" className="hidden sm:block text-sm font-medium hover:text-[var(--color-cta-bg)] transition-colors">ATS Score</Link>
+            <Link href="/chrome-extension" className="btn-primary text-xs !py-2 !px-4 rounded-full">
+              Get Extension
+            </Link>
+          </nav>
+        </div>
+      </header>
 
       {/* === HERO SECTION === */}
-      <section id="score" className="py-20 md:py-28 px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left Text */}
-          <div className="text-center lg:text-left">
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-[var(--color-text-primary)]">
-              Optimize Your Resume, Instantly.
+      <section className="max-w-7xl mx-auto pt-12 md:pt-24 pb-16 px-4 sm:px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="space-y-6 md:space-y-8 text-center lg:text-left">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter leading-tight text-[var(--color-text-primary)]">
+              Land More <br className="hidden sm:block" />
+              <span className="text-[var(--color-cta-bg)]">Interviews.</span>
             </h1>
-            <p className="text-lg mb-10 max-w-xl mx-auto lg:mx-0 text-[var(--color-text-secondary)]">
-              Stop guessing. Our AI platform gives you a precise match score and actionable feedback against any job description.
+            <p className="text-base sm:text-lg md:text-xl text-[var(--color-text-secondary)] max-w-xl mx-auto lg:mx-0 leading-relaxed">
+              {Companyname} empowers your search. Leverage <strong>Job X Chaser</strong> to audit your resume against <strong>Applicant Tracking Systems</strong> in seconds.
             </p>
-            <Link
-              href="/atsscore"
-              className="inline-block rounded-lg py-4 px-8 font-bold 
-                         bg-[var(--color-cta-bg)] text-[var(--color-cta-text)] 
-                         shadow-md transition-all duration-300
-                         hover:bg-[var(--color-cta-hover-bg)] hover:shadow-lg hover:-translate-y-0.5">
-              Check Your Score Now
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <Link href="/atsscore" className="btn-primary !py-4 !px-10 text-center shadow-lg">
+                Check My Score
+              </Link>
+              <Link href="/chrome-extension" className="btn-secondary !py-4 !px-10 text-center">
+                Get Job X Chaser
+              </Link>
+            </div>
           </div>
 
-          {/* Right Card */}
-          <div className="bg-[var(--color-background-secondary)] p-8 rounded-2xl shadow-lg border border-[var(--color-border-primary)]">
-            <h3 className="text-2xl font-bold mb-6 text-center text-[var(--color-text-primary)]">
-              Get Your ATS Score in 3 Steps
-            </h3>
-            <ul className="space-y-5">
+          {/* Workflow Card */}
+          <div className="card p-6 sm:p-10 border border-[var(--color-border-primary)] shadow-modal">
+            <h3 className="text-xs font-bold mb-8 opacity-50 uppercase tracking-widest text-center text-[var(--color-text-primary)]">The Workflow</h3>
+            <div className="space-y-8 md:space-y-10">
               {steps.map((step, i) => (
-                <li key={i}>
-                  <Link href={step.href} className="block">
-                    <div className="flex items-start gap-4 p-3 rounded-lg 
-                                    hover:bg-[var(--color-background-tertiary)] 
-                                    hover:text-[var(--color-text-primary)] 
-                                    transition cursor-pointer">
-                      <div className="flex-shrink-0 w-8 h-8 rounded-full 
-                                      bg-[var(--color-button-secondary-bg)] 
-                                      flex items-center justify-center font-bold 
-                                      text-[var(--color-text-primary)]">
-                        {i + 1}
-                      </div>
-                      <div>
-                        <h4 className="font-semibold">{step.title} ↗️</h4>
-                        <p className="text-sm text-[var(--color-text-secondary)]">{step.desc}</p>
-                      </div>
-                    </div>
-                  </Link>
-                </li>
+                <div key={i} className="flex gap-4 sm:gap-6 group">
+                  <span className="text-2xl sm:text-3xl font-black text-[var(--color-cta-bg)] opacity-30 group-hover:opacity-100 transition-opacity">
+                    0{i + 1}
+                  </span>
+                  <div>
+                    <h4 className="text-base sm:text-lg font-bold mb-1 text-[var(--color-text-primary)]">
+                      <Link href={step.href} className="hover:underline decoration-2 underline-offset-4">{step.title} ↗</Link>
+                    </h4>
+                    <p className="text-[var(--color-text-secondary)] text-sm leading-relaxed">{step.desc}</p>
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* === FEATURES SECTION === */}
-      <section className="max-w-7xl mx-auto py-20 px-6 border-t border-b border-[var(--color-border-primary)]">
-        <h2 className="text-center text-3xl font-bold text-[var(--color-text-primary)] mb-12">
-          Explore More Features
-        </h2>
-        <div className="grid gap-8 md:grid-cols-3 text-center">
-          {features.map((feature, i) => (
-            <Link
-              key={i}
-              href={feature.href}
-              className="block bg-[var(--color-card-bg)] shadow-xl rounded-xl p-8 
-                         transition-all duration-300
-                         hover:bg-[var(--color-card-hover-bg)] 
-                         hover:text-[var(--color-text-primary)] hover:shadow-lg hover:-translate-y-0.5">
-              <h3 className="text-xl font-bold mb-2">{feature.title} ↗️</h3>
-              <p className="text-[var(--color-text-secondary)]">{feature.desc}</p>
-            </Link>
+      {/* === COMPARISON SECTION === */}
+      <section className="py-16 md:py-24 px-4 sm:px-6 bg-[var(--color-background-secondary)]/30">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold mb-8 md:mb-12 text-center text-[var(--color-text-primary)]">Manual Search vs. {Companyname}</h2>
+          <div className="overflow-x-auto rounded-2xl md:rounded-3xl border border-[var(--color-border-primary)] bg-[var(--color-background-secondary)] shadow-sm">
+            <table className="w-full text-left border-collapse min-w-[500px]">
+              <thead>
+                <tr className="border-b border-[var(--color-border-primary)] bg-[var(--color-background-tertiary)]/50">
+                  <th className="p-4 md:p-6 font-bold text-xs uppercase tracking-widest opacity-60">Feature</th>
+                  <th className="p-4 md:p-6 font-bold text-xs uppercase tracking-widest opacity-60">Manual Effort</th>
+                  <th className="p-4 md:p-6 font-bold text-xs uppercase tracking-widest text-[var(--color-cta-bg)]">With {Companyname}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {comparisons.map((item, i) => (
+                  <tr key={i} className="border-b border-[var(--color-border-primary)] last:border-none hover:bg-[var(--color-card-hover-bg)] transition-colors">
+                    <td className="p-4 md:p-6 font-bold text-sm md:text-base text-[var(--color-text-primary)]">{item.feature}</td>
+                    <td className="p-4 md:p-6 text-sm md:text-base text-[var(--color-text-secondary)]">{item.manual}</td>
+                    <td className="p-4 md:p-6 text-sm md:text-base font-semibold text-[var(--color-text-primary)]">{item.chaser} ✨</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* === LIVE ANALYSIS FEATURES === */}
+      <section className="max-w-7xl mx-auto py-16 md:py-24 px-4 sm:px-6 border-b border-[var(--color-border-primary)]">
+        <div className="text-center mb-12 md:text-center">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">Real-Time Intelligence</h2>
+          <p className="text-[var(--color-text-secondary)] max-w-2xl mx-auto text-sm md:text-base">Our specialized algorithms understand the semantic gap between your resume and your dream job.</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
+          {[
+            { icon: "⚡", title: "Instant Parsing", desc: "Experience zero-lag analysis. As soon as you paste a job description, we calculate your score." },
+            { icon: "🧠", title: "Neural Keywords", desc: "We identify the 'hidden' skills recruiters want that aren't explicitly mentioned." },
+            { icon: "📄", title: "Format Audit", desc: "Ensure your resume structure won't break the ATS. We check tables, fonts, and headers." }
+          ].map((feature, i) => (
+            <div key={i} className="card p-8 border border-[var(--color-border-primary)] space-y-4">
+              <div className="text-3xl">{feature.icon}</div>
+              <h4 className="font-bold text-lg">{feature.title}</h4>
+              <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">{feature.desc}</p>
+            </div>
           ))}
         </div>
       </section>
 
-<section id="login" className="max-w-7xl mx-auto p-6">
-  <div className="rounded-3xl p-12 lg:p-20 text-center
-                  bg-[var(--color-cta-bg)]/30 text-[var(--color-cta-text)] 
-                  shadow-lg ring-4 ring-[var(--color-cta-bg)]/20
-                  transition-transform duration-300 hover:scale-[1.03]">
-    <h2 className="text-4xl lg:text-5xl font-extrabold mb-6 leading-tight">
-      Ready to Land Your Dream Job?
-    </h2>
-    <p className="text-xl mb-10 max-w-xl mx-auto opacity-90">
-      Start optimizing for free. No credit card required.
-    </p>
-    <Link
-      href="/login"
-      className="inline-block rounded-full py-5 px-14 font-bold 
-                 bg-[var(--color-button-primary-bg)] text-[var(--color-text-on-primary)] 
-                 shadow-lg transition-colors duration-300
-                 hover:bg-[var(--color-button-primary-hover-bg)] hover:shadow-xl">
-      Sign Up For Free
-    </Link>
-  </div>
-</section>
+      {/* === OPTIMIZATION PRO-TIPS === */}
+      <section className="max-w-7xl mx-auto py-16 md:py-24 px-4 sm:px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+          <div className="space-y-6">
+            <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-text-primary)]">Optimization Pro-Tips</h2>
+            <p className="text-[var(--color-text-secondary)] leading-relaxed text-sm md:text-base">
+              Success is a science. Use these strategies alongside <strong>Job X Chaser</strong> to maximize callbacks:
+            </p>
+            <ul className="space-y-4">
+              <li className="flex gap-4 p-4 rounded-2xl border border-[var(--color-border-primary)] hover:border-[var(--color-cta-bg)] transition-colors">
+                <span className="text-[var(--color-cta-bg)] flex-shrink-0">💡</span>
+                <p className="text-sm"><strong className="text-[var(--color-text-primary)]">Quantify Impact:</strong> Use numbers like "Increased revenue by 20%."</p>
+              </li>
+              <li className="flex gap-4 p-4 rounded-2xl border border-[var(--color-border-primary)] hover:border-[var(--color-cta-bg)] transition-colors">
+                <span className="text-[var(--color-cta-bg)] flex-shrink-0">💡</span>
+                <p className="text-sm"><strong className="text-[var(--color-text-primary)]">Standard Job Titles:</strong> Use "Software Engineer" rather than "Code Ninja."</p>
+              </li>
+            </ul>
+          </div>
+          <div className="p-6 md:p-10 bg-[var(--color-button-secondary-bg)]/30 rounded-3xl border border-[var(--color-border-primary)]">
+            <h3 className="text-lg md:text-xl font-bold mb-4 text-[var(--color-text-primary)]">Why 75% of Resumes Fail</h3>
+            <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-6">
+              Recruiters spend 6 seconds on a resume. If your keyword density is off or your format is incompatible, the <strong>ATS</strong> automatically archives you.
+            </p>
+            <Link href="/atsscore" className="text-sm font-bold text-[var(--color-cta-bg)] hover:underline underline-offset-4">
+              Run an Instant Audit Now →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* === FAQ SECTION === */}
+      <section className="max-w-4xl mx-auto py-16 md:py-24 px-4 sm:px-6 border-t border-[var(--color-border-primary)]">
+        <h2 className="text-2xl md:text-3xl font-bold mb-10 md:mb-12 text-center underline decoration-[var(--color-cta-bg)] decoration-4 underline-offset-8">Common Questions</h2>
+        <div className="space-y-6 md:space-y-8">
+          {faq.map((item, i) => (
+            <div key={i} className="group">
+              <h3 className="font-bold text-base md:text-lg mb-2 text-[var(--color-text-primary)] group-hover:text-[var(--color-cta-bg)] transition-colors">Q: {item.q}</h3>
+              <p className="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed">{item.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* === FINAL CALL TO ACTION === */}
+      <section className="py-16 md:py-24 text-center px-4 sm:px-6 bg-[var(--color-background-tertiary)]/20 border-t border-[var(--color-border-primary)]">
+        <div className="max-w-3xl mx-auto space-y-6 md:space-y-8">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[var(--color-text-primary)]">Stop Guessing. Start Winning.</h2>
+          <p className="text-sm md:text-base text-[var(--color-text-secondary)]">Join thousands of candidates using {Companyname} to demystify the hiring process.</p>
+          <Link
+            href="/login"
+            className="inline-block text-lg md:text-xl font-bold underline underline-offset-8 decoration-[var(--color-cta-bg)] decoration-4 hover:opacity-70 transition-opacity"
+          >
+            Create your free account today
+          </Link>
+        </div>
+      </section>
 
     </main>
   );

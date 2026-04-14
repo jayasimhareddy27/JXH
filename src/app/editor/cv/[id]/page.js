@@ -7,10 +7,11 @@ import { selectContainer } from "@lib/redux/features/editor/slice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import Loading from "./loading";
-import { Printer } from "lucide-react";
+import { Printer, Eye, ChevronDown, Sparkles } from "lucide-react";
 import DesignEditor from "../../(shared)/designeditor";
 
-const type="resume";
+const type = "resume";
+
 export default function ResumeEditorPage() {
     const params = useParams();
     const resumeId = params?.id;
@@ -18,20 +19,20 @@ export default function ResumeEditorPage() {
     
     const resumeData = useSelector((state) => state.editor.formDataMap);
     const { token } = useSelector((state) => state.auth);
+    const selectedContainer = useSelector((state) => state.editor.selectedContainer);
     
     const activeTemplateObj = templates.find(t => t.id === resumeData?.templateId) || templates[0];
     const SelectedTemplate = activeTemplateObj.page;
     const [isMounted, setIsMounted] = useState(false);
     
     useEffect(() => {
+        setIsMounted(true);
         if (!token || !resumeId) return;
         dispatch(fetchDocumentById({id: resumeId, type}));
     }, [token, resumeId, dispatch]);
 
-    const handleDeselect = (e) => {
-        if (e.target === e.currentTarget) {
-            dispatch(selectContainer(null));
-        }
+    const handleDeselect = () => {
+        dispatch(selectContainer(null));
     };
 
     const handleDownload = () => {
@@ -39,51 +40,80 @@ export default function ResumeEditorPage() {
         setTimeout(() => window.print(), 50);
     };
     
-    if (!resumeData || Object.keys(resumeData).length === 0) {
+    if (!isMounted || !resumeData || Object.keys(resumeData).length === 0) {
         return <Loading />;
     }
 
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
-
-    if (!isMounted) {
-        return <div className="flex h-screen items-center justify-center">Loading Editor...</div>;
-    }
     return (
-        <div className="flex h-screen overflow-hidden bg-[var(--color-background-primary)] text-[var(--color-text-primary)] print:bg-white print:block">
-     
-
-            {/* Live Preview Area */}
-            <div className="flex-1 flex flex-col h-full overflow-hidden bg-[var(--color-background-tertiary)] print:bg-white print:block">
+        <div className="flex flex-col lg:flex-row h-screen overflow-hidden bg-[var(--color-background-primary)] text-[var(--color-text-primary)] print:bg-white print:block">
+            
+            {/* LIVE PREVIEW AREA */}
+            {/* On mobile: Shrinks to a tiny header (15vh) when editing to maximize focus on the editor */}
+            <div className={`flex flex-col overflow-hidden bg-[var(--color-background-tertiary)] transition-all duration-500 ease-in-out
+                ${selectedContainer ? 'h-[15vh] lg:h-full lg:flex-1' : 'h-[60vh] lg:h-full lg:flex-1'}
+            `}>
                 
-                {/* NEW TOP ACTION BAR - STICKY AND OUT OF THE WAY */}
-                <header className="w-full py-3 px-8 bg-[var(--color-background-secondary)] border-b border-[var(--color-border-primary)] flex justify-between items-center print:hidden shadow-sm">
-                    <span className="text-sm font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
-                        Live Preview
-                    </span>
+                <header className="w-full py-3 px-4 lg:px-8 bg-[var(--color-background-secondary)] border-b border-[var(--color-border-primary)] flex justify-between items-center print:hidden shadow-sm z-20">
+                    <div className="flex items-center gap-2">
+                        <Eye size={16} className="text-[var(--color-text-secondary)]" />
+                        <span className="text-[10px] lg:text-sm font-bold text-[var(--color-text-secondary)] uppercase tracking-wider">
+                            {selectedContainer ? "Editing Mode" : "Live Preview"}
+                        </span>
+                    </div>
+                    
                     <button 
                         onClick={handleDownload} 
-                        className="btn-primary flex items-center gap-2 text-sm py-2"
+                        className="btn-primary py-1.5 px-3 text-[11px] lg:text-sm lg:py-2 lg:px-4 flex items-center gap-2"
                     >
-                        <Printer size={18} />
-                        Download PDF
+                        <Printer size={16} />
+                        <span className="hidden xs:inline">Download</span>
                     </button>
                 </header>
 
-                {/* SCROLLABLE RESUME AREA */}
-                <div     className="flex-1 overflow-y-auto p-8 flex justify-center custom-scrollbar print:p-0"    onClick={handleDeselect} >
-                    <div id="resume-print-target" className="shadow-2xl h-fit rounded-lg border border-[var(--color-border-primary)] bg-white print:shadow-none print:border-none print:m-0">
-                        <SelectedTemplate />
+                <div className="flex-1 overflow-hidden p-4 lg:p-8 flex justify-center items-start custom-scrollbar" onClick={handleDeselect} >
+                    <div className="relative h-fit w-fit flex flex-col items-center">
+                        <div 
+                            id="resume-print-target" 
+                            className={`shadow-2xl h-fit rounded-lg border border-[var(--color-border-primary)] bg-white
+                                       origin-top transition-all duration-500
+                                       ${selectedContainer ? 'scale-[0.2] opacity-40 blur-[1px]' : 'scale-[0.4] sm:scale-[0.7] opacity-100 blur-0'} 
+                                       lg:scale-100 lg:opacity-100 lg:blur-0 print:shadow-none print:m-0 print:scale-100`}
+                        >
+                            <SelectedTemplate />
+                        </div>
                     </div>
                 </div>
             </div>
 
-                   
-            {/* Sidebar Section */}
-            <div className="print:hidden w-1/3 h-full overflow-y-auto border-r border-[var(--color-border-primary)] bg-[var(--color-background-secondary)] shadow-xl z-10 custom-scrollbar">
-                {<DesignEditor type={type} selectedContainer={resumeData?.designConfig?.selectedContainer} activeTemplateObj={activeTemplateObj} templates={templates}/>}
-            </div>
+            {/* DESIGN EDITOR SIDEBAR */}
+            {/* On mobile: Takes 85% of screen when editing. Smooth slide-up effect. */}
+            <aside className={`print:hidden w-full lg:w-1/3 overflow-hidden border-t lg:border-t-0 lg:border-l border-[var(--color-border-primary)] bg-[var(--color-background-secondary)] shadow-[0_-10px_40px_rgba(0,0,0,0.2)] z-30 transition-all duration-500 ease-in-out
+                ${selectedContainer ? 'h-[85vh] lg:h-full' : 'h-[40vh] lg:h-full'}
+            `}>
+                <div className="h-full flex flex-col">
+                    
+                    {/* Editor Status Bar / Mobile Handle */}
+
+                        {selectedContainer && (
+                            <button 
+                                onClick={handleDeselect}
+                                className="flex items-center gap-1 text-[10px] font-bold text-blue-500 bg-blue-500/10 px-2 py-1 rounded-full"
+                            >
+                                Done <ChevronDown size={12} />
+                            </button>
+                        )}
+
+                    {/* Scrollable Editor Content */}
+                    <div className="flex-1 overflow-y-auto custom-scrollbar p-2 lg:p-0">
+                        <DesignEditor 
+                            type={type} 
+                            selectedContainer={selectedContainer} 
+                            activeTemplateObj={activeTemplateObj} 
+                            templates={templates}
+                        />
+                    </div>
+                </div>
+            </aside>
         </div>
     );
 }

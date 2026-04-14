@@ -137,22 +137,34 @@ export default function AtsScorePage() {
                   </div>
                 </section>
 
-                {/* === SIGNUP CTA SECTION === */}
-                <section className="p-8 rounded-3xl bg-gradient-to-br from-[var(--color-background-secondary)] to-[var(--color-bg)] border border-[var(--color-cta-bg)] shadow-xl relative overflow-hidden group">
+                {/* === UPDATED SIGNUP CTA SECTION === */}
+                <section className="p-8 rounded-3xl bg-gradient-to-br from-[var(--color-background-secondary)] to-[var(--color-bg)] border border-[var(--color-cta-bg)] shadow-xl relative overflow-hidden">
                   <div className="absolute top-0 right-0 p-4">
-                    <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest bg-[var(--color-cta-bg)] text-[var(--color-cta-text)] rounded-full">Advanced</span>
+                    <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest bg-[var(--color-cta-bg)] text-[var(--color-cta-text)] rounded-full">Pro Panel</span>
                   </div>
                   <div className="relative z-10">
-                    <h3 className="text-2xl font-bold mb-2">Want a deeper analysis?</h3>
-                    <p className="text-[var(--color-text-secondary)] mb-6 max-w-md">
-                      Get detailed AI rewrites for your bullet points, unlimited scans, and personalized cover letters.
+                    <h3 className="text-2xl font-bold mb-2">Take the Next Step</h3>
+                    <p className="text-[var(--color-text-secondary)] mb-8 max-w-md">
+                      Sign in to unlock advanced AI keyword optimization, save your scan history, or manage your existing resumes.
                     </p>
-                    <a 
-                      href="/signup" 
-                      className="inline-flex items-center justify-center px-8 py-3 rounded-xl font-bold bg-[var(--color-cta-bg)] text-[var(--color-cta-text)] hover:scale-105 transition-transform duration-300"
-                    >
-                      Sign up for Advanced Features
-                    </a>
+                    
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      {/* New User / Advanced Features Path */}
+                      <a 
+                        href="/login" 
+                        className="flex-1 inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold bg-[var(--color-cta-bg)] text-[var(--color-cta-text)] shadow-lg hover:scale-[1.02] transition-transform duration-200"
+                      >
+                        Get Advanced Access
+                      </a>
+
+                      {/* Existing User Path */}
+                      <a 
+                        href="/dashboard/myresumes" 
+                        className="flex-1 inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold border-2 border-[var(--color-cta-bg)] text-[var(--color-cta-bg)] hover:bg-[var(--color-cta-bg)] hover:text-[var(--color-cta-text)] transition-all duration-200"
+                      >
+                        Go to My Resumes
+                      </a>
+                    </div>
                   </div>
                 </section>
               </div>

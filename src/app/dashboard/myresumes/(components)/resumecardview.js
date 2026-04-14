@@ -3,6 +3,10 @@ import { useRouter } from "next/navigation";
 import { Edit, Eye, Download, Star, Trash, Copy, Bot, User } from "lucide-react"; 
 import Loading from "./../(myresumes)/loading";
 
+const truncateName = (name, limit = 15) => {
+  return name.length > limit ? `${name.substring(0, limit)}...` : name;
+};
+
 const ResumeCardView = ({ resumes, isLoading, currentPage, resumesPerPage, handleMakePrimary, handleDelete, handleCopy, handleConnectAI, handleMarkProfile, primaryResumeId, aiResumeRef, myProfileRef }) => {
   const router = useRouter();
 
@@ -95,7 +99,7 @@ const ResumeCardView = ({ resumes, isLoading, currentPage, resumesPerPage, handl
                   
                   <div className="min-w-0">
                     <div className="text-sm font-bold truncate flex items-center gap-2">
-                      {resume.name}
+                        {truncateName(resume.name)}
                       <div className="flex flex-wrap gap-1">
                         {isProfile && (
                           <span className="text-[9px] px-1.5 py-0.5 rounded-md border bg-purple-100 text-purple-700 border-purple-200 uppercase font-black">

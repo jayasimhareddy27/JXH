@@ -5,7 +5,7 @@ import { updatePhase, resetPhase, addPhaseItem, removePhaseItem } from '@lib/red
 
 const Accordion = memo(({ title, isExpanded, onToggle, children, headerActions }) => (
   <div
-    className={`rounded-xl mb-3 transition-all duration-300 overflow-hidden border
+    className={`rounded-xl mb-1 transition-all duration-300 overflow-hidden border
       ${isExpanded 
         ? "bg-[color:var(--color-card-bg)] border-[color:var(--color-button-primary-bg)]" 
         : "bg-white border-[color:var(--color-border-primary)] hover:border-gray-300"
@@ -22,7 +22,7 @@ const Accordion = memo(({ title, isExpanded, onToggle, children, headerActions }
       </button>
       {headerActions}
     </div>
-    {isExpanded && <div className="p-4 pt-0 animate-fade-in">{children}</div>}
+    {isExpanded && <div className="p-1 pt-0 animate-fade-in">{children}</div>}
   </div>
 ));
 
@@ -49,15 +49,15 @@ const FieldList = memo(({ phase, formDataMap, renderField, isLoading, selectedCo
   };
 
   return (
-    <div className="space-y-4">
-      <div className="bg-gray-50/50 p-2 rounded-md border border-dashed border-gray-200">
+    <div className="">
+      <div className="bg-gray-50/50 p-1 rounded-md border border-dashed border-gray-200">
         <p className="text-[9px] uppercase text-gray-400 mb-1 font-bold tracking-tighter">Display Title</p>
         {renderField(["title", displayTitle], { title: displayTitle }, onTitleChange, null, isLoading)}
       </div>
 
       {phase.arrayFieldKey ? (
         Array.isArray(formData) && (
-          <div className="space-y-6">
+          <div className="space-y-1">
             {formData.map((item, index) => {
               const isItemSelected = selectedContainer?.includes(`_${index}`);
               const entries = Object.entries(item).filter(([k]) => k !== "id");
@@ -73,7 +73,7 @@ const FieldList = memo(({ phase, formDataMap, renderField, isLoading, selectedCo
               return (
                 <div
                   key={item.id || index}
-                  className={`group relative p-4 rounded-xl border transition-all duration-300 ${
+                  className={`group relative p-1 rounded-xl border transition-all duration-300 ${
                     isItemSelected 
                       ? "border-[var(--color-button-primary-bg)] bg-blue-50/5 shadow-sm" 
                       : "border-gray-100 bg-white"
@@ -83,7 +83,7 @@ const FieldList = memo(({ phase, formDataMap, renderField, isLoading, selectedCo
                     {index + 1}
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="">
                     {otherFields.map(([key, val]) => (
                       <div 
                         className={`transition-all duration-200 rounded-md ${selectedContainer === `${key}_${index}` ? "ring-1 ring-[var(--color-button-primary-bg)] bg-white p-1" : ""}`} 
@@ -121,7 +121,7 @@ const FieldList = memo(({ phase, formDataMap, renderField, isLoading, selectedCo
           </div>
         )
       ) : (
-        <div className="space-y-3">
+        <div className="">
           {Object.entries(formData || {}).map(([key, val]) => (
             <div 
               className={`transition-all duration-200 rounded-md ${selectedContainer === key ? "ring-1 ring-[var(--color-button-primary-bg)] bg-white p-1" : ""}`} 

@@ -74,7 +74,7 @@ export default function DesignEditor({ type, selectedContainer, activeTemplateOb
         ))}
       </nav>
 
-      <main className="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-4">
+      <main className="p-0">
         
         {/* DUAL REFERENCE BAR */}
 {["details", "ats"].includes(activeTab) && (
@@ -115,7 +115,7 @@ export default function DesignEditor({ type, selectedContainer, activeTemplateOb
 )}
 
         {/* TAB CONTENT AREA */}
-        <div className="mx-auto max-w-sm">
+        <div className="p-1">
           {activeTab === "template" && <SelectTemplateTab templates={templates} />}
           {activeTab === "design" && <DesignTab selectedContainer={selectedContainer} activeTemplateObj={activeTemplateObj} />}
           {activeTab === "details" && <DetailsTab type={type} expandedPhase={activePhaseKey} toggleAccordion={toggleAccordion} handleFetchFromAI={handleFetchFromAI} handleSave={handleSave} />}

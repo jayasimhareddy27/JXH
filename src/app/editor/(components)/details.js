@@ -65,7 +65,7 @@ useEffect(() => {
   const hiddenSections = Phases.filter(p => visibility[p.key] === false);
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 pb-20">
+    <div className="animate-in fade-in duration-500 pb-20">
 
       {/* 1. Visibility Alert */}
       {hiddenSections.length > 0 && (
@@ -81,7 +81,7 @@ useEffect(() => {
       )}
 
       {/* 2. Content Sections */}
-      <div className="space-y-3">
+      <div className="">
         {Phases.map((phase, index) => {
           const isSectionHidden = visibility[phase.key] === false;
 
@@ -119,7 +119,7 @@ useEffect(() => {
       </div>
 
       {/* 3. Footer */}
-      <div className="pt-4 border-t border-[var(--color-border-primary)] space-y-3">
+      <div className="pt-4 border-t border-[var(--color-border-primary)] ">
         <p className="text-[9px] text-center text-[var(--color-text-placeholder)] font-medium italic">
           Tip: Use "Fetch from AI" inside sections to auto-fill details.
         </p>

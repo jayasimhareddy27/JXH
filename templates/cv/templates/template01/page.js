@@ -27,8 +27,8 @@ export default function Template01() {
     <div className="flex flex-col items-center bg-[var(--color-background-tertiary)] min-h-screen print:bg-white print:p-0" onClick={handleDeselect}>
       <div 
         ref={resumeRef} id='header'
-        {...getBind(IDS.PAGE,   "w-[210mm] min-h-[297mm] bg-white p-[15mm] flex flex-col font-sans relative shadow-2xl print:shadow-none print:m-0")}
-      >
+        {...getBind(IDS.PAGE,   "w-[210mm] min-h-[297mm] bg-white p-[15mm] flex flex-col font-sans relative shadow-2xl print:shadow-none print:m-0 print:p-10  ")}
+>
         {/* PAGE LIMIT INDICATOR */}
         <div className="print:hidden pointer-events-none absolute inset-0 z-10">
           {contentHeight > A4_HEIGHT_PX && (

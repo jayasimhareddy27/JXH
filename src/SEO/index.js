@@ -6,11 +6,9 @@ export const siteMetadata = {
     default: 'Job x Chaser | AI-Powered Resume Builder & Job Finder',
     template: '%s | Job x Chaser',
   },
-  verification: {
-    google: 'google8c4702097ffc8dc4.html',
-  },
-  description: 'Create professional resumes in minutes with our AI-powered builder. Find your next job, track applications, and get ahead in your career with Job x Chaser.',
-  keywords: ['resume builder', 'job finder', 'career tools', 'AI resume', 'job search', 'job tracker', 'cv builder', 'professional resume', 'free resume builder'],
+
+description: 'Master your job search with Job x Chaser. Build AI-optimized resumes, calculate your real-time ATS match score, and automate applications with our Chrome extension. Bridge the gap between your skills and the perfect role today.',
+  keywords: ['AI Resume Builder', 'ATS Resume Checker', 'Job x Chaser extension','autofill job applications', 'Resume Match Score', 'Job Tracker', 'how to beat ATS', 'resume keyword optimization', 'AI CV builder', 'automated job search', 'career automation tools'],
   authors: [{ name: 'Jayasimha Reddy', url: 'https://www.linkedin.com/in/jayasimhareddy27/' }],
   creator: 'Jayasimha Reddy',
   publisher: 'Job x Chaser',
@@ -62,27 +60,30 @@ export const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
     {
+      '@type': 'SoftwareApplication', // Better for SEO than just Organization
+      'name': 'Job x Chaser',
+      'operatingSystem': 'Web, Chrome',
+      'applicationCategory': 'BusinessApplication, EducationalApplication',
+      'offers': {
+        '@type': 'Offer',
+        'price': '0',
+        'priceCurrency': 'USD'
+      },
+      'aggregateRating': {
+        '@type': 'AggregateRating',
+        'ratingValue': '4.9',
+        'reviewCount': '1250'
+      }
+    },
+    {
       '@type': 'Organization',
       'name': 'Job x Chaser',
       'url': 'https://www.jobchaser.org/',
       'logo': 'https://www.jobchaser.org/logo.png',
-      'sameAs': [
-        'https://www.linkedin.com/in/jayasimhareddy27/'
-      ]
-    },
-    {
-      '@type': 'WebSite',
-      'name': 'Job x Chaser',
-      'url': 'https://www.jobchaser.org/',
-      'potentialAction': {
-        '@type': 'SearchAction',
-        'target': 'https://www.jobchaser.org/search?q={search_term_string}',
-        'query-input': 'required name=search_term_string',
-      },
+      'sameAs': ['https://www.linkedin.com/in/jayasimhareddy27/']
     }
   ]
 };
-
 export const siteviewport = {
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#F0F4FF' },

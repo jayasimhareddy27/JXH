@@ -1,111 +1,83 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
-import { useDispatch, useSelector } from 'react-redux'; // <-- 1. Import Redux hooks
-import { clearCredentials } from '@lib/redux/features/auth/slice'; // <-- 2. Import the logout action
 import Link from 'next/link';
-import {  Home,  LogIn, LogOut } from 'lucide-react';
-import { UserCircle, FileBadge,      FileSignature,    BarChart3,   Search,   } from 'lucide-react';
-import { signOut } from 'next-auth/react'; // 1. Import signOut
+import { usePathname } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
+import { signOut } from 'next-auth/react';
+import { clearCredentials } from '@lib/redux/features/auth/slice';
+import { 
+  Home, UserCircle, FileBadge, FileSignature, 
+  BarChart3, Search, LogIn, LogOut 
+} from 'lucide-react';
 
 const links = [
-  // --- CORE ---
   { name: 'Home', href: '/', Icon: Home },
   { name: 'Profile', href: '/dashboard/profile', Icon: UserCircle },
-  
-  // --- ASSETS ---
-  { name: 'My Resumes', href: '/dashboard/myresumes', Icon: FileBadge }, 
-  { name: 'My Cover Letters', href: '/dashboard/mycoverletters', Icon: FileSignature },
-
-  // --- ECOSYSTEM ---
-  { name: 'Job Tracker', href: '/dashboard/jobs/tracker', Icon: BarChart3 }, 
-  { name: 'Job Board', href: '/dashboard/jobs', Icon: Search },            
+  { name: 'Resumes', href: '/dashboard/myresumes', Icon: FileBadge }, 
+  { name: 'Letters', href: '/dashboard/mycoverletters', Icon: FileSignature },
+  { name: 'Tracker', href: '/dashboard/jobs/tracker', Icon: BarChart3 }, 
+  { name: 'Board', href: '/dashboard/jobs', Icon: Search },            
 ];
 
-// 3. Remove user and token from props
-export default function NavLinks({ isOpen }) {
+export default function NavLinks({ isOpen, onLinkClick }) {
   const pathname = usePathname();
   const dispatch = useDispatch();
-  
-  // 4. Get the user directly from the Redux store
   const { user } = useSelector((state) => state.auth);
 
   const handleLogout = async () => {
-    // 5. Dispatch the Redux action to log out
+    if (onLinkClick) onLinkClick();
     dispatch(clearCredentials());
     await signOut({ callbackUrl: '/' });
-
     window.location.href = '/login';
   };
 
   return (
-    <nav
-      className={`nav-container transition-all duration-300 ${
-        isOpen
-          ? 'open max-h-screen opacity-100'
-          : 'max-h-0 opacity-0 overflow-hidden lg:max-h-full lg:opacity-100'
-      } flex flex-col p-4`}
-      aria-label="Main navigation"
-    >
-      <ul className="nav-list flex flex-col">
+    <nav className="nav-container flex flex-col h-full">
+      <ul className="nav-list flex-1">
         {links.map(({ href, name, Icon }) => {
-          const isActive = pathname === href ;
+          const isActive = pathname === href;
           return (
-            <li key={name} className="nav-item my-2">
+            <li key={name} className="nav-item">
               <Link
                 href={href}
-                className={`nav-link flex items-center rounded-md px-2 py-1 ${
-                  isActive ? 'active' : ''
-                }`}
-                aria-current={isActive ? 'page' : undefined}
+                onClick={onLinkClick}
+                className={`nav-link ${isActive ? 'active' : ''}`}
               >
-                <Icon size={24} className="nav-icon flex-shrink-0" aria-hidden="true" />
-                <span
-                  className={`nav-text transition-all duration-300 ${
-                    isOpen ? 'nav-text-open ml-2' : ''
-                  }`}
-                >
+                <Icon size={22} className="nav-icon" />
+                <span className={`nav-text ${isOpen ? 'nav-text-open' : ''}`}>
                   {name}
                 </span>
               </Link>
             </li>
           );
         })}
+      </ul>
 
+      {/* Bottom Section: User Info and Auth */}
+      <ul className="nav-list border-t border-[var(--color-border-secondary)] pt-4">
         {user && (
-          <li className="user-badge my-4 p-2">
-            <div className="user-badge-content text-center font-bold text-lg rounded-md bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 select-none">
-              {isOpen ? user.name : user.name.slice(0, 1)}
+          <li className="nav-item mb-2">
+            <div className="nav-link cursor-default hover:bg-transparent">
+              <div className="w-8 h-8 rounded-full bg-[var(--color-button-primary-bg)] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
+                {user.name?.charAt(0).toUpperCase()}
+              </div>
+              <span className={`nav-text font-medium truncate ${isOpen ? 'nav-text-open' : ''}`}>
+                {user.name}
+              </span>
             </div>
           </li>
         )}
 
-        <li>
+        <li className="nav-item">
           {user ? (
-            <button
-              onClick={handleLogout}
-              className="nav-link flex items-center rounded-md px-2 py-1"
-              aria-label="Log out"
-            >
-              <LogOut size={20} className="nav-icon flex-shrink-0" aria-hidden="true" />
-              <span
-                className={`nav-text transition-all duration-300 ${
-                  isOpen ? 'nav-text-open ml-2' : ''
-                }`}
-              >
-                Logout
-              </span>
+            <button onClick={handleLogout} className="nav-link w-full text-left text-[var(--color-danger)]">
+              <LogOut size={20} className="nav-icon" />
+              <span className={`nav-text ${isOpen ? 'nav-text-open' : ''}`}>Logout</span>
             </button>
           ) : (
-            <Link href="/login" className="nav-link flex items-center rounded-md px-2 py-1">
-              <LogIn size={20} className="nav-icon flex-shrink-0" aria-hidden="true" />
-              <span
-                className={`nav-text transition-all duration-300 ${
-                  isOpen ? 'nav-text-open ml-2' : ''
-                }`}
-              >
-                Login
-              </span>
+            <Link href="/login" onClick={onLinkClick} className="nav-link text-[var(--color-cta-bg)]">
+              <LogIn size={20} className="nav-icon" />
+              <span className={`nav-text ${isOpen ? 'nav-text-open' : ''}`}>Login</span>
             </Link>
           )}
         </li>

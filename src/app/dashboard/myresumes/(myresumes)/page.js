@@ -91,80 +91,90 @@ export default function ResumesPage() {
   });
 
   return (
-    <main className="min-h-screen p-6 bg-[color:var(--color-background-primary)]">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-center mb-8 text-[2.25rem] font-bold text-[color:var(--color-text-primary)]">
+    <main className="min-h-screen p-4 md:p-8 bg-[var(--color-background-primary)] transition-colors duration-300">
+      <div className="max-w-7xl mx-auto space-y-8">
+        
+        {/* PAGE HEADER */}
+        <h1 className="text-center text-3xl md:text-4xl font-black tracking-tight text-[var(--color-text-primary)]">
           Manage Your Resumes
         </h1>
 
         {/* TOP SECTION: Create & AI Connection */}
-        <div className="grid grid-cols-1 md:grid-cols-12 items-center mb-6 gap-6">
-          <div className="md:col-span-4 card w-full h-full flex flex-col justify-center p-6 bg-[color:var(--color-card-bg)] rounded-xl border border-[color:var(--color-border-primary)] shadow-lg">
-            <CreateResume isLoading={loading === "loading"} handleCreateResume={handleCopySubmit}/>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-4 h-full">
+            <div className="card h-full flex flex-col justify-center p-6 border border-[var(--color-border-primary)] shadow-modal bg-[var(--color-card-bg)]">
+              <CreateResume isLoading={loading === "loading"} handleCreateResume={handleCopySubmit}/>
+            </div>
           </div>
-          <div className="md:col-span-8 ">
-            <ClientOnly fallback={<div className="h-32 bg-slate-100 animate-pulse rounded-xl" />}>
+          <div className="lg:col-span-8">
+            <ClientOnly fallback={<div className="h-48 bg-[var(--color-background-tertiary)] animate-pulse rounded-2xl" />}>
               <AIConnectionCard />
             </ClientOnly>
           </div>
         </div>
 
-        {/* SEARCH SECTION */}
-        <div className="items-center mb-4 gap-4">
-          <SearchBar 
-            setCurrentPage={setCurrentPage}
-            setSearchQuery={(q) => {
-              setSearchQuery(q);
-              setCurrentPage(1);
-            }}
-          />
-        </div>
-
-        {/* PAGINATION & FILTERS */}
-        <div className="flex flex-col gap-4 mb-6">
-          <ClientOnly fallback={<div className="h-10 w-full bg-slate-50 rounded animate-pulse" />}>
-            <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage}/>
-          </ClientOnly>
-
-          <div className="flex flex-wrap justify-center gap-4 items-center">
-            <select 
-              value={sortOption}
-              onChange={(e) => {
-                setSortOption(e.target.value);
+        {/* CONTROLS SECTION: Search, Sort, Date */}
+        <div className="space-y-6 bg-[var(--color-background-secondary)] p-4 md:p-6 rounded-2xl border border-[var(--color-border-primary)] shadow-sm">
+          
+          <div className="w-full">
+            <SearchBar 
+              setCurrentPage={setCurrentPage}
+              setSearchQuery={(q) => {
+                setSearchQuery(q);
                 setCurrentPage(1);
               }}
-              className="border rounded px-2 py-1 text-[color:var(--color-text-primary)] bg-[color:var(--color-background-secondary)]"
-            >
-              <option value="newest">Newest</option>
-              <option value="oldest">Oldest</option>
-              <option value="az">Name (A–Z)</option>
-              <option value="za">Name (Z–A)</option>
-            </select>
+            />
+          </div>
 
-            <div className="flex gap-2 items-center text-sm">
-              <input 
-                type="date" 
-                value={startDate} 
-                onChange={(e) => setStartDate(e.target.value)}
-                className="border rounded px-2 py-1 bg-[color:var(--color-background-secondary)]"
-              />
-              <span>to</span>
-              <input 
-                type="date" 
-                value={endDate} 
-                onChange={(e) => setEndDate(e.target.value)}
-                className="border rounded px-2 py-1 bg-[color:var(--color-background-secondary)]"
-              />
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            {/* PAGINATION (Top Position) */}
+            <div className="w-full md:w-auto overflow-x-auto">
+              <ClientOnly fallback={<div className="h-10 w-48 bg-[var(--color-background-tertiary)] rounded animate-pulse" />}>
+                <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage}/>
+              </ClientOnly>
+            </div>
+
+            {/* FILTERS Group */}
+            <div className="flex flex-wrap items-center justify-center md:justify-end gap-3 w-full md:w-auto">
+              <select 
+                value={sortOption}
+                onChange={(e) => {
+                  setSortOption(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="custom-input text-sm min-w-[140px]"
+              >
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="az">Name (A–Z)</option>
+                <option value="za">Name (Z–A)</option>
+              </select>
+
+              <div className="flex items-center gap-2 text-xs font-semibold text-[var(--color-text-secondary)]">
+                <input 
+                  type="date" 
+                  value={startDate} 
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="custom-input p-1"
+                />
+                <span className="opacity-50">—</span>
+                <input 
+                  type="date" 
+                  value={endDate} 
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="custom-input p-1"
+                />
+              </div>
             </div>
           </div>
         </div>
 
         {/* MAIN LIST SECTION */}
-        <div className="p-6">
+        <section className="min-h-[400px]">
           <ClientOnly fallback={
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-48 bg-slate-100 rounded-lg animate-pulse" />
+                <div key={i} className="h-64 bg-[var(--color-background-tertiary)] rounded-2xl animate-pulse" />
               ))}
             </div>
           }>
@@ -183,7 +193,7 @@ export default function ResumesPage() {
               resumesPerPage={displayResumes.length} 
             />
           </ClientOnly>
-        </div>
+        </section>
       </div>
 
       {/* MODAL SECTION */}

@@ -3,6 +3,11 @@ import { useRouter } from "next/navigation";
 import { Edit, Eye, Star, Trash, Copy, FileText } from "lucide-react"; 
 import Loading from "../(mycoverletters)/loading"; // Ensure path matches your loading component
 
+
+const truncateName = (name, limit = 15) => {
+  return name.length > limit ? `${name.substring(0, limit)}...` : name;
+};
+
 const CoverLetterCardView = ({ 
   letters, 
   isLoading, 
@@ -78,7 +83,7 @@ const CoverLetterCardView = ({
                   
                   <div className="min-w-0">
                     <div className="text-sm font-bold truncate flex items-center gap-2">
-                      {letter.name}
+                      {truncateName(letter.name)}
                       {isPrimary && (
                         <span className="text-[9px] px-1.5 py-0.5 rounded-md border bg-[color:var(--color-card-tag-bg)] text-[color:var(--color-card-tag-text)] border-[color:var(--color-border-secondary)] uppercase font-black">
                           Primary Template
