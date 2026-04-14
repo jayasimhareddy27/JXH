@@ -101,7 +101,6 @@ export default function ResumeEditorPage() {
     {/* Drag Handle & Active Element Indicator */}
     <div className="flex flex-col gap-1.5 flex-1">
         {/* The visual 'Grab' handle */}
-        <div className="w-8 h-1 bg-slate-300 dark:bg-slate-700 rounded-full mx-0 mb-1" />
         
         <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />

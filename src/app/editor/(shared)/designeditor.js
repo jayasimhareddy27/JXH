@@ -90,19 +90,43 @@ export default function DesignEditor({ type, selectedContainer, activeTemplateOb
         ))}
       </nav>
 
-      <main className="flex-1 overflow-y-auto custom-scrollbar pb-24">
+<main className="flex-1 overflow-y-auto custom-scrollbar pb-24">
+        
+        {/* RESTORED DUAL REFERENCE BAR */}
         {["details", "ats"].includes(activeTab) && (
           <div className="bg-[var(--color-background-secondary)] border-b border-[var(--color-border-primary)] p-2 space-y-1.5 animate-in fade-in slide-in-from-top-1">
-            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-              <select value={aiResumeRef || ""} onChange={handleAiResumeChange} className="bg-white border border-slate-200 rounded px-2 py-1 text-[10px] font-bold outline-none">
-                <option value="" disabled>Source Resume</option>
-                {allResumes.map(r => <option key={r._id} value={r._id}>{r.name}</option>)}
-              </select>
-              <span className="text-[10px] font-black text-slate-300">➜</span>
-              <select value={currentJob?._id || ""} onChange={handleJobChange} className="bg-white border border-slate-200 rounded px-2 py-1 text-[10px] font-bold outline-none">
-                <option value="">Optimization Goal</option>
-                {trackerListing.map(j => <option key={j._id} value={j._id}>{j.position}</option>)}
-              </select>
+            <div className="flex items-center gap-2">
+              <p className="px-1 text-[8px] font-black uppercase tracking-widest text-slate-400">
+                Updating <span className="text-cyan-600 text-[10px]">{formDataMap?.name || "Resume"}</span> using:
+              </p>
+              
+              <div className="relative flex-1">
+                <FileText size={11} className="absolute left-2 top-1/2 -translate-y-1/2 text-cyan-500 pointer-events-none" />
+                <select 
+                  value={aiResumeRef || ""} 
+                  onChange={handleAiResumeChange}
+                  className="w-full pl-6 pr-5 py-1 bg-white border border-slate-200 rounded-md text-[10px] font-bold text-slate-700 appearance-none outline-none focus:ring-1 focus:ring-cyan-500/30 cursor-pointer"
+                >
+                  <option value="" disabled>Select Resume...</option>
+                  {allResumes.map(r => <option key={r._id} value={r._id}>{r.name}</option>)}
+                </select>
+                <ChevronDown size={10} className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-300" />
+              </div>
+
+              <div className="text-[8px] font-black text-slate-300 tracking-tighter uppercase">FOR</div>
+
+              <div className="relative flex-1">
+                <Target size={11} className="absolute left-2 top-1/2 -translate-y-1/2 text-rose-500 pointer-events-none" />
+                <select 
+                  value={currentJob?._id || ""} 
+                  onChange={handleJobChange}
+                  className="w-full pl-6 pr-5 py-1 bg-white border border-slate-200 rounded-md text-[10px] font-bold text-slate-700 appearance-none outline-none focus:ring-1 focus:ring-rose-500/30 cursor-pointer"
+                >
+                  <option value="">General Edit</option>
+                  {trackerListing.map(j => <option key={j._id} value={j._id}>{j.position}</option>)}
+                </select>
+                <ChevronDown size={10} className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-300" />
+              </div>
             </div>
           </div>
         )}
