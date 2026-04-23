@@ -66,7 +66,9 @@ export async function PUT(request) {
       myProfileRef, 
       favResumeTemplateId, 
       favCoverletterTemplateId,
-      newAiKey 
+      newAiKey,
+      activeProfileData,
+      setAsPrimary
     } = body;
 
     const userRefs = await UserReferences.findOne({ userId: userData.id });
@@ -77,13 +79,47 @@ export async function PUT(request) {
     // 1. IMPROVED VALIDATION: Use 'in' check to allow setting fields to null
     const updateFields = [
       'primaryResumeRef', 'theme', 'aiResumeRef', 'myProfileRef', 
-      'favResumeTemplateId', 'favCoverletterTemplateId', 'newAiKey'
+      'favResumeTemplateId', 'favCoverletterTemplateId', 'newAiKey',
+      'activeProfileData', 'setAsPrimary'
     ];
     
     const hasUpdate = updateFields.some(field => field in body);
 
     if (!hasUpdate) {
       return NextResponse.json({ error: 'No valid fields provided for update' }, { status: 400 });
+    }
+
+    if (activeProfileData) {
+      let profileId = activeProfileData._id;
+      let dbProfile;
+
+      const isValidMongoId = profileId && /^[0-9a-fA-F]{24}$/.test(profileId);
+
+      if (isValidMongoId) {
+        dbProfile = await UserData.findByIdAndUpdate(
+          profileId,
+          { ...activeProfileData, userId: userData.id },
+          { new: true, upsert: true }
+        );
+      } else {
+        const newProfile = new UserData({
+          ...activeProfileData,
+          _id: undefined, 
+          userId: userData.id
+        });
+        dbProfile = await newProfile.save();
+        profileId = dbProfile._id;
+      }
+
+      // Add to array if it's a new reference
+      if (!userRefs.userDataRefs.includes(profileId)) {
+        userRefs.userDataRefs.push(profileId);
+      }
+
+      // Handle Primary Pointer
+      if (setAsPrimary || !userRefs.primaryUserDataRef) {
+        userRefs.primaryUserDataRef = profileId;
+      }
     }
 
     // 2. Map updates (Ensures we use the correct schema key names)

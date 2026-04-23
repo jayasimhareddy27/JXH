@@ -144,7 +144,7 @@ export default function ProfilePage() {
                 badge="Data"
               />
               <InfoCard 
-                href="/dashboard/profile/edit/preferences" 
+                href="/dashboard/profile/preferences" 
                 icon={Briefcase} 
                 title="Job Preferences" 
                 description="Location, salary, and job titles you want"

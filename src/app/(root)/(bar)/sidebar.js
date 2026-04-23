@@ -18,7 +18,7 @@ export default function Sidebar({ initialOpen = false }) {
 
   return (
     <aside
-      className={`sidebar ${isOpen ? 'open' : ''} bg-[var(--color-background-secondary)] border-r border-[var(--color-border-primary)] z-50 transition-all duration-300`}
+      className={` sidebar ${isOpen ? 'open' : ''} bg-[var(--color-background-secondary)] border-r border-[var(--color-border-primary)] z-50 transition-all duration-300`}
     >
       {/* 1. We use 'relative' so we can position the toggle button absolutely.
         2. 'justify-center' and 'items-center' ensure the Short Name is always dead center.

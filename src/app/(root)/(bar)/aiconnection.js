@@ -61,7 +61,7 @@ export default function AIConnectionFloating() {
   };
 
   return (
-    <footer className="fixed bottom-6 right-6 z-50 flex flex-col items-center select-none">
+    <footer className=" fixed bottom-6 right-6 z-50 flex flex-col items-center select-none">
       {expanded && (
         <div className="flex flex-col items-center gap-3 mb-4 animate-in fade-in slide-in-from-bottom-4 duration-200">
           {/* Chrome AI Quick Connect */}

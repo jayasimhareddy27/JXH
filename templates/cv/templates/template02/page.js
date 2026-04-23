@@ -10,7 +10,7 @@ export default function Template02() {
   const logic = useResumeLogic(IDS, layoutGrid02);
   if (logic.loading) return null;
 
-  const { getBind, handleDeselect, resumeRef, contentHeight, layoutKey, gridClass, designConfig
+  const { getBind, handleDeselect,contentHeight, layoutKey, gridClass, designConfig
     , personalInformation: pi, sectionTitles } = logic;
 
   const A4_HEIGHT_PX = 1122;
@@ -26,11 +26,11 @@ export default function Template02() {
   return (
     <div className="flex flex-col items-center bg-[var(--color-background-tertiary)] min-h-screen print:bg-white print:p-0" onClick={handleDeselect}>
       <div 
-        ref={resumeRef} id='header'
+         id='header'
         {...getBind(IDS.PAGE,   "w-[210mm] min-h-[297mm] bg-white p-[15mm] flex flex-col font-sans relative shadow-2xl print:shadow-none print:m-0")}
       >
         {/* PAGE LIMIT INDICATOR */}
-        <div className="print:hidden pointer-events-none absolute inset-0 z-10">
+        <div className=" pointer-events-none absolute inset-0 z-10">
           {contentHeight > A4_HEIGHT_PX && (
             <div 
               className="absolute left-0 w-full border-t border-dashed border-red-300 opacity-60" 

@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { connectToDB } from '@lib/mongodb';
 import UserReferences from "@models/userreferences";
 import CoverLetter from "@models/coverletter";
+import Job from "@models/jobtracking";
 import { getToken } from 'next-auth/jwt';
 
 const JWT_SECRET = process.env.JWT_SECRET || "SuperSecretKey";

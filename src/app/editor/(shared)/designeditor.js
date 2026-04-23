@@ -76,19 +76,27 @@ export default function DesignEditor({ type, selectedContainer, activeTemplateOb
 
   return (
     <div className="flex h-full flex-col bg-[var(--color-background-primary)] border-r border-[var(--color-border-primary)] shadow-inner">
-      <nav className="grid grid-cols-3 sticky top-0 z-50 border-b border-[var(--color-border-primary)] bg-[var(--color-background-secondary)]/80 backdrop-blur-md">
-        {TABS.map((tab) => (
-          <button 
-            key={tab.id} 
-            onClick={() => setActiveTab(tab.id)} 
-            className={`group relative flex flex-col items-center justify-center py-4 transition-all ${activeTab === tab.id ? "text-blue-500" : "text-gray-400 hover:text-gray-600"}`}
-          >
-            {activeTab === tab.id && <div className="absolute bottom-0 left-0 h-0.5 w-full bg-blue-500" />}
-            <div className={`transition-transform duration-200 ${activeTab === tab.id ? "scale-110" : ""}`}>{tab.icon}</div>
-            <span className="mt-1.5 text-[8px] font-black uppercase tracking-tighter">{tab.label}</span>
-          </button>
-        ))}
-      </nav>
+<nav className="flex overflow-x-auto no-scrollbar sticky top-0 z-50 border-b border-[var(--color-border-primary)] bg-[var(--color-background-secondary)]/80 backdrop-blur-md">
+  {TABS.map((tab) => (
+    <button 
+      key={tab.id} 
+      onClick={() => setActiveTab(tab.id)} 
+      className={`group relative flex flex-col items-center justify-center py-4 px-6 min-w-fit flex-none transition-all ${
+        activeTab === tab.id ? "text-blue-500" : "text-gray-400 hover:text-gray-600"
+      }`}
+    >
+      {activeTab === tab.id && (
+        <div className="absolute bottom-0 left-0 h-0.5 w-full bg-blue-500" />
+      )}
+      <div className={`transition-transform duration-200 ${activeTab === tab.id ? "scale-110" : ""}`}>
+        {tab.icon}
+      </div>
+      <span className="mt-1.5 text-[8px] font-black uppercase tracking-tighter whitespace-nowrap">
+        {tab.label}
+      </span>
+    </button>
+  ))}
+</nav>
 
 <main className="flex-1 overflow-y-auto custom-scrollbar pb-24">
         

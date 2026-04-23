@@ -7,14 +7,16 @@ import aikeySchema from './aikey.js'
 const userreferencesSchema = new mongoose.Schema({
   userId: {   type: mongoose.Schema.Types.ObjectId,   ref: 'User',   required: true },
 
+  userDataRefs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'UserData' }],
+
   /* Resume & UserData */
   resumeRefs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resume' }],
   primaryResumeRef: { type: mongoose.Schema.Types.ObjectId, ref: 'Resume', default: null },
   aiResumeRef: { type: mongoose.Schema.Types.ObjectId, ref: 'Resume', default: null },
   myProfileRef: { type: mongoose.Schema.Types.ObjectId, ref: 'Resume', default: null },
-  
-  userDataRef: { type: mongoose.Schema.Types.ObjectId, ref: 'UserData' },
+  primaryUserDataRef: { type: mongoose.Schema.Types.ObjectId, ref: 'UserData', default: null },
 
+  
   /* Job & Cover Letters */
   jobTrackingRefs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }],
   coverLetterRefs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'CoverLetter' }],

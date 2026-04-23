@@ -1,19 +1,16 @@
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
-import { useRef, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { selectContainer } from '@lib/redux/features/editor/slice';
 import { bind } from '@/app/editor/(shared)/editorstyles';
 
 export const useResumeLogic = (IDS, layoutGrid) => {
   const dispatch = useDispatch();
-  const resumeRef = useRef(null);
   const [contentHeight, setContentHeight] = useState(0);
 
   const formDataMap = useSelector((state) => state.editor.formDataMap, shallowEqual);
 
   useEffect(() => {
-    if (resumeRef.current) {
-      setContentHeight(resumeRef.current.offsetHeight);
-    }
+
   }, [formDataMap]);
   
   if (!formDataMap) return { loading: true };
@@ -46,7 +43,6 @@ return {
     
     getBind,
     handleDeselect,
-    resumeRef,
     contentHeight,
     layoutKey,
     gridClass: layoutGrid[layoutKey] || layoutGrid.primary,

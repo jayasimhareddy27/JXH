@@ -32,7 +32,7 @@ export default function NavLinks({ isOpen, onLinkClick }) {
   };
 
   return (
-    <nav className="nav-container flex flex-col h-full">
+    <nav className=" nav-container flex flex-col h-full">
       <ul className="nav-list flex-1">
         {links.map(({ href, name, Icon }) => {
           const isActive = pathname === href;

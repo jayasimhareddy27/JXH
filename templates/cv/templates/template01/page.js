@@ -10,10 +10,10 @@ export default function Template01() {
   const logic = useResumeLogic(IDS, layoutGrid01);
   if (logic.loading) return null;
 
-  const { getBind, handleDeselect, resumeRef, contentHeight, layoutKey, gridClass, designConfig
+  const { getBind, handleDeselect,  contentHeight, layoutKey, gridClass, designConfig
     , personalInformation: pi, sectionTitles } = logic;
 
-  const A4_HEIGHT_PX = 1122;
+  const A4_HEIGHT_PX = 1000;
   const sharedProps = { IDS, getBind, designConfig, sectionTitles };
 
   const getMainColSpan = () => {
@@ -24,18 +24,14 @@ export default function Template01() {
   const getSidebarColSpan = () => (layoutKey === 'quaternary' ? "col-span-2" : "col-span-1");
 
   return (
-    <div className="flex flex-col items-center bg-[var(--color-background-tertiary)] min-h-screen print:bg-white print:p-0" onClick={handleDeselect}>
-      <div 
-        ref={resumeRef} id='header'
-        {...getBind(IDS.PAGE,   "w-[210mm] min-h-[297mm] bg-white p-[15mm] flex flex-col font-sans relative shadow-2xl print:shadow-none print:m-0 print:p-10  ")}
->
-        {/* PAGE LIMIT INDICATOR */}
+    <>
+    <div className=" "   onClick={handleDeselect}>
+      <div  
+        {...getBind(IDS.PAGE,   " w-[215mm] min-h-[260mm] bg-white p-[15mm] m-0 flex flex-col font-sans relative ")}>
+        
         <div className="print:hidden pointer-events-none absolute inset-0 z-10">
           {contentHeight > A4_HEIGHT_PX && (
-            <div 
-              className="absolute left-0 w-full border-t border-dashed border-red-300 opacity-60" 
-              style={{ top: '297mm' }}
-            >
+            <div className="absolute left-0 w-full border-t border-dashed border-red-300 opacity-60" style={{ top: '297mm' }}>
               <span className="bg-red-400 text-white text-[8px] px-2 absolute -top-2 right-4 font-medium uppercase tracking-wider">
                 Page 1 Limit
               </span>
@@ -99,7 +95,11 @@ export default function Template01() {
             </aside>
           )}
         </div>
+        </div>
+
       </div>
-    </div>
+
+    </>
+
   );
 }

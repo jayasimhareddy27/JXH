@@ -21,7 +21,7 @@ export default async function HomePage() {
   ];
 
   return (
-    <main className="min-h-screen bg-[var(--color-background-primary)] text-[var(--color-text-primary)] selection:bg-[var(--color-cta-bg)] selection:text-[var(--color-cta-text)] transition-colors duration-300">
+    <main className=" min-h-screen bg-[var(--color-background-primary)] text-[var(--color-text-primary)] selection:bg-[var(--color-cta-bg)] selection:text-[var(--color-cta-text)] transition-colors duration-300">
       
       {/* === STICKY HEADER === */}
       <header className="sticky top-0 z-50 border-b border-[var(--color-border-primary)] bg-[var(--color-background-primary)]/80 backdrop-blur-md">

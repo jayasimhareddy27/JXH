@@ -4,6 +4,7 @@ import { connectToDB } from '@lib/mongodb';
 import UserReferences from "@models/userreferences";
 import Resume from "@models/resume";
 import { getToken } from 'next-auth/jwt';
+import Job from "@models/jobtracking";
 
 const JWT_SECRET = process.env.JWT_SECRET || "SuperSecretKey";
 

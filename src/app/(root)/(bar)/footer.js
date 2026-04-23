@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <footer
       id="about"
-      className="py-6 text-center bg-[color:var(--color-background-primary)] border-t border-[color:var(--color-border-primary)]"
+      className=" py-6 text-center bg-[color:var(--color-background-primary)] border-t border-[color:var(--color-border-primary)]"
     >
             <div className="flex flex-col gap-2 items-center">
         
