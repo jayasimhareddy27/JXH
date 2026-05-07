@@ -2,19 +2,18 @@ import mongoose from 'mongoose';
 
 const userdataSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-
-
-/* --- Professional Profile --- */
+  label: { type: String, default: 'Primary Profile' }, 
   profile: {
-    userStatus: { 
+    careerStage: { 
       type: String, 
       required: true,
-      enum: ['Citizen', 'International Student', 'Recent Graduate', 'Working Professional', 'Other'],
-      default: 'Working Professional'
+      enum: ['Experienced Professional', 'Student', 'Recent Graduate', 'Other'],
+      default: 'Experienced Professional'
     },
+    countryOfCitizenship: { type: String, required: true },
+    targetEmploymentCountry: { type: String, required: true },
     yearsOfExperience: { type: Number, default: 0 },
     targetJobTitles: [{ type: String }],
-    preferredWorkLocation: [{ type: String }],
     expectedSalary: {
       currency: { type: String, default: 'JPY' },
       min: { type: Number, default: 0 }
@@ -23,7 +22,7 @@ const userdataSchema = new mongoose.Schema({
   /* --- Work Eligibility & Security --- */
   workEligibility: {
     requiresSponsorship: { type: Boolean, default: false },
-    eligibleToWorkInCountry: { type: Boolean, default: true },
+    eligibleToWorkInTargetCountry: { type: Boolean, default: true },
     visaType: { type: String, default: null }, 
     currentLocationType: { 
       type: String, 
@@ -66,7 +65,6 @@ const userdataSchema = new mongoose.Schema({
   /* --- Languages & Skills Summary --- */
   languages: [{
     language: String,
-    
     proficiency: { type: String, enum: ['Native', 'Fluent', 'Professional', 'Intermediate', 'Beginner'] }
   }],
 
