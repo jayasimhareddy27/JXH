@@ -60,8 +60,36 @@ const JobSchema = new mongoose.Schema({
   applicationDate: { type: Date, default: Date.now },
   jobLocation: { type: String, default: '' },
   jobUrl: { type: String, trim: true },
-  salary: { type: String, trim: true }
-}, { timestamps: true });
+  salary: { type: String, trim: true },
+  followUpIds: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'FollowUp',
+    default: []
+  }],
+
+
+  // The "Work done for the user" section
+
+  skills: { 
+    type: [String], 
+    default: [], 
+    index: true 
+  },
+  
+  marketIntel: {
+    interviewQuestions: [{
+      question: { type: String },
+      focusArea: { type: String } // e.g., "Technical", "Behavioral"
+    }],
+    difficultyRating: { 
+      type: Number, 
+      min: 1, 
+      max: 5, 
+      default: 3 
+    },
+    isFeatured: { type: Boolean, default: false }
+  },
+});
 
 // Optimized compound index for high-speed dashboard filtering
 JobSchema.index({ userId: 1, stage: 1, state: 1, createdAt: -1 });

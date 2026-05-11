@@ -79,17 +79,15 @@ export async function PATCH(request, { params }) {
     if (!userData) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
+    
     const updates = await request.json();
     const job = await Job.findById(id);
-
+    
     // 1. Ownership check for the JOB
     if (!job || job.userId.toString() !== userData.id) {
       return NextResponse.json({ error: "Job not found or unauthorized" }, { status: 403 });
     }
 
-    // 2. Handle Resume Relationship Swap (Improved)
-    // Check if resumeId is in the updates (even if it's null)
     if ("resumeId" in updates && updates.resumeId !== job.resumeId?.toString()) {
       
       // A. Validate the NEW resume belongs to this user (if it's not null)
@@ -140,11 +138,49 @@ export async function PATCH(request, { params }) {
       { $set: updates },
       { new: true, runValidators: true }
     );
+console.log(updates.skills);
+    console.log(job.skills);
+    console.log(updatedJob.skills);
 
     return NextResponse.json({ success: true, job: updatedJob });
     
   } catch (error) {
     console.error("Error updating job:", error);
     return NextResponse.json({ error: "Failed to update job" }, { status: 500 });
+  }
+}
+
+// DELETE a job by ID
+export async function DELETE(request, { params }) {
+  try {
+    await connectToDB();
+    const userData = await authenticate(request);
+    const { id } = await params;
+
+    if (!userData) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // 1. Find job and verify ownership
+    const job = await Job.findOne({ _id: id, userId: userData.id });
+    if (!job) {
+      return NextResponse.json({ error: "Job not found or unauthorized" }, { status: 404 });
+    }
+
+    // 2. Cleanup Relationships (Remove Job ID from linked Resume/Cover Letter)
+    if (job.resumeId) {
+      await Resume.findByIdAndUpdate(job.resumeId, { $pull: { jobs: id } });
+    }
+    if (job.coverLetterId) {
+      await CoverLetter.findByIdAndUpdate(job.coverLetterId, { $pull: { jobs: id } });
+    }
+
+    // 3. Delete the job
+    await Job.findByIdAndDelete(id);
+
+    return NextResponse.json({ success: true, message: "Job deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting job:", error);
+    return NextResponse.json({ error: "Server error during deletion" }, { status: 500 });
   }
 }

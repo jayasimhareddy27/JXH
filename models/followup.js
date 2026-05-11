@@ -18,11 +18,6 @@ const FollowUpSchema = new mongoose.Schema({
   
   // --- CONTENT ---
   message: { type: String, required: true, trim: true },
-  type: { 
-    type: String, 
-    enum: ['email', 'linkedin', 'phone', 'other'], 
-    default: 'email' 
-  },
   
   // --- SCHEDULING ---
   followUpDateTime: { type: Date, required: true },

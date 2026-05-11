@@ -1,9 +1,9 @@
 "use client"
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateJob } from "@lib/redux/features/job/thunks";
+import { updateJob,deleteJob } from "@lib/redux/features/job/thunks";
 import { FLOW_STAGES, STAGE_STATE_MAP } from "./constants.js";
-import { Loader2, FileText, BookmarkCheck, CheckCircle2 } from "lucide-react";
+import { Loader2, FileText, BookmarkCheck, CheckCircle2,Trash2,AlertTriangle  } from "lucide-react";
 import Link from "next/link.js";
 
 
@@ -11,7 +11,7 @@ import Link from "next/link.js";
 export default function JobInspector({ activeJob }) {
   const dispatch = useDispatch();
   const [updatingKey, setUpdatingKey] = useState(null); 
-  
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const { allResumes = [] } = useSelector((state) => state.resumecrud);
   const { allCoverletters = [] } = useSelector((state) => state.coverlettercrud);
   
@@ -29,6 +29,12 @@ export default function JobInspector({ activeJob }) {
     setUpdatingKey(null);
   };
 
+  const handleDelete = async () => {
+    setUpdatingKey('deleting');
+    await dispatch(deleteJob(activeJob._id));
+    setUpdatingKey(null);
+    setShowConfirmDelete(false);
+  };
   const allowedStates = STAGE_STATE_MAP[activeJob.stage] || ["pending"];
   
   return (
@@ -41,10 +47,48 @@ export default function JobInspector({ activeJob }) {
         <p className="text-lg text-[var(--color-text-secondary)] font-medium">
           {activeJob.position}
         </p>
+        <div className="absolute right-0 ">
+                  {/* COMPACT DELETE BUTTON */}
+        {!showConfirmDelete ? (
+      <button 
+        onClick={() => setShowConfirmDelete(true)}
+        className="flex items-center gap-3 px-4 py-2 cursor-pointer text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all shrink-0 group/delete"
+      >
+        <span className="text-sm font-black uppercase tracking-[0.1em]">
+          Delete Job
+        </span>
+        <Trash2 size={18} />
+      </button>
+          ) : (
+            <div className="flex flex-col items-end gap-2 animate-in zoom-in-95">
+              <div className="flex gap-1">
+                  <button 
+                    onClick={handleDelete}
+                    disabled={updatingKey === 'deleting'}
+                    className="bg-rose-500  px-3 py-1.5 rounded-lg text-[10px] font-black uppercase flex items-center gap-1 shadow-lg shadow-rose-500/20"
+                  >
+                    {updatingKey === 'deleting' ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} />}
+                    Confirm
+                  </button>
+                  <button 
+                    onClick={() => setShowConfirmDelete(false)}
+                    className="bg-[var(--color-background-tertiary)] text-[var(--color-text-primary)] px-3 py-1.5 rounded-lg text-[10px] font-black uppercase border border-[var(--color-border-secondary)]"
+                  >
+                    No
+                  </button>
+              </div>
+              <span className="text-[9px] font-bold text-rose-500 flex items-center gap-1">
+                <AlertTriangle size={10} /> Irreversible
+              </span>
+            </div>
+          )}
+        </div>
         <Link href={activeJob._id} target="_blank" className="inline-flex items-center gap-1 mt-2 text-sm text-[var(--color-button-primary-bg)] font-medium">
           View Job Posting
           <CheckCircle2 size={14} />
         </Link>
+
+
       </section>
 
       <hr className="border-[var(--color-border-secondary)]" />
